@@ -1,0 +1,30 @@
+[
+    {
+        "name": "tezos_payments_baker_0",
+        "pk": "edpkttFdH1z3cBQfVzQw9FN2iegwvvbM5ryftFRrQMnLvwrDPo3L2f",
+        "pkh": "tz1Lde4nLQCxwdb2iAmCxyqwLZ8MifYMB42d",
+        "sk": "unencrypted:edsk3S7mcZfahKmcrKKwa9C1Km8YDaAjLXs2yU94qfr815JuEq8LUP",
+        "balance": 100000000000
+    },
+    {
+        "name": "tezos_payments_tester_0",
+        "pk": "edpktkrjWmJnwj6XbeorjbAPyMuCJ5CSe1LZj5wkQ1ZHn8Wi8capfV",
+        "pkh": "tz1aGWAoxdJJtNgj5h5bos85gVrMM6Z6MKRr",
+        "sk": "unencrypted:edsk3S7mcZfahKmd34fYZ326EWbyKAUmWEsgyb6ihdL776a45qDivu",
+        "balance": 1000000000
+    },
+    {
+        "name": "tezos_payments_tester_1",
+        "pk": "edpktmtJ4ujfNQ7Wcqm5aaQAqhY2JSDWk7LBnEwLkkKL5afRX2giFY",
+        "pkh": "tz1NGVv9T23YQyM8iudRy3kC2b4QEPy82hTP",
+        "sk": "unencrypted:edsk3S7mcZfahKmd34fYZ326EWfYAuS5Hht28g4AgUqTV16X79mGf2",
+        "balance": 170000000
+    },
+    {
+        "name": "tezos_payments_tester_2",
+        "pk": "edpktf7A8bGNm7xWNW1e21TLVWUhZqwhqYV4zGYkHu8rrsYpz7nSow",
+        "pkh": "tz1WpqALq7HqHNSi6XifnRUkwfYSwwiMBKfw",
+        "sk": "unencrypted:edsk3S7mcZfahKmd34fYZ326EWj72ePP5AtMHm1cfLLoruczDki7UD",
+        "balance": 1
+    }
+]

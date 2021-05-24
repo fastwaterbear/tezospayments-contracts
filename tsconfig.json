@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "lib": [
+      "ESNext"
+    ],
+    "sourceMap": true,
+  },
+  "include": [
+    "tests",
+    "typings",
+    "migrations",
+    "scripts",
+  ]
+}
