@@ -1,0 +1,29 @@
+{
+  "name": "@tezos-payments/contracts",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Fast Water Bear",
+  "scripts": {
+    "clean": "rm -rf ./build",
+    "test": "truffle test",
+    "migrate-edo2net": "npm run clean && truffle migrate --network edo2net"
+  },
+  "devDependencies": {
+    "@taquito/signer": "^9.0.1",
+    "@taquito/taquito": "^9.0.1",
+    "@types/chai": "^4.2.18",
+    "@types/chai-as-promised": "^7.1.4",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.6.0",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^7.27.0",
+    "eslint-plugin-import": "^2.23.3",
+    "mocha": "^8.4.0",
+    "truffle": "^5.5.0-tezos.4",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.2.4"
+  }
+}
