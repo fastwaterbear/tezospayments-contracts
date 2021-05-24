@@ -5,6 +5,7 @@
   "author": "Fast Water Bear",
   "scripts": {
     "clean": "rm -rf ./build",
+    "start-sandbox": "ts-node ./scripts/startSandbox",
     "test": "truffle test",
     "migrate-edo2net": "npm run clean && truffle migrate --network edo2net"
   },

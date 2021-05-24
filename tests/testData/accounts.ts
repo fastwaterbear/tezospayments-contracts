@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as accountsJson from './rawAccounts.json';
 
 export interface TezosAccount {
@@ -13,6 +14,6 @@ export const accounts = accountsJson.map<TezosAccount>(account => ({
   ...account,
   formattedSk: account.sk.replace('unencrypted:', '')
 }));
-export const bakers = [accounts[0]];
+export const bakers = [accounts[0]!];
 export const simpleAccounts = accounts.slice(1, 4);
-export const admins = [simpleAccounts[1]];
+export const admins = [simpleAccounts[1]!];
