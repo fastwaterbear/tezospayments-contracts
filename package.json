@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf ./build",
     "start-sandbox": "ts-node ./scripts/startSandbox",
+    "build": "bash ./scripts/build.sh",
     "test": "truffle test",
     "migrate-edo2net": "npm run clean && truffle migrate --network edo2net"
   },
