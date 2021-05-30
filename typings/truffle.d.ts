@@ -1,6 +1,5 @@
 declare const contract: Truffle.ContractFunction;
 declare const artifacts: Truffle.Artifacts;
-declare const tezos: import('@taquito/taquito').TezosToolkit;
 
 declare namespace Truffle {
   type Accounts = string[];

@@ -3,11 +3,11 @@ type service = address;
 type service_owner = address;
 type service_factory_function = (service_metadata) => (operation, service);
 
-type storage = {	
+type storage = {
+	services: big_map(service_owner, list(service)),
 	administrator: address,	
 	paused: bool,
-	services: big_map(service_owner, list(service)),
-	service_factory_function: service_factory_function 
+	service_factory_function: service_factory_function,
 }
 
 type main_result = (list(operation), storage);

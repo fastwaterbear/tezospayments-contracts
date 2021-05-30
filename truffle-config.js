@@ -12,7 +12,7 @@ const { simpleAccounts } = require('./tests/testData/accounts');
 
 // https://www.trufflesuite.com/docs/truffle/reference/configuration
 module.exports = {
-  contracts_directory: './src/entrypoints',
+  contracts_directory: './src/main',
   test_directory: './tests',
   networks: {
     development: {
