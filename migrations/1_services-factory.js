@@ -3,14 +3,18 @@
 const { MichelsonMap } = require('@taquito/michelson-encoder');
 
 const { useLastTezosToolkit } = require('../tests/helpers/useLastTezosToolkit');
+const { admins } = require('../tests/testData/accounts');
 const { notImplementedLambda } = require('../tests/testData/serviceFactoryFunctionLambdas');
 
 const [servicesFactoryContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('services-factory'));
 
 module.exports = async (deployer, network, _accounts) => {
+  // We should request a public key hash to proceed
+  await tezosToolkit.wallet.pkh();
+
   const deploymentResult = await deployer.deploy(servicesFactoryContract, {
     services: new MichelsonMap(),
-    administrator: await tezosToolkit.wallet.pkh(),
+    administrator: admins[0].pkh,
     paused: false,
     service_factory_function: notImplementedLambda,
   });

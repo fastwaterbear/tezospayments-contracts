@@ -14,6 +14,6 @@ export const accounts = accountsJson.map<TezosAccount>(account => ({
   ...account,
   formattedSk: account.sk.replace('unencrypted:', '')
 }));
-export const bakers = [accounts[0]!];
-export const simpleAccounts = accounts.slice(1, 4);
-export const admins = [simpleAccounts[1]!];
+export const bakers = [accounts[0]] as readonly [TezosAccount];
+export const simpleAccounts = accounts.slice(1, 4) as unknown as readonly [TezosAccount, TezosAccount, TezosAccount, TezosAccount];
+export const admins = [simpleAccounts[1]] as const;

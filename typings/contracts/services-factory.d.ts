@@ -9,11 +9,14 @@ declare global {
       readonly service_factory_function?: readonly unknown[];
     };
 
-    interface Instance extends Truffle.ContractInstance<Storage> {
-      set_pause(entrypointParameter: boolean, params?: unknown): Promise<Truffle.TransactionResult>;
+    interface AdministratorActions {
+      set_administrator(newAdministrator: string, params?: unknown): Promise<Truffle.TransactionResult>;
+      set_pause(paused: boolean, params?: unknown): Promise<Truffle.TransactionResult>;
       set_service_factory_function(lambda: readonly unknown[], params?: unknown): Promise<Truffle.TransactionResult>;
+    }
 
-      administrator_action(entrypointParameter: 'set_service_factory_function', lambda: readonly unknown[], params?: unknown): Promise<Truffle.TransactionResult>;
+    interface Instance extends Truffle.ContractInstance<Storage>, AdministratorActions {
+      administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;
     }
   }
 
