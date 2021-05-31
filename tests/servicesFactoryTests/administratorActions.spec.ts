@@ -2,7 +2,7 @@ import { MichelsonMap } from '@taquito/taquito';
 import { expect } from 'chai';
 
 import { useLastTezosToolkit, contractErrors } from '../helpers';
-import { admins, notImplementedLambda } from '../testData';
+import { admins, createEmptyContractLambda, invalidSignatureLambda, notImplementedLambda } from '../testData';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
 
@@ -76,6 +76,29 @@ contract('Services Factory | Administrator Actions', accounts => {
       expect(result).to.exist;
       expect(result.tx).to.exist;
       expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, paused: false });
+    });
+  });
+
+  describe('Set_service_factory_function', () => {
+    it('should change a service factory function if a caller is a current administrator', async () => {
+      let result = await servicesFactoryContractInstance.set_service_factory_function(createEmptyContractLambda);
+      let storageAfterAction = await servicesFactoryContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: createEmptyContractLambda });
+
+      result = await servicesFactoryContractInstance.set_service_factory_function(notImplementedLambda);
+      storageAfterAction = await servicesFactoryContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: notImplementedLambda });
+    });
+
+    it('should fail if a new service factory function has the wrong signature', async () => {
+      await expect(servicesFactoryContractInstance.set_service_factory_function(invalidSignatureLambda))
+        .to.be.rejectedWith('inconsistent_types');
     });
   });
 });

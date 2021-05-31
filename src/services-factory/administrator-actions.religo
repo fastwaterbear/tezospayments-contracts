@@ -15,8 +15,11 @@ let set_pause = ((paused, storage): (bool, storage)): main_result => {
     )
 };
 
-let set_service_factory_function = ((_new_service_factory_function, _storage): (service_factory_function, storage)): main_result => {
-    (failwith(errors_not_implemented): main_result);
+let set_service_factory_function = ((new_service_factory_function, storage): (service_factory_function, storage)): main_result => {
+    (
+        ([]: list(operation)),
+        {   ...storage, service_factory_function: new_service_factory_function }
+    )
 };
 
 let administrator_main = ((action, storage): (administrator_action, storage)): main_result => {
