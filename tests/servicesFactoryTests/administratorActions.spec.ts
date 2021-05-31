@@ -44,17 +44,17 @@ contract('Services Factory | Administrator Actions', accounts => {
       .to.be.rejectedWith(contractErrors.notAdministrator);
 
     const storageAfterActions = await servicesFactoryContractInstance.storage();
-    expect(storageAfterActions).deep.equal(servicesFactoryContractStorage);
+    expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
   });
 
   describe('Set_administrator', () => {
     it('should change a contract administrator if a caller is a current administrator', async () => {
       const result = await servicesFactoryContractInstance.set_administrator(admins[0].pkh);
-      servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+      const storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(servicesFactoryContractStorage.administrator).to.equal(admins[0].pkh);
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, administrator: admins[0].pkh });
 
       await expect(servicesFactoryContractInstance.set_pause(true))
         .to.be.rejectedWith(contractErrors.notAdministrator);
@@ -64,18 +64,18 @@ contract('Services Factory | Administrator Actions', accounts => {
   describe('Set_pause', () => {
     it('should change a contract state if a caller is a current administrator', async () => {
       let result = await servicesFactoryContractInstance.set_pause(true);
-      servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+      let storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(servicesFactoryContractStorage.paused).to.equal(true);
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, paused: true });
 
       result = await servicesFactoryContractInstance.set_pause(false);
-      servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+      storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(servicesFactoryContractStorage.paused).to.equal(false);
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, paused: false });
     });
   });
 });
