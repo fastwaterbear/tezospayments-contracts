@@ -1,8 +1,11 @@
 #include "./types.religo"
 #include "./errors.religo"
 
-let set_administrator = ((_new_administrator, _storage): (address, storage)): main_result => {
-    (failwith(errors_not_implemented): main_result);
+let set_administrator = ((new_administrator, storage): (address, storage)): main_result => {
+    (
+        ([]: list(operation)),
+        {   ...storage, administrator: new_administrator }
+    )
 };
 
 let set_pause = ((_paused, _storage): (bool, storage)): main_result => {
@@ -15,7 +18,7 @@ let set_service_factory_function = ((_new_service_factory_function, _storage): (
 
 let administrator_main = ((action, storage): (administrator_action, storage)): main_result => {
     if (storage.administrator != Tezos.sender) {
-        failwith(errors_not_administator);
+        failwith(errors_not_administrator);
     };
 
     switch (action) {

@@ -2,9 +2,8 @@
 
 const { MichelsonMap } = require('@taquito/michelson-encoder');
 
-const { useLastTezosToolkit } = require('../tests/helpers/useLastTezosToolkit');
-const { admins } = require('../tests/testData/accounts');
-const { notImplementedLambda } = require('../tests/testData/serviceFactoryFunctionLambdas');
+const { useLastTezosToolkit } = require('../tests/helpers');
+const { admins, notImplementedLambda } = require('../tests/testData');
 
 const [servicesFactoryContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('services-factory'));
 
