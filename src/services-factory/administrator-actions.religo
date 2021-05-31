@@ -8,8 +8,11 @@ let set_administrator = ((new_administrator, storage): (address, storage)): main
     )
 };
 
-let set_pause = ((_paused, _storage): (bool, storage)): main_result => {
-    (failwith(errors_not_implemented): main_result);
+let set_pause = ((paused, storage): (bool, storage)): main_result => {
+    (
+        ([]: list(operation)),
+        {   ...storage, paused: paused }
+    )
 };
 
 let set_service_factory_function = ((_new_service_factory_function, _storage): (service_factory_function, storage)): main_result => {

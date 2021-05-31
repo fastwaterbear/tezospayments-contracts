@@ -60,4 +60,22 @@ contract('Services Factory | Administrator Actions', accounts => {
         .to.be.rejectedWith(contractErrors.notAdministrator);
     });
   });
+
+  describe('Set_pause', () => {
+    it('should change a contract state if a caller is a current administrator', async () => {
+      let result = await servicesFactoryContractInstance.set_pause(true);
+      servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(servicesFactoryContractStorage.paused).to.equal(true);
+
+      result = await servicesFactoryContractInstance.set_pause(false);
+      servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(servicesFactoryContractStorage.paused).to.equal(false);
+    });
+  });
 });
