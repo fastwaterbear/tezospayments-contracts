@@ -1,7 +1,3 @@
-// module ERRORS = {
-
-[@inline] let errors_not_implemented = "Not implemented";
+#include "../common/errors.religo"
 
 [@inline] let errors_not_administrator = "Only administrator can do this";
-
-// }
