@@ -1,10 +1,15 @@
 #include "../services-factory/types.religo"
 
 let service_factory_function: service_factory_function = [%Michelson ({| {
-        DROP ;
         PUSH bool False ;
         SENDER ;
+        DUP 3 ;
+        CDR ;
+        PAIR ;
         PUSH bool False ;
+        DIG 3 ;
+        CAR ;
+        PAIR ;
         PAIR ;
         PAIR ;
         AMOUNT ;

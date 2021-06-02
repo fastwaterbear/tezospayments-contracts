@@ -1,4 +1,11 @@
+type allowed_tokens_storage = {
+    tez: bool,
+    assets: set(address)
+}
+
 type storage = {
+    metadata: bytes,
+    allowed_tokens: allowed_tokens_storage,
     owner: address,
 	paused: bool,
 	deleted: bool,

@@ -1,7 +1,16 @@
 type service_metadata = bytes;
 type service = address;
 type service_owner = address;
-type service_factory_function = (service_metadata) => (operation, service);
+
+type service_parameters = {
+    metadata: service_metadata,
+    allowed_tokens: {
+        tez: bool,
+        assets: set(address)
+    } 
+}
+
+type service_factory_function = (service_parameters) => (operation, service);
 
 type storage = {
     services: big_map(service_owner, list(service)),
