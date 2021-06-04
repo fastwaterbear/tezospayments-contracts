@@ -27,9 +27,9 @@ contract('Services Factory | Actions', accounts => {
     };
 
     const result = await servicesFactoryContractInstance.create_service(
-      [],
-      true,
       Buffer.from(JSON.stringify(serviceMetadata), 'utf8').toString('hex'),
+      true,
+      []
     );
     const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
     const storageAfterAction = await servicesFactoryContractInstance.storage();
@@ -65,19 +65,19 @@ contract('Services Factory | Actions', accounts => {
     ];
     const serviceCreationParameters: Array<Parameters<typeof servicesFactoryContractInstance.create_service>> = [
       [
-        ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
-        true,
         Buffer.from(JSON.stringify(serviceMetadataList[0]), 'utf8').toString('hex'),
-      ],
-      [
-        [],
         true,
-        Buffer.from(JSON.stringify(serviceMetadataList[1]), 'utf8').toString('hex'),
+        ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf']
       ],
       [
-        ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
-        false,
+        Buffer.from(JSON.stringify(serviceMetadataList[1]), 'utf8').toString('hex'),
+        true,
+        []
+      ],
+      [
         Buffer.from(JSON.stringify(serviceMetadataList[2]), 'utf8').toString('hex'),
+        false,
+        ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV']
       ]
     ];
 

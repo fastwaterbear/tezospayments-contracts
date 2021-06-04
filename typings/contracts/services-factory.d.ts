@@ -22,7 +22,7 @@ declare global {
     }
 
     interface Instance extends Truffle.ContractInstance<Storage>, AdministratorActions {
-      create_service(assets: string[], tez: boolean, metadata: string, params?: unknown): Promise<Truffle.TransactionResult>;
+      create_service(metadata: string, tez: boolean, assets: string[], params?: unknown): Promise<Truffle.TransactionResult>;
       administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;
     }
   }

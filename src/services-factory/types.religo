@@ -3,9 +3,9 @@ type service = address;
 type service_owner = address;
 type services = big_map(service_owner, set(service));
 
-type service_parameters = {
+type service_parameters = [@layout:comb] {
     metadata: service_metadata,
-    allowed_tokens: {
+    allowed_tokens: [@layout:comb] {
         tez: bool,
         assets: set(address)
     }

@@ -1,4 +1,4 @@
-type allowed_tokens_storage = {
+type allowed_tokens_storage = [@layout:comb] {
     tez: bool,
     assets: set(address)
 }

@@ -1,6 +1,6 @@
 import { MichelsonMap } from '@taquito/taquito';
 
-import { createEmptyContractLambda } from '../testData';
+import { actualServiceFactoryFunctionLambda } from '../testData';
 
 export const deployServiceFactory = async (
   contract: Truffle.Contract<ServicesFactoryContract.Instance>,
@@ -9,7 +9,7 @@ export const deployServiceFactory = async (
   const instance = await contract.new({
     services: new MichelsonMap(),
     paused: false,
-    service_factory_function: createEmptyContractLambda,
+    service_factory_function: actualServiceFactoryFunctionLambda,
     ...initialStorageState
   });
   const storage = await instance.storage();
