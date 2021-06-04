@@ -49,7 +49,7 @@ export class Flextesa {
   private process: ChildProcessWithoutNullStreams | undefined;
 
   constructor(options: Omit<FlextesaOptions, keyof OptionalFlextesaOptions> & OptionalFlextesaOptions) {
-    this.options = { ...Flextesa.defaultOptions, ...options };
+    this.options = { ...Flextesa.defaultOptions, ...this.prepareOptions(options) };
   }
 
   start() {
@@ -81,6 +81,17 @@ export class Flextesa {
 
   exit() {
     return exec(`docker rm -f ${this.options.dockerContainerName}`);
+  }
+
+  private prepareOptions(options: Omit<FlextesaOptions, keyof OptionalFlextesaOptions> & OptionalFlextesaOptions) {
+    const preparedOptions = { ...options };
+
+    (Object.getOwnPropertyNames(preparedOptions) as Array<keyof typeof preparedOptions>).forEach(propertyName => {
+      if (!preparedOptions[propertyName])
+        delete preparedOptions[propertyName];
+    });
+
+    return preparedOptions;
   }
 
   private getDockerArgs() {

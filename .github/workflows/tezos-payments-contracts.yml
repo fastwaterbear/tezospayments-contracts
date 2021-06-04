@@ -18,6 +18,7 @@ jobs:
     env:
       LIGO_VERSION: 0.17.0
       LIGO_COMMAND: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.17.0
+      SANDBOX_NODE_DOCKER_IMAGE: tqtezos/flextesa:20210514
     steps:
       - name: Clone repository
         uses: actions/checkout@master
@@ -41,10 +42,11 @@ jobs:
           CI: true
         run: npm ci
 
+      - name: Pull Sandbox Image
+        run: docker pull ${{ env.SANDBOX_NODE_DOCKER_IMAGE }}
+
       - name: Start Sandbox
-        run: |
-          npm run start-sandbox &
-          sleep 45
+        run: npm run start-sandbox &
 
       - name: Test
         run: npm test
