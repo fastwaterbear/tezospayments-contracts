@@ -2,12 +2,18 @@ import { BigMapAbstraction } from '@taquito/taquito';
 
 declare global {
   namespace ServicesFactoryContract {
-    type Storage = {
+    interface Storage {
       readonly services: BigMapAbstraction;
       readonly administrator: string;
       readonly paused: boolean;
       readonly service_factory_function?: readonly unknown[];
-    };
+    }
+
+    interface ServiceMetadata {
+      name: string;
+      links: string[];
+      description?: string;
+    }
 
     interface AdministratorActions {
       set_administrator(newAdministrator: string, params?: unknown): Promise<Truffle.TransactionResult>;
@@ -16,6 +22,7 @@ declare global {
     }
 
     interface Instance extends Truffle.ContractInstance<Storage>, AdministratorActions {
+      create_service(assets: string[], tez: boolean, metadata: string, params?: unknown): Promise<Truffle.TransactionResult>;
       administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;
     }
   }

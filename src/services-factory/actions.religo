@@ -1,6 +1,21 @@
 #include "./types.religo"
 #include "./errors.religo"
 
-let create_service = ((_service_parameters, _storage): (service_metadata, storage)): main_result => {
-    failwith(errors_not_implemented);
+let get_or_create_services_set_by_service_owner = ((service_owner, services): (service_owner, services)): set(service) =>
+    switch (Big_map.find_opt(service_owner, services)) {
+        | Some(servicesSet) => servicesSet;
+        | None => Set.empty;
+    };
+
+let create_service = ((service_parameters, storage): (service_parameters, storage)): main_result => {
+    let service_owner = Tezos.sender;
+    let (operation, service) = storage.service_factory_function(service_parameters);
+    
+    let services_set = get_or_create_services_set_by_service_owner(service_owner, storage.services);
+    let services = Big_map.add(service_owner, Set.add(service, services_set), storage.services);
+
+    (
+        [operation],
+        { ...storage, services: services }
+    )
 };

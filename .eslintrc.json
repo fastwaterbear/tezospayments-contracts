@@ -39,7 +39,6 @@
                 "code": 200
             }
         ],
-        "no-await-in-loop": "error",
         "no-duplicate-imports": "error",
         "no-var": "error",
         "object-shorthand": "warn",
