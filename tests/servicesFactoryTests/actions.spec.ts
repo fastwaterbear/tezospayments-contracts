@@ -4,7 +4,7 @@ import { OperationResultOrigination } from '@taquito/rpc';
 import { OpKind } from '@taquito/taquito';
 import { expect } from 'chai';
 
-import { useLastTezosToolkit } from '../helpers';
+import { contractErrors, useLastTezosToolkit } from '../helpers';
 import { deployServiceFactory } from '../helpers/contractDeployment';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
@@ -102,8 +102,23 @@ contract('Services Factory | Actions', accounts => {
     }
   });
 
-  it('should fail if the contract is paused', () => {
-    // TODO
+  it('should fail if the contract is paused', async () => {
+    await servicesFactoryContractInstance.set_pause(true);
+    servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
+
+    const serviceMetadata: ServicesFactoryContract.ServiceMetadata = {
+      name: 'Test Service',
+      links: ['https://test.com']
+    };
+
+    await expect(servicesFactoryContractInstance.create_service(
+      Buffer.from(JSON.stringify(serviceMetadata), 'utf8').toString('hex'),
+      true,
+      []
+    )).to.be.rejectedWith(contractErrors.isPaused);
+
+    const storageAfterActions = await servicesFactoryContractInstance.storage();
+    expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
   });
 
   it('should fail if service parameters have an invalid structure when creating the service', () => {
