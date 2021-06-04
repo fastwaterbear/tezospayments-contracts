@@ -1,7 +1,7 @@
-import { MichelsonMap } from '@taquito/taquito';
 import { expect } from 'chai';
 
 import { useLastTezosToolkit, contractErrors } from '../helpers';
+import { deployServiceFactory } from '../helpers/contractDeployment';
 import { admins, createEmptyContractLambda, invalidSignatureLambda, notImplementedLambda } from '../testData';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
@@ -12,21 +12,13 @@ contract('Services Factory | Administrator Actions', accounts => {
   let servicesFactoryContractInstance: ServicesFactoryContract.Instance;
   let servicesFactoryContractStorage: ServicesFactoryContract.Storage;
 
-  const deployNewInstanceAndAssign = async (storage?: Partial<Parameters<typeof servicesFactoryContract['new']>[0]>) => {
-    servicesFactoryContractInstance = await servicesFactoryContract.new({
-      services: new MichelsonMap(),
-      administrator: currentAccountAddress,
-      paused: false,
-      service_factory_function: notImplementedLambda,
-      ...storage
-    });
-    servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
-  };
+  const deployServiceFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServiceFactory>['1']) =>
+    [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServiceFactory(servicesFactoryContract, initialStorageState);
 
-  beforeEach('Deploy new instance', () => deployNewInstanceAndAssign());
+  beforeEach('Deploy new instance', () => deployServiceFactoryAndAssign({ administrator: currentAccountAddress }));
 
   it('should prevent calls from non-administrators', async () => {
-    await deployNewInstanceAndAssign({ administrator: admins[0].pkh });
+    await deployServiceFactoryAndAssign({ administrator: admins[0].pkh });
 
     await expect(servicesFactoryContractInstance.set_administrator(currentAccountAddress))
       .to.be.rejectedWith(contractErrors.notAdministrator);
@@ -81,19 +73,19 @@ contract('Services Factory | Administrator Actions', accounts => {
 
   describe('Set_service_factory_function', () => {
     it('should change a service factory function if a caller is a current administrator', async () => {
-      let result = await servicesFactoryContractInstance.set_service_factory_function(createEmptyContractLambda);
+      let result = await servicesFactoryContractInstance.set_service_factory_function(notImplementedLambda);
       let storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: createEmptyContractLambda });
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: notImplementedLambda });
 
-      result = await servicesFactoryContractInstance.set_service_factory_function(notImplementedLambda);
+      result = await servicesFactoryContractInstance.set_service_factory_function(createEmptyContractLambda);
       storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: notImplementedLambda });
+      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: createEmptyContractLambda });
     });
 
     it('should fail if a new service factory function has the wrong signature', async () => {
