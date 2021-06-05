@@ -1,6 +1,23 @@
 #include "../services-factory/types.religo"
 
 let service_factory_function: service_factory_function = [%Michelson ({| {
+    PUSH nat 0 ;
+    SWAP ;
+    DUP ;
+    DUG 2 ;
+    CDR ;
+    CDR ;
+    SIZE ;
+    COMPARE ;
+    EQ ;
+    SWAP ;
+    DUP ;
+    DUG 2 ;
+    CDR ;
+    CAR ;
+    NOT ;
+    AND ;
+    IF { PUSH string "No allowed tokens" ; FAILWITH } {} ;
     PUSH bool False ;
     SENDER ;
     DUP 3 ;

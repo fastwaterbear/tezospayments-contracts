@@ -163,6 +163,22 @@ export const invalidSignatureLambda = [
 ] as const;
 
 export const actualServiceFactoryFunctionLambda = [
+  { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },
+  { prim: 'CDR' }, { prim: 'SIZE' }, { prim: 'COMPARE' },
+  { prim: 'EQ' }, { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },
+  { prim: 'CAR' }, { prim: 'NOT' }, { prim: 'AND' },
+  {
+    prim: 'IF',
+    args:
+      [[{
+        prim: 'PUSH',
+        args: [{ prim: 'string' }, { string: 'No allowed tokens' }]
+      },
+      { prim: 'FAILWITH' }], []]
+  },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
   { prim: 'SENDER' }, { prim: 'DUP', args: [{ int: '3' }] },
   { prim: 'CAR' }, { prim: 'PAIR' },
