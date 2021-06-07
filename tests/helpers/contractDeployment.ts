@@ -18,3 +18,29 @@ export const deployServiceFactory = async (
 
   return [instance, storage];
 };
+
+export const deployService = async (
+  contract: Truffle.Contract<TezosPayments.ServiceContract.Instance>,
+  initialStorageState: Pick<
+    Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>, 'owner'>
+    & Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>
+): Promise<readonly [TezosPayments.ServiceContract.Instance, TezosPayments.ServiceContract.Storage]> => {
+  const serviceMetadata: TezosPayments.ServiceMetadata = {
+    name: 'Test Service',
+    links: ['https://test.com']
+  };
+
+  const instance = await contract.new({
+    metadata: Buffer.from(JSON.stringify(serviceMetadata), 'utf8').toString('hex'),
+    allowed_tokens: {
+      tez: true,
+      assets: []
+    },
+    paused: false,
+    deleted: false,
+    ...initialStorageState
+  });
+  const storage = await instance.storage();
+
+  return [instance, storage];
+};
