@@ -1,6 +1,7 @@
 import { MichelsonMap } from '@taquito/taquito';
 
 import { actualServiceFactoryFunctionLambda } from '../testData';
+import { serviceMetadataToBytes } from './serviceMetadata';
 
 export const deployServiceFactory = async (
   contract: Truffle.Contract<TezosPayments.ServicesFactoryContract.Instance>,
@@ -31,7 +32,7 @@ export const deployService = async (
   };
 
   const instance = await contract.new({
-    metadata: Buffer.from(JSON.stringify(serviceMetadata), 'utf8').toString('hex'),
+    metadata: serviceMetadataToBytes(serviceMetadata),
     allowed_tokens: {
       tez: true,
       assets: []

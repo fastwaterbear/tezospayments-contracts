@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 
-import { useLastTezosToolkit, contractErrors } from '../helpers';
-import { deployServiceFactory } from '../helpers/contractDeployment';
+import { useLastTezosToolkit, contractErrors, deployServiceFactory } from '../helpers';
 import { admins, createEmptyContractLambda, invalidSignatureLambda, notImplementedLambda } from '../testData';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
