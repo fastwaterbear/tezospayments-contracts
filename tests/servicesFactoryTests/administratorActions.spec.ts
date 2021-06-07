@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { useLastTezosToolkit, contractErrors, deployServiceFactory } from '../helpers';
+import { useLastTezosToolkit, contractErrors, deployServicesFactory } from '../helpers';
 import { admins, createEmptyContractLambda, invalidSignatureLambda, notImplementedLambda } from '../testData';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
@@ -11,13 +11,13 @@ contract('Services Factory | Administrator Actions', accounts => {
   let servicesFactoryContractInstance: TezosPayments.ServicesFactoryContract.Instance;
   let servicesFactoryContractStorage: TezosPayments.ServicesFactoryContract.Storage;
 
-  const deployServiceFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServiceFactory>['1']) =>
-    [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServiceFactory(servicesFactoryContract, initialStorageState);
+  const deployServicesFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServicesFactory>['1']) =>
+    [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServicesFactory(servicesFactoryContract, initialStorageState);
 
-  beforeEach('Deploy new instance', () => deployServiceFactoryAndAssign({ administrator: currentAccountAddress }));
+  beforeEach('Deploy new instance', () => deployServicesFactoryAndAssign({ administrator: currentAccountAddress }));
 
   it('should prevent calls from non-administrators', async () => {
-    await deployServiceFactoryAndAssign({ administrator: admins[0].pkh });
+    await deployServicesFactoryAndAssign({ administrator: admins[0].pkh });
 
     await expect(servicesFactoryContractInstance.set_administrator(currentAccountAddress))
       .to.be.rejectedWith(contractErrors.notAdministrator);

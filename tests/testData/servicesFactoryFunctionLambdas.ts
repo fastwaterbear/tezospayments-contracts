@@ -162,7 +162,7 @@ export const invalidSignatureLambda = [
   { prim: 'PAIR' }
 ] as const;
 
-export const actualServiceFactoryFunctionLambda = [
+export const actualServicesFactoryFunctionLambda = [
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
   { prim: 'SWAP' }, { prim: 'DUP' },
   { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },

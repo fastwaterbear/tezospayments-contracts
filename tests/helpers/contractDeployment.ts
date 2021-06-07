@@ -1,9 +1,9 @@
 import { MichelsonMap } from '@taquito/taquito';
 
-import { actualServiceFactoryFunctionLambda } from '../testData';
+import { actualServicesFactoryFunctionLambda } from '../testData';
 import { serviceMetadataToBytes } from './serviceMetadata';
 
-export const deployServiceFactory = async (
+export const deployServicesFactory = async (
   contract: Truffle.Contract<TezosPayments.ServicesFactoryContract.Instance>,
   initialStorageState: Pick<
     Truffle.InitialStorageState<TezosPayments.ServicesFactoryContract.Storage>, 'administrator'>
@@ -12,7 +12,7 @@ export const deployServiceFactory = async (
   const instance = await contract.new({
     services: new MichelsonMap(),
     paused: false,
-    service_factory_function: actualServiceFactoryFunctionLambda,
+    service_factory_function: actualServicesFactoryFunctionLambda,
     ...initialStorageState
   });
   const storage = await instance.storage();

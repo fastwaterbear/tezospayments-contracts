@@ -2,7 +2,7 @@ import { OperationResultOrigination } from '@taquito/rpc';
 import { OpKind } from '@taquito/taquito';
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployServiceFactory, serviceMetadataToBytes } from '../helpers';
+import { contractErrors, useLastTezosToolkit, deployServicesFactory, serviceMetadataToBytes } from '../helpers';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
 
@@ -12,10 +12,10 @@ contract('Services Factory | Actions', accounts => {
   let servicesFactoryContractInstance: TezosPayments.ServicesFactoryContract.Instance;
   let servicesFactoryContractStorage: TezosPayments.ServicesFactoryContract.Storage;
 
-  const deployServiceFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServiceFactory>['1']) =>
-    [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServiceFactory(servicesFactoryContract, initialStorageState);
+  const deployServicesFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServicesFactory>['1']) =>
+    [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServicesFactory(servicesFactoryContract, initialStorageState);
 
-  beforeEach('Deploy new instance', () => deployServiceFactoryAndAssign({ administrator: currentAccountAddress }));
+  beforeEach('Deploy new instance', () => deployServicesFactoryAndAssign({ administrator: currentAccountAddress }));
 
   describe('Create_service', () => {
     let commonServiceMetadataBytes: string;
