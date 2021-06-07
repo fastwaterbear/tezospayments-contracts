@@ -1,15 +1,6 @@
-type service_metadata = bytes;
-type service = address;
-type service_owner = address;
-type services = big_map(service_owner, set(service));
+#include "../common/types.religo"
 
-type service_parameters = [@layout:comb] {
-    metadata: service_metadata,
-    allowed_tokens: [@layout:comb] {
-        tez: bool,
-        assets: set(address)
-    }
-}
+type services = big_map(service_owner, set(service));
 
 type service_factory_function = (service_parameters) => (operation, service);
 

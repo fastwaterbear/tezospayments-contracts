@@ -1,7 +1,9 @@
 #include "./types.religo"
 #include "./errors.religo"
+#include "./owner-actions.religo"
 
-let main = ((action, _storage): (action, storage)): main_result => 
+let main = ((action, storage): (action, storage)): main_result => 
     switch (action) {
-        | Owner_action(_owner_action) => (([]: list(operation)), (failwith(errors_not_owner): storage));
+        | AcceptPayment => (failwith(errors_not_implemented): main_result)
+        | Owner_action(owner_action) => owner_main(owner_action, storage);
     };
