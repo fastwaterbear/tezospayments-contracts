@@ -9,8 +9,8 @@ const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('service
 contract('Services Factory | Administrator Actions', accounts => {
   const currentAccountAddress = accounts[0]!;
 
-  let servicesFactoryContractInstance: ServicesFactoryContract.Instance;
-  let servicesFactoryContractStorage: ServicesFactoryContract.Storage;
+  let servicesFactoryContractInstance: TezosPayments.ServicesFactoryContract.Instance;
+  let servicesFactoryContractStorage: TezosPayments.ServicesFactoryContract.Storage;
 
   const deployServiceFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServiceFactory>['1']) =>
     [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServiceFactory(servicesFactoryContract, initialStorageState);

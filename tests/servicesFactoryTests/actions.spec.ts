@@ -12,8 +12,8 @@ const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('service
 contract('Services Factory | Actions', accounts => {
   const currentAccountAddress = accounts[0]!;
 
-  let servicesFactoryContractInstance: ServicesFactoryContract.Instance;
-  let servicesFactoryContractStorage: ServicesFactoryContract.Storage;
+  let servicesFactoryContractInstance: TezosPayments.ServicesFactoryContract.Instance;
+  let servicesFactoryContractStorage: TezosPayments.ServicesFactoryContract.Storage;
 
   const deployServiceFactoryAndAssign = async (initialStorageState: Parameters<typeof deployServiceFactory>['1']) =>
     [servicesFactoryContractInstance, servicesFactoryContractStorage] = await deployServiceFactory(servicesFactoryContract, initialStorageState);
@@ -24,7 +24,7 @@ contract('Services Factory | Actions', accounts => {
     let commonServiceMetadataBytes: string;
 
     beforeEach('Deploy new instance', () => {
-      const commonServiceMetadata: ServicesFactoryContract.ServiceMetadata = {
+      const commonServiceMetadata: TezosPayments.ServiceMetadata = {
         name: 'Test Service',
         links: ['https://test.com']
       };
@@ -50,7 +50,7 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should store a set of created services when creating multiple services', async () => {
-      const serviceMetadataList: ServicesFactoryContract.ServiceMetadata[] = [
+      const serviceMetadataList: TezosPayments.ServiceMetadata[] = [
         {
           name: 'Test Service 1',
           links: ['https://test.com']
