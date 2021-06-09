@@ -97,7 +97,7 @@ contract('Service | Owner Actions', accounts => {
     });
   });
 
-  describe.only('Update_service_parameters', () => {
+  describe('Update_service_parameters', () => {
     for (const caseName of Object.keys(serviceParametersUpdates) as Array<keyof typeof serviceParametersUpdates>) {
       const update = serviceParametersUpdates[caseName];
 
