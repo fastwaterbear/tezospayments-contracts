@@ -111,7 +111,7 @@ export class Flextesa {
       '--genesis-block-hash',
       this.options.genesisBlockHash,
       '--time-between-blocks',
-      '0',
+      '1',
       '--timestamp-delay',
       '0',
       '--remove-default-bootstrap-accounts',
