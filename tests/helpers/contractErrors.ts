@@ -3,5 +3,6 @@ export const contractErrors = {
   notAdministrator: 'Only administrator can do this',
   notOwner: 'Only owner can do this',
   isPaused: 'Contract is paused',
-  noAllowedTokens: 'No allowed tokens'
+  noAllowedTokens: 'No allowed tokens',
+  emptyUpdate: 'Empty update'
 };

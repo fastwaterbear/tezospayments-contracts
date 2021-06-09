@@ -12,12 +12,12 @@ const validServiceMetadata: TezosPayments.ServiceMetadata = {
 const allowedAssets = ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'];
 
 export const serviceParametersUpdates = {
-  'Empty': [undefined, undefined, undefined] as ServiceParametersUpdate,
-  'Only metadata': [serviceMetadataToBytes(validServiceMetadata), undefined, undefined] as ServiceParametersUpdate,
-  'Only allowed tez tokens': [undefined, false, undefined] as ServiceParametersUpdate,
-  'Only allowed assets': [undefined, undefined, allowedAssets] as ServiceParametersUpdate,
-  'Metadata and allowed tez tokens': [serviceMetadataToBytes(validServiceMetadata), false, undefined] as ServiceParametersUpdate,
-  'Metadata and allowed assets': [serviceMetadataToBytes(validServiceMetadata), undefined, allowedAssets] as ServiceParametersUpdate,
-  'Only allowed tokens': [undefined, false, allowedAssets] as ServiceParametersUpdate,
-  'All parameters': [serviceMetadataToBytes(validServiceMetadata), false, allowedAssets] as ServiceParametersUpdate,
+  'empty': [undefined, undefined, undefined] as ServiceParametersUpdate,
+  'only metadata': [serviceMetadataToBytes(validServiceMetadata), undefined, undefined] as ServiceParametersUpdate,
+  'only allowed tez tokens': [undefined, false, undefined] as ServiceParametersUpdate,
+  'only allowed assets': [undefined, undefined, allowedAssets] as ServiceParametersUpdate,
+  'metadata and allowed tez tokens': [serviceMetadataToBytes(validServiceMetadata), false, undefined] as ServiceParametersUpdate,
+  'metadata and allowed assets': [serviceMetadataToBytes(validServiceMetadata), undefined, allowedAssets] as ServiceParametersUpdate,
+  'only allowed tokens': [undefined, false, allowedAssets] as ServiceParametersUpdate,
+  'all parameters': [serviceMetadataToBytes(validServiceMetadata), false, allowedAssets] as ServiceParametersUpdate,
 } as const;

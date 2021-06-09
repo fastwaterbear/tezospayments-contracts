@@ -8,7 +8,8 @@
     "start-sandbox": "ts-node ./scripts/startSandbox",
     "build": "bash ./scripts/build.sh",
     "test": "truffle test",
-    "migrate-edo2net": "npm run clean && truffle migrate --network edo2net"
+    "migrate-edo2net": "npm run clean && truffle migrate --network edo2net",
+    "postinstall": "sed -i 's/ligo:next/ligo:0.17.0/' node_modules/truffle/build/cli.bundled.js"
   },
   "devDependencies": {
     "@taquito/signer": "^9.0.1",

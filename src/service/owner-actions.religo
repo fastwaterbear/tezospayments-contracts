@@ -4,26 +4,46 @@
 let set_owner = ((new_owner, storage): (address, storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, owner: new_owner }
+        { ...storage, owner: new_owner }
     )
 };
 
 let set_pause = ((paused, storage): (bool, storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, paused: paused }
+        { ...storage, paused: paused }
     )
 };
 
 let set_deleted = ((deleted, storage): (bool, storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, deleted: deleted }
+        { ...storage, deleted: deleted }
     )
 };
 
-let update_service_parameters = ((_service_parameters, _storage): (service_parameters_updates, storage)): main_result => {
-    failwith(errors_not_implemented);
+let update_service_parameters = ((service_parameters, storage): (service_parameters_updates, storage)): main_result => {
+    (switch service_parameters {
+        | { metadata: None, allowed_tokens: { tez: None, assets: None } } => (failwith(errors_empty_update): unit)
+        | _ => unit
+    });
+
+    let updated_storage_step1 = switch service_parameters.metadata {
+        | Some(new_metadata) => { ...storage, metadata: new_metadata }
+        | None => storage
+    };
+    let updated_storage_step2 = switch service_parameters.allowed_tokens.tez {
+        | Some(new_tez)
+            => { ...updated_storage_step1, allowed_tokens: { ...updated_storage_step1.allowed_tokens, tez: new_tez } }
+        | None => updated_storage_step1
+    };
+    let updated_storage_step3 = switch service_parameters.allowed_tokens.assets {
+        | Some(new_assets)
+            => { ...updated_storage_step2, allowed_tokens: { ...updated_storage_step2.allowed_tokens, assets: new_assets } }
+        | None => updated_storage_step2
+    };
+
+    (([]: list(operation)), updated_storage_step3)
 };
 
 let owner_main = ((action, storage): (owner_action, storage)): main_result => {

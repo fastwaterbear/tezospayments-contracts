@@ -96,4 +96,36 @@ contract('Service | Owner Actions', accounts => {
       expect(storageAfterAction).to.deep.equal({ ...serviceContractStorage, deleted: false });
     });
   });
+
+  describe.only('Update_service_parameters', () => {
+    for (const caseName of Object.keys(serviceParametersUpdates) as Array<keyof typeof serviceParametersUpdates>) {
+      const update = serviceParametersUpdates[caseName];
+
+      beforeEach('Deploy new instance', () => deployServiceAndAssign({ owner: currentAccountAddress }));
+
+      if (caseName === 'empty') {
+        it('should fail if updates are empty', async () => {
+          await expect(serviceContractInstance.update_service_parameters(...update))
+            .to.be.rejectedWith(contractErrors.emptyUpdate);
+        });
+      } else {
+        it(`should update ${caseName}`, async () => {
+          const result = await serviceContractInstance.update_service_parameters(...update);
+          const storageAfterAction = await serviceContractInstance.storage();
+          const expectedStorage: TezosPayments.ServiceContract.Storage = {
+            ...serviceContractStorage,
+            metadata: update[0] ?? serviceContractStorage.metadata,
+            allowed_tokens: {
+              tez: update[1] ?? serviceContractStorage.allowed_tokens.tez,
+              assets: update[2] ?? serviceContractStorage.allowed_tokens.assets,
+            }
+          };
+
+          expect(result).to.exist;
+          expect(result.tx).to.exist;
+          expect(storageAfterAction).to.deep.equal(expectedStorage);
+        });
+      }
+    }
+  });
 });
