@@ -50,6 +50,12 @@ declare namespace Truffle {
     ): Promise<void>;
   }
 
+  interface TransactionParameters {
+    amount?: number;
+    fee?: number;
+    gasLimit?: number;
+  }
+
   interface TransactionResult {
     receipt: PromiseType<ReturnType<import('@taquito/taquito').ContractProvider['transfer']>>,
     tx: string;

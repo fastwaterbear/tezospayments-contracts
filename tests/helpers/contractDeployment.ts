@@ -1,7 +1,7 @@
 import { MichelsonMap } from '@taquito/taquito';
 
 import { actualServicesFactoryFunctionLambda } from '../testData';
-import { serviceMetadataToBytes } from './serviceMetadata';
+import { serviceMetadataToBytes } from './converters';
 
 export const deployServicesFactory = async (
   contract: Truffle.Contract<TezosPayments.ServicesFactoryContract.Instance>,

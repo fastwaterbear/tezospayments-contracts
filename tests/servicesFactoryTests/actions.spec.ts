@@ -106,7 +106,7 @@ contract('Services Factory | Actions', accounts => {
       servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
 
       await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, []))
-        .to.be.rejectedWith(contractErrors.isPaused);
+        .to.be.rejectedWith(contractErrors.contractIsPaused);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
       expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);

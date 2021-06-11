@@ -11,18 +11,48 @@ declare namespace TezosPayments.ServiceContract {
   }
 
   interface OwnerActions {
-    set_owner(newOwner: string, params?: unknown): Promise<Truffle.TransactionResult>;
-    set_pause(paused: boolean, params?: unknown): Promise<Truffle.TransactionResult>;
-    set_deleted(deleted: boolean, params?: unknown): Promise<Truffle.TransactionResult>;
+    set_owner(newOwner: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
+    set_pause(paused: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
+    set_deleted(deleted: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
     update_service_parameters(
       metadata: string | undefined,
       allowedTokensTez: boolean | undefined,
       allowedTokensAssets: string[] | undefined,
-      params?: unknown
+      params?: Truffle.TransactionParameters
     ): Promise<Truffle.TransactionResult>;
   }
 
   interface Instance extends Truffle.ContractInstance<Storage>, OwnerActions {
+    send_payment(
+      assetTokenAddress: void,
+      payloadType: 'public' | 'private',
+      payload: string,
+      assetValue: void,
+      params: Truffle.TransactionParameters & { amount: number }
+    ): Promise<Truffle.TransactionResult>;
+    send_payment(
+      assetTokenAddress: void,
+      payloadType: 'public_and_private',
+      public_payload: string,
+      private_payload: string,
+      assetValue: void,
+      params: Truffle.TransactionParameters & { amount: number }
+    ): Promise<Truffle.TransactionResult>;
+    send_payment(
+      assetTokenAddress: string,
+      assetValue: number,
+      payloadType: 'public' | 'private',
+      payload: string,
+      params?: Truffle.TransactionParameters
+    ): Promise<Truffle.TransactionResult>;
+    send_payment(
+      assetTokenAddress: string,
+      assetValue: number,
+      payloadType: 'public_and_private',
+      public_payload: string,
+      private_payload: string,
+      params?: Truffle.TransactionParameters
+    ): Promise<Truffle.TransactionResult>;
     owner_action<T extends keyof OwnerActions>(actionName: T, ...params: Parameters<OwnerActions[T]>): Promise<Truffle.TransactionResult>;
   }
 }

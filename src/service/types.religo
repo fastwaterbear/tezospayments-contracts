@@ -18,6 +18,21 @@ type service_parameters_updates = [@layout:comb] {
     }
 }
 
+type asset_value = [@layout:comb] {
+    token_address: address,
+    value: nat
+}
+
+type payment_payload = [@layout:comb]
+    | Public(bytes)
+    | Private(bytes)
+    | Public_and_private((bytes, bytes))
+
+type send_payment_parameters = [@layout:comb] {
+    asset_value: option(asset_value),
+    payload: payment_payload
+}
+
 type owner_action =
     | Set_owner(service_owner)
     | Set_pause(bool)
@@ -25,6 +40,5 @@ type owner_action =
     | Update_service_parameters(service_parameters_updates);
 
 type action =
-    // TODO
-    | AcceptPayment
+    | Send_payment(send_payment_parameters)
     | Owner_action(owner_action);

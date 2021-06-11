@@ -1,8 +1,16 @@
 export const contractErrors = {
+  // Common
   notImplemented: 'Not implemented',
-  notAdministrator: 'Only administrator can do this',
-  notOwner: 'Only owner can do this',
-  isPaused: 'Contract is paused',
+  contractIsPaused: 'Contract is paused',
   noAllowedTokens: 'No allowed tokens',
-  emptyUpdate: 'Empty update'
+  invalidAmount: 'Invalid amount',
+  invalidAddress: 'Invalid address',
+  // Services Factory
+  notAdministrator: 'Only administrator can do this',
+  // Service Factory
+  notOwner: 'Only owner can do this',
+  emptyUpdate: 'Empty update',
+  privatePayloadNotSupported: 'Private payload is not supported at the moment',
+  serviceIsPaused: 'Service is paused',
+  serviceIsDeleted: 'Service is deleted',
 };
