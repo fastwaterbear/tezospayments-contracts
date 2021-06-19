@@ -3,8 +3,8 @@
 #include "./owner-actions.religo"
 #include "./actions.religo"
 
-let main = ((action, storage): (action, storage)): main_result => 
+let main = ((action, storage): (action, storage)): main_result =>
     switch (action) {
-        | Send_payment(parameters) => send_payment(parameters.asset_value, parameters.payload, storage); 
+        | Send_payment(parameters) => send_payment(parameters.asset_value, parameters.payload, storage);
         | Owner_action(owner_action) => owner_main(owner_action, storage);
     };

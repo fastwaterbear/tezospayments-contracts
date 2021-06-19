@@ -6,7 +6,7 @@ type service_factory_function = (service_parameters) => (operation, service);
 
 type storage = {
     services: big_map(service_owner, set(service)),
-    administrator: address,	
+    administrator: address,
     paused: bool,
     service_factory_function: service_factory_function,
 }

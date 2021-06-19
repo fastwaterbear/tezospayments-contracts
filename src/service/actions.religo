@@ -2,14 +2,14 @@
 
 [@inline] let fail_if_service_is_deleted = (storage: storage) => if (storage.deleted) { failwith(errors_service_is_deleted); };
 
-[@inline] let fail_if_payload_is_invalid = (payload: payment_payload) 
+[@inline] let fail_if_payload_is_invalid = (payload: payment_payload)
     => switch (payload) {
         | Public(_) => unit;
         | Private(_) => failwith(errors_private_payload_not_supported);
         | Public_and_private(_, _) => failwith(errors_private_payload_not_supported);
     };
 
-let get_owner_account = (owner: address): contract(unit) 
+let get_owner_account = (owner: address): contract(unit)
     => switch (Tezos.get_contract_opt(owner): option(contract(unit))) {
         | Some(contract) => contract;
         | None => (failwith(errors_invalid_address) : contract(unit));

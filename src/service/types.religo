@@ -4,8 +4,8 @@ type storage = {
     metadata: service_metadata,
     allowed_tokens: allowed_tokens,
     owner: service_owner,
-	paused: bool,
-	deleted: bool,
+    paused: bool,
+    deleted: bool,
 }
 
 type main_result = (list(operation), storage);
