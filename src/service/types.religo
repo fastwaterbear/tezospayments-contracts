@@ -1,6 +1,8 @@
 #include "../common/types.religo"
 
+type service_version = nat;
 type storage = {
+    version: service_version,
     metadata: service_metadata,
     allowed_tokens: allowed_tokens,
     owner: service_owner,

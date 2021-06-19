@@ -9,73 +9,18 @@ export const notImplementedLambda = [
 ] as const;
 
 export const createEmptyContractLambda = [
-  { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'SENDER' }, { prim: 'DUP', args: [{ int: '3' }] },
-  { prim: 'CAR' }, { prim: 'PAIR' },
-  { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'DIG', args: [{ int: '3' }] }, { prim: 'CDR' },
-  { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'PAIR' },
-  { prim: 'AMOUNT' },
+  { prim: 'DROP' }, { prim: 'UNIT' }, { prim: 'AMOUNT' },
   { prim: 'NONE', args: [{ prim: 'key_hash' }] },
   {
     prim: 'CREATE_CONTRACT',
     args:
       [[{ prim: 'parameter', args: [{ prim: 'unit' }] },
-      {
-        prim: 'storage',
-        args:
-          [{
-            prim: 'pair',
-            args:
-              [{
-                prim: 'pair',
-                args:
-                  [{
-                    prim: 'pair',
-                    args:
-                      [{
-                        prim: 'pair',
-                        args:
-                          [{
-                            prim: 'bool',
-                            annots: ['%tez']
-                          },
-                          {
-                            prim: 'set',
-                            args: [{ prim: 'address' }],
-                            annots: ['%assets']
-                          }],
-                        annots: ['%allowed_tokens']
-                      },
-                      {
-                        prim: 'bool',
-                        annots: ['%deleted']
-                      }]
-                  },
-                  {
-                    prim: 'pair',
-                    args:
-                      [{
-                        prim: 'bytes',
-                        annots: ['%metadata']
-                      },
-                      {
-                        prim: 'address',
-                        annots: ['%owner']
-                      }]
-                  }]
-              },
-              { prim: 'bool', annots: ['%paused'] }]
-          }]
-      },
+      { prim: 'storage', args: [{ prim: 'unit' }] },
       {
         prim: 'code',
         args:
-          [[{ prim: 'CDR' },
-          {
-            prim: 'NIL',
-            args: [{ prim: 'operation' }]
-          },
+          [[{ prim: 'DROP' }, { prim: 'UNIT' },
+          { prim: 'NIL', args: [{ prim: 'operation' }] },
           { prim: 'PAIR' }]]
       }]]
   },
@@ -94,7 +39,117 @@ export const invalidSignatureLambda = [
   {
     prim: 'CREATE_CONTRACT',
     args:
-      [[{ prim: 'parameter', args: [{ prim: 'unit' }] },
+      [[{
+        prim: 'parameter',
+        args:
+          [{
+            prim: 'or',
+            args:
+              [{
+                prim: 'or',
+                args:
+                  [{
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bool',
+                        annots: ['%set_deleted']
+                      },
+                      {
+                        prim: 'address',
+                        annots: ['%set_owner']
+                      }]
+                  },
+                  {
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bool',
+                        annots: ['%set_pause']
+                      },
+                      {
+                        prim: 'pair',
+                        args:
+                          [{
+                            prim: 'option',
+                            args: [{ prim: 'bytes' }],
+                            annots: ['%metadata']
+                          },
+                          {
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'bool' }],
+                                annots: ['%tez']
+                              },
+                              {
+                                prim: 'option',
+                                args:
+                                  [{
+                                    prim: 'set',
+                                    args:
+                                      [{ prim: 'address' }]
+                                  }],
+                                annots: ['%assets']
+                              }],
+                            annots: ['%allowed_tokens']
+                          }],
+                        annots:
+                          ['%update_service_parameters']
+                      }]
+                  }],
+                annots: ['%owner_action']
+              },
+              {
+                prim: 'pair',
+                args:
+                  [{
+                    prim: 'option',
+                    args:
+                      [{
+                        prim: 'pair',
+                        args:
+                          [{
+                            prim: 'address',
+                            annots: ['%token_address']
+                          },
+                          {
+                            prim: 'nat',
+                            annots: ['%value']
+                          }]
+                      }],
+                    annots: ['%asset_value']
+                  },
+                  {
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bytes',
+                        annots: ['%public']
+                      },
+                      {
+                        prim: 'or',
+                        args:
+                          [{
+                            prim: 'bytes',
+                            annots: ['%private']
+                          },
+                          {
+                            prim: 'pair',
+                            args:
+                              [{ prim: 'bytes' },
+                              { prim: 'bytes' }],
+                            annots: ['%public_and_private']
+                          }]
+                      }],
+                    annots: ['%payload']
+                  }],
+                annots: ['%send_payment']
+              }]
+          }]
+      },
       {
         prim: 'storage',
         args:
@@ -139,7 +194,12 @@ export const invalidSignatureLambda = [
                       }]
                   }]
               },
-              { prim: 'bool', annots: ['%paused'] }]
+              {
+                prim: 'pair',
+                args:
+                  [{ prim: 'bool', annots: ['%paused'] },
+                  { prim: 'nat', annots: ['%version'] }]
+              }]
           }]
       },
       {
@@ -163,6 +223,7 @@ export const invalidSignatureLambda = [
 ] as const;
 
 export const actualServicesFactoryFunctionLambda = [
+  { prim: 'UNPAIR' },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
   { prim: 'SWAP' }, { prim: 'DUP' },
   { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },
@@ -175,13 +236,15 @@ export const actualServicesFactoryFunctionLambda = [
     args:
       [[{
         prim: 'PUSH',
-        args: [{ prim: 'string' }, { string: 'No allowed tokens' }]
+        args:
+          [{ prim: 'string' }, { string: 'No allowed tokens' }]
       },
       { prim: 'FAILWITH' }], []]
-  },
+  }, { prim: 'SWAP' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'SENDER' }, { prim: 'DUP', args: [{ int: '3' }] },
-  { prim: 'CAR' }, { prim: 'PAIR' },
+  { prim: 'PAIR' }, { prim: 'SENDER' },
+  { prim: 'DUP', args: [{ int: '3' }] }, { prim: 'CAR' },
+  { prim: 'PAIR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
   { prim: 'DIG', args: [{ int: '3' }] }, { prim: 'CDR' },
   { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'PAIR' },
@@ -199,10 +262,106 @@ export const actualServicesFactoryFunctionLambda = [
               [{
                 prim: 'or',
                 args:
-                  [{ prim: 'bool', annots: ['%set_deleted'] },
-                  { prim: 'address', annots: ['%set_owner'] }]
+                  [{
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bool',
+                        annots: ['%set_deleted']
+                      },
+                      {
+                        prim: 'address',
+                        annots: ['%set_owner']
+                      }]
+                  },
+                  {
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bool',
+                        annots: ['%set_pause']
+                      },
+                      {
+                        prim: 'pair',
+                        args:
+                          [{
+                            prim: 'option',
+                            args: [{ prim: 'bytes' }],
+                            annots: ['%metadata']
+                          },
+                          {
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'bool' }],
+                                annots: ['%tez']
+                              },
+                              {
+                                prim: 'option',
+                                args:
+                                  [{
+                                    prim: 'set',
+                                    args:
+                                      [{ prim: 'address' }]
+                                  }],
+                                annots: ['%assets']
+                              }],
+                            annots: ['%allowed_tokens']
+                          }],
+                        annots:
+                          ['%update_service_parameters']
+                      }]
+                  }],
+                annots: ['%owner_action']
               },
-              { prim: 'bool', annots: ['%set_pause'] }]
+              {
+                prim: 'pair',
+                args:
+                  [{
+                    prim: 'option',
+                    args:
+                      [{
+                        prim: 'pair',
+                        args:
+                          [{
+                            prim: 'address',
+                            annots: ['%token_address']
+                          },
+                          {
+                            prim: 'nat',
+                            annots: ['%value']
+                          }]
+                      }],
+                    annots: ['%asset_value']
+                  },
+                  {
+                    prim: 'or',
+                    args:
+                      [{
+                        prim: 'bytes',
+                        annots: ['%public']
+                      },
+                      {
+                        prim: 'or',
+                        args:
+                          [{
+                            prim: 'bytes',
+                            annots: ['%private']
+                          },
+                          {
+                            prim: 'pair',
+                            args:
+                              [{ prim: 'bytes' },
+                              { prim: 'bytes' }],
+                            annots: ['%public_and_private']
+                          }]
+                      }],
+                    annots: ['%payload']
+                  }],
+                annots: ['%send_payment']
+              }]
           }]
       },
       {
@@ -249,7 +408,12 @@ export const actualServicesFactoryFunctionLambda = [
                       }]
                   }]
               },
-              { prim: 'bool', annots: ['%paused'] }]
+              {
+                prim: 'pair',
+                args:
+                  [{ prim: 'bool', annots: ['%paused'] },
+                  { prim: 'nat', annots: ['%version'] }]
+              }]
           }]
       },
       {
@@ -260,11 +424,10 @@ export const actualServicesFactoryFunctionLambda = [
             prim: 'PUSH',
             args:
               [{ prim: 'string' },
-              { string: 'Only owner can do this' }]
+              { string: 'Should not be called' }]
           },
           { prim: 'FAILWITH' }]]
       }]]
-  },
-  { prim: 'PAIR' }
+  }, { prim: 'PAIR' }
 ] as const;
 

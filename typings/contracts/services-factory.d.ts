@@ -1,4 +1,5 @@
 import { BigMapAbstraction } from '@taquito/taquito';
+import { BigNumber } from 'bignumber.js';
 
 declare global {
   namespace TezosPayments.ServicesFactoryContract {
@@ -7,6 +8,7 @@ declare global {
       readonly administrator: string;
       readonly paused: boolean;
       readonly service_factory_function?: readonly unknown[];
+      readonly service_factory_function_version: BigNumber;
     }
 
     interface AdministratorActions {

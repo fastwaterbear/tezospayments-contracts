@@ -13,7 +13,7 @@ let create_service = ((service_parameters, storage): (service_parameters, storag
     fail_if_contract_is_paused(storage);
 
     let service_owner = Tezos.sender;
-    let (operation, service) = storage.service_factory_function(service_parameters);
+    let (operation, service) = storage.service_factory_function(service_parameters, storage.service_factory_function_version);
 
     let services_set = get_or_create_services_set_by_service_owner(service_owner, storage.services);
     let services = Big_map.add(service_owner, Set.add(service, services_set), storage.services);

@@ -1,4 +1,5 @@
 import { MichelsonMap } from '@taquito/taquito';
+import { BigNumber } from 'bignumber.js';
 
 import { actualServicesFactoryFunctionLambda } from '../testData';
 import { serviceMetadataToBytes } from './converters';
@@ -13,6 +14,7 @@ export const deployServicesFactory = async (
     services: new MichelsonMap(),
     paused: false,
     service_factory_function: actualServicesFactoryFunctionLambda,
+    service_factory_function_version: new BigNumber(0),
     ...initialStorageState
   });
   const storage = await instance.storage();
@@ -32,6 +34,7 @@ export const deployService = async (
   };
 
   const instance = await contract.new({
+    version: new BigNumber(0),
     metadata: serviceMetadataToBytes(serviceMetadata),
     allowed_tokens: {
       tez: true,

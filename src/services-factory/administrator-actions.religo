@@ -18,7 +18,11 @@ let set_pause = ((paused, storage): (bool, storage)): main_result => {
 let set_service_factory_function = ((new_service_factory_function, storage): (service_factory_function, storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, service_factory_function: new_service_factory_function }
+        {
+            ...storage,
+            service_factory_function: new_service_factory_function,
+            service_factory_function_version: storage.service_factory_function_version + 1n
+        }
     )
 };
 

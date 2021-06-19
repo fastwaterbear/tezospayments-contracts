@@ -71,20 +71,28 @@ contract('Services Factory | Administrator Actions', accounts => {
   });
 
   describe('Set_service_factory_function', () => {
-    it('should change a service factory function if a caller is a current administrator', async () => {
+    it('should change a service factory function and increment its version if a caller is a current administrator', async () => {
       let result = await servicesFactoryContractInstance.set_service_factory_function(notImplementedLambda);
       let storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: notImplementedLambda });
+      expect(storageAfterAction).to.deep.equal({
+        ...servicesFactoryContractStorage,
+        service_factory_function: notImplementedLambda,
+        service_factory_function_version: servicesFactoryContractStorage.service_factory_function_version.plus(1)
+      });
 
       result = await servicesFactoryContractInstance.set_service_factory_function(createEmptyContractLambda);
       storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
-      expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, service_factory_function: createEmptyContractLambda });
+      expect(storageAfterAction).to.deep.equal({
+        ...servicesFactoryContractStorage,
+        service_factory_function: createEmptyContractLambda,
+        service_factory_function_version: servicesFactoryContractStorage.service_factory_function_version.plus(2)
+      });
     });
 
     it('should fail if a new service factory function has the wrong signature', async () => {
