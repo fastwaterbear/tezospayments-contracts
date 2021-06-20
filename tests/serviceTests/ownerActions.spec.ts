@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { contractErrors, useLastTezosToolkit, deployService } from '../helpers';
-import { serviceParametersUpdates, simpleAccounts } from '../testData';
+import { invalidServiceParametersUpdates, serviceParametersUpdates, simpleAccounts } from '../testData';
 
 const [serviceContract] = useLastTezosToolkit(artifacts.require('service'));
 
@@ -34,9 +34,7 @@ contract('Service | Owner Actions', accounts => {
     await expect(serviceContractInstance.owner_action('set_deleted', true))
       .to.be.rejectedWith(contractErrors.notOwner);
 
-    for (const caseName of Object.keys(serviceParametersUpdates) as Array<keyof typeof serviceParametersUpdates>) {
-      const update = serviceParametersUpdates[caseName];
-
+    for (const [_, update] of serviceParametersUpdates) {
       await expect(serviceContractInstance.update_service_parameters(...update))
         .to.be.rejectedWith(contractErrors.notOwner);
       await expect(serviceContractInstance.owner_action('update_service_parameters', ...update))
@@ -97,35 +95,33 @@ contract('Service | Owner Actions', accounts => {
     });
   });
 
-  describe('Update_service_parameters', () => {
-    for (const caseName of Object.keys(serviceParametersUpdates) as Array<keyof typeof serviceParametersUpdates>) {
-      const update = serviceParametersUpdates[caseName];
+  describe.only('Update_service_parameters', () => {
+    serviceParametersUpdates.forEach(([caseName, update]) => {
+      it(`should update ${caseName}`, async () => {
+        await deployServiceAndAssign({ owner: currentAccountAddress });
 
-      beforeEach('Deploy new instance', () => deployServiceAndAssign({ owner: currentAccountAddress }));
+        const result = await serviceContractInstance.update_service_parameters(...update);
+        const storageAfterAction = await serviceContractInstance.storage();
+        const expectedStorage: TezosPayments.ServiceContract.Storage = {
+          ...serviceContractStorage,
+          metadata: update[0] ?? serviceContractStorage.metadata,
+          allowed_tokens: {
+            tez: update[1] ?? serviceContractStorage.allowed_tokens.tez,
+            assets: update[2] ?? serviceContractStorage.allowed_tokens.assets,
+          }
+        };
 
-      if (caseName === 'empty') {
-        it('should fail if updates are empty', async () => {
-          await expect(serviceContractInstance.update_service_parameters(...update))
-            .to.be.rejectedWith(contractErrors.emptyUpdate);
-        });
-      } else {
-        it(`should update ${caseName}`, async () => {
-          const result = await serviceContractInstance.update_service_parameters(...update);
-          const storageAfterAction = await serviceContractInstance.storage();
-          const expectedStorage: TezosPayments.ServiceContract.Storage = {
-            ...serviceContractStorage,
-            metadata: update[0] ?? serviceContractStorage.metadata,
-            allowed_tokens: {
-              tez: update[1] ?? serviceContractStorage.allowed_tokens.tez,
-              assets: update[2] ?? serviceContractStorage.allowed_tokens.assets,
-            }
-          };
+        expect(result).to.exist;
+        expect(result.tx).to.exist;
+        expect(storageAfterAction).to.deep.equal(expectedStorage);
+      });
+    });
 
-          expect(result).to.exist;
-          expect(result.tx).to.exist;
-          expect(storageAfterAction).to.deep.equal(expectedStorage);
-        });
-      }
-    }
+    invalidServiceParametersUpdates.forEach(([caseName, update, errorMessage]) => {
+      it(`should fail if updates is invalid: ${caseName}`, async () => {
+        await expect(serviceContractInstance.update_service_parameters(...update))
+          .to.be.rejectedWith(errorMessage!);
+      });
+    });
   });
 });

@@ -5,4 +5,3 @@
 [@inline] let errors_not_owner = "Only owner can do this";
 [@inline] let errors_empty_update = "Empty update";
 [@inline] let errors_private_payload_not_supported = "Private payload is not supported at the moment";
-[@inline] let errors_empty_payment_types_set = "Payment types set is empty";

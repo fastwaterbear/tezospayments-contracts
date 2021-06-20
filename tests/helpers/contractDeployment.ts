@@ -40,7 +40,7 @@ export const deployService = async (
       tez: true,
       assets: []
     },
-    allowed_operation_types: [{ payment: undefined }],
+    allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
     paused: false,
     deleted: false,
     ...initialStorageState

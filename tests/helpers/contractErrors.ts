@@ -5,6 +5,7 @@ export const contractErrors = {
   noAllowedTokens: 'No allowed tokens',
   invalidAmount: 'Invalid amount',
   invalidAddress: 'Invalid address',
+  invalidOperationType: 'Invalid operation type',
   // Services Factory
   notAdministrator: 'Only administrator can do this',
   // Service Factory

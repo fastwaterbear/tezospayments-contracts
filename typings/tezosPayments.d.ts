@@ -5,8 +5,9 @@ declare namespace TezosPayments {
     description?: string;
   }
 
-  type OperationTypeName = 'payment' | 'donation';
-
-  type DistributeOperationType<T> = T extends OperationTypeName ? { [name in T]: undefined } : never;
-  type OperationType = DistributeOperationType<OperationTypeName>;
+  const enum OperationType {
+    Payment = 1,
+    Donation = 2,
+    All = Payment | Donation
+  }
 }

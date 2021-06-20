@@ -3,6 +3,7 @@ import { OpKind } from '@taquito/taquito';
 import { expect } from 'chai';
 
 import { contractErrors, useLastTezosToolkit, deployServicesFactory, serviceMetadataToBytes } from '../helpers';
+import { invalidOperationTypes } from '../testData';
 
 const [servicesFactoryContract] = useLastTezosToolkit(artifacts.require('services-factory'));
 
@@ -29,7 +30,12 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should create a service as a separate contract and set the related record in its own contract storage', async () => {
-      const result = await servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, [], [{ payment: undefined }]);
+      const result = await servicesFactoryContractInstance.create_service(
+        commonServiceMetadataBytes,
+        true,
+        [],
+        TezosPayments.OperationType.Payment
+      );
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
 
@@ -67,19 +73,19 @@ contract('Services Factory | Actions', accounts => {
           serviceMetadataToBytes(serviceMetadataList[0]!),
           true,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
-          [{ payment: undefined }]
+          TezosPayments.OperationType.Payment
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[1]!),
           true,
           [],
-          [{ donation: undefined }]
+          TezosPayments.OperationType.Donation
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[2]!),
           false,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
-          [{ payment: undefined }, { donation: undefined }]
+          TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
         ]
       ];
 
@@ -108,8 +114,12 @@ contract('Services Factory | Actions', accounts => {
       await servicesFactoryContractInstance.set_pause(true);
       servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
 
-      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, [], [{ payment: undefined }, { donation: undefined }]))
-        .to.be.rejectedWith(contractErrors.contractIsPaused);
+      await expect(servicesFactoryContractInstance.create_service(
+        commonServiceMetadataBytes,
+        true,
+        [],
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+      )).to.be.rejectedWith(contractErrors.contractIsPaused);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
       expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
@@ -120,7 +130,7 @@ contract('Services Factory | Actions', accounts => {
         'invalid metadata',
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-        [{ payment: undefined }, { donation: undefined }]
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
       )).to.be.rejectedWith('Invalid bytes');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -128,8 +138,12 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should fail if there are no allowed tokens', async () => {
-      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, false, [], [{ payment: undefined }, { donation: undefined }]))
-        .to.be.rejectedWith(contractErrors.noAllowedTokens);
+      await expect(servicesFactoryContractInstance.create_service(
+        commonServiceMetadataBytes,
+        false,
+        [],
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation)
+      ).to.be.rejectedWith(contractErrors.noAllowedTokens);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
       expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
@@ -140,13 +154,29 @@ contract('Services Factory | Actions', accounts => {
         commonServiceMetadataBytes,
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-        [{ payment: undefined }, { donation: undefined }]
-      ))
-        .to.be.rejectedWith('duplicate_set_values_in_literal');
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+      )).to.be.rejectedWith('duplicate_set_values_in_literal');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
       expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
     });
+
+    describe('should fail if the allowed operation type is invalid', () => {
+      invalidOperationTypes.forEach(([invalidOperationType, errorMessage]) => {
+        it(`the invalid operation type == ${invalidOperationType}`, async () => {
+          await expect(servicesFactoryContractInstance.create_service(
+            commonServiceMetadataBytes,
+            true,
+            [],
+            invalidOperationType)
+          ).to.be.rejectedWith(errorMessage!);
+
+          const storageAfterActions = await servicesFactoryContractInstance.storage();
+          expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
+        });
+      });
+    });
+
 
     it.skip('should fail if a set of allowed assets have invalid address (not FA tokens)', () => {
       // TODO: implement after test tokens;

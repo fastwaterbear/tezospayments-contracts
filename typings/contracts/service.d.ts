@@ -9,7 +9,7 @@ declare global {
         readonly tez: boolean;
         readonly assets: readonly string[];
       };
-      readonly allowed_operation_types: readonly OperationType[];
+      readonly allowed_operation_type: BigNumber;
       readonly owner: string;
       readonly paused: boolean;
       readonly deleted: boolean;
@@ -23,7 +23,7 @@ declare global {
         metadata: string | undefined,
         allowedTokensTez: boolean | undefined,
         allowedTokensAssets: string[] | undefined,
-        allowedOperationType: OperationType[] | undefined,
+        allowedOperationType: OperationType | undefined,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
     }

@@ -5,7 +5,7 @@ type storage = {
     version: service_version,
     metadata: service_metadata,
     allowed_tokens: allowed_tokens,
-    allowed_operation_types: operation_types,
+    allowed_operation_type: operation_type,
     owner: service_owner,
     paused: bool,
     deleted: bool,
@@ -19,7 +19,7 @@ type service_parameters_updates = [@layout:comb] {
         tez: option(bool),
         assets: option(set(address))
     },
-    allowed_operation_types: option(operation_types)
+    allowed_operation_type: option(operation_type)
 }
 
 type asset_value = [@layout:comb] {
