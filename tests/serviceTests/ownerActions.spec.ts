@@ -95,7 +95,7 @@ contract('Service | Owner Actions', accounts => {
     });
   });
 
-  describe.only('Update_service_parameters', () => {
+  describe('Update_service_parameters', () => {
     serviceParametersUpdates.forEach(([caseName, update]) => {
       it(`should update ${caseName}`, async () => {
         await deployServiceAndAssign({ owner: currentAccountAddress });
