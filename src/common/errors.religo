@@ -3,3 +3,4 @@
 [@inline] let errors_no_allowed_tokens = "No allowed tokens";
 [@inline] let errors_invalid_amount = "Invalid amount";
 [@inline] let errors_invalid_address = "Invalid address";
+[@inline] let errors_invalid_payment_type = "Invalid payment type";

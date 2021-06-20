@@ -40,6 +40,7 @@ export const deployService = async (
       tez: true,
       assets: []
     },
+    allowed_operation_types: [{ payment: undefined }],
     paused: false,
     deleted: false,
     ...initialStorageState

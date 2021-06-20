@@ -29,7 +29,7 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should create a service as a separate contract and set the related record in its own contract storage', async () => {
-      const result = await servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, []);
+      const result = await servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, [], [{ payment: undefined }]);
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
 
@@ -66,17 +66,20 @@ contract('Services Factory | Actions', accounts => {
         [
           serviceMetadataToBytes(serviceMetadataList[0]!),
           true,
-          ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf']
+          ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
+          [{ payment: undefined }]
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[1]!),
           true,
-          []
+          [],
+          [{ donation: undefined }]
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[2]!),
           false,
-          ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV']
+          ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
+          [{ payment: undefined }, { donation: undefined }]
         ]
       ];
 
@@ -105,7 +108,7 @@ contract('Services Factory | Actions', accounts => {
       await servicesFactoryContractInstance.set_pause(true);
       servicesFactoryContractStorage = await servicesFactoryContractInstance.storage();
 
-      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, []))
+      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, true, [], [{ payment: undefined }, { donation: undefined }]))
         .to.be.rejectedWith(contractErrors.contractIsPaused);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -116,7 +119,8 @@ contract('Services Factory | Actions', accounts => {
       await expect(servicesFactoryContractInstance.create_service(
         'invalid metadata',
         true,
-        ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt']
+        ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
+        [{ payment: undefined }, { donation: undefined }]
       )).to.be.rejectedWith('Invalid bytes');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -124,7 +128,7 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should fail if there are no allowed tokens', async () => {
-      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, false, []))
+      await expect(servicesFactoryContractInstance.create_service(commonServiceMetadataBytes, false, [], [{ payment: undefined }, { donation: undefined }]))
         .to.be.rejectedWith(contractErrors.noAllowedTokens);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -133,8 +137,10 @@ contract('Services Factory | Actions', accounts => {
 
     it('should fail if a set of allowed assets has the same address', async () => {
       await expect(servicesFactoryContractInstance.create_service(
-        commonServiceMetadataBytes, true,
-        ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt']
+        commonServiceMetadataBytes,
+        true,
+        ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
+        [{ payment: undefined }, { donation: undefined }]
       ))
         .to.be.rejectedWith('duplicate_set_values_in_literal');
 

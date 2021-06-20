@@ -28,13 +28,52 @@ export const createEmptyContractLambda = [
 ] as const;
 
 export const invalidSignatureLambda = [
+  { prim: 'UNPAIR' },
+  { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '3' }] }, { prim: 'CDR' },
+  { prim: 'SIZE' }, { prim: 'COMPARE' }, { prim: 'EQ' },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '3' }] }, { prim: 'CAR' },
+  { prim: 'NOT' }, { prim: 'AND' },
+  {
+    prim: 'IF',
+    args:
+      [[{
+        prim: 'PUSH',
+        args:
+          [{ prim: 'string' }, { string: 'No allowed tokens' }]
+      },
+      { prim: 'FAILWITH' }], []]
+  },
+  { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'SIZE' },
+  { prim: 'COMPARE' }, { prim: 'EQ' },
+  {
+    prim: 'IF',
+    args:
+      [[{
+        prim: 'PUSH',
+        args:
+          [{ prim: 'string' },
+          { string: 'Payment types set is empty' }]
+      },
+      { prim: 'FAILWITH' }], []]
+  }, { prim: 'SWAP' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'SENDER' }, { prim: 'DUP', args: [{ int: '3' }] },
-  { prim: 'CAR' }, { prim: 'PAIR' },
+  { prim: 'SENDER' }, { prim: 'PAIR' }, { prim: 'PAIR' },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CAR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'DIG', args: [{ int: '3' }] }, { prim: 'CDR' },
-  { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'PAIR' },
-  { prim: 'AMOUNT' },
+  { prim: 'PAIR' }, { prim: 'DUP', args: [{ int: '3' }] },
+  { prim: 'GET', args: [{ int: '3' }] },
+  { prim: 'DIG', args: [{ int: '3' }] },
+  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'PAIR' },
+  { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'AMOUNT' },
   { prim: 'NONE', args: [{ prim: 'key_hash' }] },
   {
     prim: 'CREATE_CONTRACT',
@@ -226,11 +265,13 @@ export const actualServicesFactoryFunctionLambda = [
   { prim: 'UNPAIR' },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
   { prim: 'SWAP' }, { prim: 'DUP' },
-  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },
-  { prim: 'CDR' }, { prim: 'SIZE' }, { prim: 'COMPARE' },
-  { prim: 'EQ' }, { prim: 'SWAP' }, { prim: 'DUP' },
-  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CDR' },
-  { prim: 'CAR' }, { prim: 'NOT' }, { prim: 'AND' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '3' }] }, { prim: 'CDR' },
+  { prim: 'SIZE' }, { prim: 'COMPARE' }, { prim: 'EQ' },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '3' }] }, { prim: 'CAR' },
+  { prim: 'NOT' }, { prim: 'AND' },
   {
     prim: 'IF',
     args:
@@ -240,15 +281,33 @@ export const actualServicesFactoryFunctionLambda = [
           [{ prim: 'string' }, { string: 'No allowed tokens' }]
       },
       { prim: 'FAILWITH' }], []]
+  },
+  { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '0' }] },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'SIZE' },
+  { prim: 'COMPARE' }, { prim: 'EQ' },
+  {
+    prim: 'IF',
+    args:
+      [[{
+        prim: 'PUSH',
+        args:
+          [{ prim: 'string' },
+          { string: 'Payment types set is empty' }]
+      },
+      { prim: 'FAILWITH' }], []]
   }, { prim: 'SWAP' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'PAIR' }, { prim: 'SENDER' },
-  { prim: 'DUP', args: [{ int: '3' }] }, { prim: 'CAR' },
-  { prim: 'PAIR' },
+  { prim: 'SENDER' }, { prim: 'PAIR' }, { prim: 'PAIR' },
+  { prim: 'SWAP' }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] }, { prim: 'CAR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
-  { prim: 'DIG', args: [{ int: '3' }] }, { prim: 'CDR' },
-  { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'PAIR' },
-  { prim: 'AMOUNT' },
+  { prim: 'PAIR' }, { prim: 'DUP', args: [{ int: '3' }] },
+  { prim: 'GET', args: [{ int: '3' }] },
+  { prim: 'DIG', args: [{ int: '3' }] },
+  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'PAIR' },
+  { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'AMOUNT' },
   { prim: 'NONE', args: [{ prim: 'key_hash' }] },
   {
     prim: 'CREATE_CONTRACT',
@@ -293,10 +352,29 @@ export const actualServicesFactoryFunctionLambda = [
                             prim: 'pair',
                             args:
                               [{
-                                prim: 'option',
+                                prim: 'pair',
                                 args:
-                                  [{ prim: 'bool' }],
-                                annots: ['%tez']
+                                  [{
+                                    prim: 'option',
+                                    args:
+                                      [{ prim: 'bool' }],
+                                    annots: ['%tez']
+                                  },
+                                  {
+                                    prim: 'option',
+                                    args:
+                                      [{
+                                        prim: 'set',
+                                        args:
+                                          [{
+                                            prim:
+                                              'address'
+                                          }]
+                                      }],
+                                    annots: ['%assets']
+                                  }],
+                                annots:
+                                  ['%allowed_tokens']
                               },
                               {
                                 prim: 'option',
@@ -304,11 +382,26 @@ export const actualServicesFactoryFunctionLambda = [
                                   [{
                                     prim: 'set',
                                     args:
-                                      [{ prim: 'address' }]
+                                      [{
+                                        prim: 'or',
+                                        args:
+                                          [{
+                                            prim:
+                                              'unit',
+                                            annots:
+                                              ['%donation']
+                                          },
+                                          {
+                                            prim:
+                                              'unit',
+                                            annots:
+                                              ['%payment']
+                                          }]
+                                      }]
                                   }],
-                                annots: ['%assets']
-                              }],
-                            annots: ['%allowed_tokens']
+                                annots:
+                                  ['%allowed_operation_types']
+                              }]
                           }],
                         annots:
                           ['%update_service_parameters']
@@ -377,6 +470,23 @@ export const actualServicesFactoryFunctionLambda = [
                     prim: 'pair',
                     args:
                       [{
+                        prim: 'set',
+                        args:
+                          [{
+                            prim: 'or',
+                            args:
+                              [{
+                                prim: 'unit',
+                                annots: ['%donation']
+                              },
+                              {
+                                prim: 'unit',
+                                annots: ['%payment']
+                              }]
+                          }],
+                        annots: ['%allowed_operation_types']
+                      },
+                      {
                         prim: 'pair',
                         args:
                           [{
@@ -389,29 +499,33 @@ export const actualServicesFactoryFunctionLambda = [
                             annots: ['%assets']
                           }],
                         annots: ['%allowed_tokens']
-                      },
-                      {
-                        prim: 'bool',
-                        annots: ['%deleted']
                       }]
                   },
                   {
                     prim: 'pair',
                     args:
                       [{
-                        prim: 'bytes',
-                        annots: ['%metadata']
+                        prim: 'bool',
+                        annots: ['%deleted']
                       },
                       {
-                        prim: 'address',
-                        annots: ['%owner']
+                        prim: 'bytes',
+                        annots: ['%metadata']
                       }]
                   }]
               },
               {
                 prim: 'pair',
                 args:
-                  [{ prim: 'bool', annots: ['%paused'] },
+                  [{
+                    prim: 'pair',
+                    args:
+                      [{
+                        prim: 'address',
+                        annots: ['%owner']
+                      },
+                      { prim: 'bool', annots: ['%paused'] }]
+                  },
                   { prim: 'nat', annots: ['%version'] }]
               }]
           }]

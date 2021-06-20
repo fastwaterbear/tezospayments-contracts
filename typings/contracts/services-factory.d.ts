@@ -22,6 +22,7 @@ declare global {
         metadata: string,
         allowedTokensTez: boolean,
         allowedTokensAssets: string[],
+        allowedOperationType: OperationType[],
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;
