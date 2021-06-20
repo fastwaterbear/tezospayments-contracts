@@ -179,28 +179,37 @@ export const invalidSignatureLambda = [
                     annots: ['%asset_value']
                   },
                   {
-                    prim: 'or',
+                    prim: 'pair',
                     args:
                       [{
-                        prim: 'bytes',
-                        annots: ['%public']
+                        prim: 'nat',
+                        annots: ['%operation_type']
                       },
                       {
                         prim: 'or',
                         args:
                           [{
                             prim: 'bytes',
-                            annots: ['%private']
+                            annots: ['%public']
                           },
                           {
-                            prim: 'pair',
+                            prim: 'or',
                             args:
-                              [{ prim: 'bytes' },
-                              { prim: 'bytes' }],
-                            annots: ['%public_and_private']
-                          }]
-                      }],
-                    annots: ['%payload']
+                              [{
+                                prim: 'bytes',
+                                annots: ['%private']
+                              },
+                              {
+                                prim: 'pair',
+                                args:
+                                  [{ prim: 'bytes' },
+                                  { prim: 'bytes' }],
+                                annots:
+                                  ['%public_and_private']
+                              }]
+                          }],
+                        annots: ['%payload']
+                      }]
                   }],
                 annots: ['%send_payment']
               }]
@@ -440,28 +449,37 @@ export const actualServicesFactoryFunctionLambda = [
                     annots: ['%asset_value']
                   },
                   {
-                    prim: 'or',
+                    prim: 'pair',
                     args:
                       [{
-                        prim: 'bytes',
-                        annots: ['%public']
+                        prim: 'nat',
+                        annots: ['%operation_type']
                       },
                       {
                         prim: 'or',
                         args:
                           [{
                             prim: 'bytes',
-                            annots: ['%private']
+                            annots: ['%public']
                           },
                           {
-                            prim: 'pair',
+                            prim: 'or',
                             args:
-                              [{ prim: 'bytes' },
-                              { prim: 'bytes' }],
-                            annots: ['%public_and_private']
-                          }]
-                      }],
-                    annots: ['%payload']
+                              [{
+                                prim: 'bytes',
+                                annots: ['%private']
+                              },
+                              {
+                                prim: 'pair',
+                                args:
+                                  [{ prim: 'bytes' },
+                                  { prim: 'bytes' }],
+                                annots:
+                                  ['%public_and_private']
+                              }]
+                          }],
+                        annots: ['%payload']
+                      }]
                   }],
                 annots: ['%send_payment']
               }]

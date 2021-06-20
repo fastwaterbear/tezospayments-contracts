@@ -34,6 +34,7 @@ type payment_payload = [@layout:comb]
 
 type send_payment_parameters = [@layout:comb] {
     asset_value: option(asset_value),
+    operation_type: operation_type, 
     payload: payment_payload
 }
 
