@@ -41,8 +41,8 @@ declare global {
         assetTokenAddress: void,
         operationType: OperationType,
         payloadType: 'public_and_private',
-        public_payload: string,
-        private_payload: string,
+        publicPayload: string,
+        privatePayload: string,
         assetValue: void,
         params: Truffle.TransactionParameters & { amount: number }
       ): Promise<Truffle.TransactionResult>;
@@ -59,8 +59,8 @@ declare global {
         assetValue: number,
         operationType: OperationType,
         payloadType: 'public_and_private',
-        public_payload: string,
-        private_payload: string,
+        publicPayload: string,
+        privatePayload: string,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       owner_action<T extends keyof OwnerActions>(actionName: T, ...params: Parameters<OwnerActions[T]>): Promise<Truffle.TransactionResult>;

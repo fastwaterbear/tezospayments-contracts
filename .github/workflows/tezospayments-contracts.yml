@@ -1,4 +1,4 @@
-name: tezos-payments-contracts
+name: tezospayments-contracts
 on:
   push:
     paths-ignore:

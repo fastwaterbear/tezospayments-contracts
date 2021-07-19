@@ -41,7 +41,7 @@ export class Flextesa {
     dockerImage: 'tqtezos/flextesa:20210514',
     dockerContainerEntrypoint: 'flextesa',
     dockerContainerEntrypointCommand: 'mini-net',
-    dockerContainerName: 'tezos-payments-flextesa'
+    dockerContainerName: 'tezospayments-flextesa'
   };
 
   readonly options: FlextesaOptions;
