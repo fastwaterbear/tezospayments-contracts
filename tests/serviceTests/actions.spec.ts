@@ -1,4 +1,4 @@
-import type { BigNumber } from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
 import { contractErrors, useLastTezosToolkit, deployService, tezToMutez, stringToBytes } from '../helpers';
@@ -21,7 +21,11 @@ contract('Service | Actions', accounts => {
     [serviceContractInstance, serviceContractStorage] = await deployService(serviceContract, initialStorageState);
 
   const beforeEachBody = async (initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>) => {
-    await deployServiceAndAssign({ owner: ownerAccountAddress, ...initialStorageState });
+    await deployServiceAndAssign({
+      owner: ownerAccountAddress,
+      allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
+      ...initialStorageState
+    });
 
     publicOperationPayloadBytes = stringToBytes('public data');
     privateOperationPayloadBytes = stringToBytes('private data');
@@ -33,7 +37,7 @@ contract('Service | Actions', accounts => {
 
   beforeEach('Deploy new instance', () => beforeEachBody());
 
-  describe('Transfer_payment', () => {
+  describe('Send_payment', () => {
     [
       [TezosPayments.OperationType.Payment, 'as a payment'] as const,
       [TezosPayments.OperationType.Donation, 'as a donation'] as const
@@ -150,6 +154,34 @@ contract('Service | Actions', accounts => {
           await expect(serviceContractInstance.send_payment(
             undefined,
             invalidOperationType,
+            'public', publicOperationPayloadBytes,
+            undefined,
+            { amount: 10 }
+          )).to.be.rejectedWith(contractErrors.invalidOperationType);
+
+          const storageAfterAction = await serviceContractInstance.storage();
+          const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
+            tezosToolkit.tz.getBalance(currentAccountAddress),
+            tezosToolkit.tz.getBalance(ownerAccountAddress),
+          ]);
+          expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+          expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
+          expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
+        });
+      });
+    });
+
+    describe('should fail if an operation type isn\'t allowed', async () => {
+      ([
+        [TezosPayments.OperationType.Payment, TezosPayments.OperationType.Donation],
+        [TezosPayments.OperationType.Donation, TezosPayments.OperationType.Payment],
+      ] as const).forEach(([currentOperationType, allowedOperationType]) => {
+        it(`the current operation type == ${currentOperationType}; the allowed operation type == ${allowedOperationType}`, async () => {
+          await beforeEachBody({ allowed_operation_type: new BigNumber(allowedOperationType) });
+
+          await expect(serviceContractInstance.send_payment(
+            undefined,
+            currentOperationType,
             'public', publicOperationPayloadBytes,
             undefined,
             { amount: 10 }
