@@ -1,5 +1,10 @@
 # Tezos Payments Contracts
 
+[Homepage](https://tezospayments.com) &nbsp;&nbsp;•&nbsp;&nbsp;
+[Applications Repository](https://github.com/fastwaterbear/tezospayments) &nbsp;&nbsp;•&nbsp;&nbsp;
+[Demo Service Contract [Edo2net]](https://payment.tezospayments.com/KT1BhWg791Mg4x2xVrh2Zb2yjf87U275JmGW/donation) &nbsp;&nbsp;•&nbsp;&nbsp; 
+[Service Factory Contract [Edo2net]](https://better-call.dev/edo2net/KT1PXyQ3wDpwm6J3r6iyLCWu5QKH5tef7ejU)  
+
 > ⚠️ Tezos Payments is in active development so any component (application, contract, package, API) is subject to change ⚠️  
 
 Prod  
