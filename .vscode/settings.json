@@ -33,7 +33,8 @@
     "failwith",
     "entrypoint",
     "entrypoints",
-    "taquito"
+    "taquito",
+    "granadanet"
   ],
   "cSpell.enabledLanguageIds": [
     "c",

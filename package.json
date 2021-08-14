@@ -9,6 +9,7 @@
     "build": "bash ./scripts/build.sh",
     "test": "truffle test",
     "migrate-edo2net": "npm run clean && npm run build && truffle migrate --network edo2net",
+    "migrate-granadanet": "npm run clean && npm run build && truffle migrate --network granadanet",
     "postinstall": "sed -i 's/ligo:next/ligo:0.17.0/' node_modules/truffle/build/cli.bundled.js"
   },
   "devDependencies": {
