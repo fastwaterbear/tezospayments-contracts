@@ -71,8 +71,8 @@ bash ./scripts/build.sh
 ## Run tests locally
 
 ### Prerequisites
-* [Node.js](https://nodejs.org) version 15.14.0 or later  
-* [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) version 7.7.6 or later  
+* [Node.js](https://nodejs.org) version 16.7.0 or later  
+* [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) version 7.20.3 or later  
 * [Docker](https://docs.docker.com/get-docker) version 20.10.7 or later
 
 ### Run local Sandbox node
