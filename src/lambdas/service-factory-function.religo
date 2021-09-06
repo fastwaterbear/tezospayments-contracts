@@ -20,7 +20,7 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     AND ;
     IF { PUSH string "No allowed tokens" ; FAILWITH } {} ;
     DUP ;
-    GET 4 ;
+    GET 5 ;
     PUSH nat 3 ;
     PUSH nat 3 ;
     DUP 3 ;
@@ -33,7 +33,10 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     EQ ;
     OR ;
     IF { PUSH string "Invalid operation type" ; FAILWITH } {} ;
-    SWAP ;
+    DUP ;
+    DUG 2 ;
+    GET 6 ;
+    PAIR ;
     PUSH bool False ;
     SENDER ;
     PAIR ;
@@ -47,7 +50,7 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     DUP 3 ;
     GET 3 ;
     DIG 3 ;
-    GET 4 ;
+    GET 5 ;
     PAIR ;
     PAIR ;
     PAIR ;

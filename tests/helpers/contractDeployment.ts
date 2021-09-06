@@ -41,6 +41,7 @@ export const deployService = async (
       assets: []
     },
     allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
+    signing_keys: [],
     paused: false,
     deleted: false,
     ...initialStorageState

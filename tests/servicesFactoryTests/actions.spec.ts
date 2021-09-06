@@ -34,7 +34,8 @@ contract('Services Factory | Actions', accounts => {
         commonServiceMetadataBytes,
         true,
         [],
-        TezosPayments.OperationType.Payment
+        TezosPayments.OperationType.Payment,
+        []
       );
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
@@ -73,19 +74,22 @@ contract('Services Factory | Actions', accounts => {
           serviceMetadataToBytes(serviceMetadataList[0]!),
           true,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
-          TezosPayments.OperationType.Payment
+          TezosPayments.OperationType.Payment,
+          []
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[1]!),
           true,
           [],
-          TezosPayments.OperationType.Donation
+          TezosPayments.OperationType.Donation,
+          []
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[2]!),
           false,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
-          TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+          TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
+          []
         ]
       ];
 
@@ -118,7 +122,8 @@ contract('Services Factory | Actions', accounts => {
         commonServiceMetadataBytes,
         true,
         [],
-        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
+        []
       )).to.be.rejectedWith(contractErrors.contractIsPaused);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -130,7 +135,8 @@ contract('Services Factory | Actions', accounts => {
         'invalid metadata',
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
+        []
       )).to.be.rejectedWith('Invalid bytes');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -142,8 +148,9 @@ contract('Services Factory | Actions', accounts => {
         commonServiceMetadataBytes,
         false,
         [],
-        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation)
-      ).to.be.rejectedWith(contractErrors.noAllowedTokens);
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
+        []
+      )).to.be.rejectedWith(contractErrors.noAllowedTokens);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
       expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
@@ -154,7 +161,8 @@ contract('Services Factory | Actions', accounts => {
         commonServiceMetadataBytes,
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation
+        TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
+        []
       )).to.be.rejectedWith('duplicate_set_values_in_literal');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -168,8 +176,9 @@ contract('Services Factory | Actions', accounts => {
             commonServiceMetadataBytes,
             true,
             [],
-            invalidOperationType)
-          ).to.be.rejectedWith(errorMessage!);
+            invalidOperationType,
+            []
+          )).to.be.rejectedWith(errorMessage!);
 
           const storageAfterActions = await servicesFactoryContractInstance.storage();
           expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);

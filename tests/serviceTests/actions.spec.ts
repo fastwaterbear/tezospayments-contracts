@@ -9,6 +9,7 @@ const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('s
 contract('Service | Actions', accounts => {
   const currentAccountAddress = accounts[0]!;
   const ownerAccountAddress = admins[0].pkh;
+  const ownerAccountPublicKey = admins[0].pk;
 
   let serviceContractInstance: TezosPayments.ServiceContract.Instance;
   let serviceContractStorage: TezosPayments.ServiceContract.Storage;
@@ -23,6 +24,7 @@ contract('Service | Actions', accounts => {
   const beforeEachBody = async (initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>) => {
     await deployServiceAndAssign({
       owner: ownerAccountAddress,
+      signing_keys: [[null, ownerAccountPublicKey]],
       allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
       ...initialStorageState
     });

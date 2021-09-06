@@ -48,7 +48,7 @@ export const invalidSignatureLambda = [
       },
       { prim: 'FAILWITH' }], []]
   }, { prim: 'DUP' },
-  { prim: 'GET', args: [{ int: '4' }] },
+  { prim: 'GET', args: [{ int: '5' }] },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '3' }] },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '3' }] },
   { prim: 'DUP', args: [{ int: '3' }] }, { prim: 'OR' },
@@ -66,7 +66,9 @@ export const invalidSignatureLambda = [
           { string: 'Invalid operation type' }]
       },
       { prim: 'FAILWITH' }], []]
-  }, { prim: 'SWAP' },
+  }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '6' }] }, { prim: 'PAIR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
   { prim: 'SENDER' }, { prim: 'PAIR' }, { prim: 'PAIR' },
   { prim: 'SWAP' }, { prim: 'DUP' },
@@ -75,7 +77,7 @@ export const invalidSignatureLambda = [
   { prim: 'PAIR' }, { prim: 'DUP', args: [{ int: '3' }] },
   { prim: 'GET', args: [{ int: '3' }] },
   { prim: 'DIG', args: [{ int: '3' }] },
-  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'PAIR' },
+  { prim: 'GET', args: [{ int: '5' }] }, { prim: 'PAIR' },
   { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'AMOUNT' },
   { prim: 'NONE', args: [{ prim: 'key_hash' }] },
   {
@@ -271,7 +273,26 @@ export const invalidSignatureLambda = [
                       },
                       { prim: 'bool', annots: ['%paused'] }]
                   },
-                  { prim: 'nat', annots: ['%version'] }]
+                  {
+                    prim: 'pair',
+                    args:
+                      [{
+                        prim: 'set',
+                        args:
+                          [{
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'string' }]
+                              },
+                              { prim: 'key' }]
+                          }],
+                        annots: ['%signing_keys']
+                      },
+                      { prim: 'nat', annots: ['%version'] }]
+                  }]
               }]
           }]
       },
@@ -318,7 +339,7 @@ export const actualServicesFactoryFunctionLambda = [
       },
       { prim: 'FAILWITH' }], []]
   }, { prim: 'DUP' },
-  { prim: 'GET', args: [{ int: '4' }] },
+  { prim: 'GET', args: [{ int: '5' }] },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '3' }] },
   { prim: 'PUSH', args: [{ prim: 'nat' }, { int: '3' }] },
   { prim: 'DUP', args: [{ int: '3' }] }, { prim: 'OR' },
@@ -336,7 +357,9 @@ export const actualServicesFactoryFunctionLambda = [
           { string: 'Invalid operation type' }]
       },
       { prim: 'FAILWITH' }], []]
-  }, { prim: 'SWAP' },
+  }, { prim: 'DUP' },
+  { prim: 'DUG', args: [{ int: '2' }] },
+  { prim: 'GET', args: [{ int: '6' }] }, { prim: 'PAIR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
   { prim: 'SENDER' }, { prim: 'PAIR' }, { prim: 'PAIR' },
   { prim: 'SWAP' }, { prim: 'DUP' },
@@ -345,7 +368,7 @@ export const actualServicesFactoryFunctionLambda = [
   { prim: 'PAIR' }, { prim: 'DUP', args: [{ int: '3' }] },
   { prim: 'GET', args: [{ int: '3' }] },
   { prim: 'DIG', args: [{ int: '3' }] },
-  { prim: 'GET', args: [{ int: '4' }] }, { prim: 'PAIR' },
+  { prim: 'GET', args: [{ int: '5' }] }, { prim: 'PAIR' },
   { prim: 'PAIR' }, { prim: 'PAIR' }, { prim: 'AMOUNT' },
   { prim: 'NONE', args: [{ prim: 'key_hash' }] },
   {
@@ -541,7 +564,26 @@ export const actualServicesFactoryFunctionLambda = [
                       },
                       { prim: 'bool', annots: ['%paused'] }]
                   },
-                  { prim: 'nat', annots: ['%version'] }]
+                  {
+                    prim: 'pair',
+                    args:
+                      [{
+                        prim: 'set',
+                        args:
+                          [{
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'string' }]
+                              },
+                              { prim: 'key' }]
+                          }],
+                        annots: ['%signing_keys']
+                      },
+                      { prim: 'nat', annots: ['%version'] }]
+                  }]
               }]
           }]
       },
@@ -557,6 +599,7 @@ export const actualServicesFactoryFunctionLambda = [
           },
           { prim: 'FAILWITH' }]]
       }]]
-  }, { prim: 'PAIR' }
+  },
+  { prim: 'PAIR' }
 ] as const;
 

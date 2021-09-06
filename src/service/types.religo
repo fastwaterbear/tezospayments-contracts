@@ -7,6 +7,7 @@ type storage = {
     allowed_tokens: allowed_tokens,
     allowed_operation_type: operation_type,
     owner: service_owner,
+    signing_keys: signing_keys,
     paused: bool,
     deleted: bool,
 }

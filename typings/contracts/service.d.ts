@@ -11,6 +11,7 @@ declare global {
       };
       readonly allowed_operation_type: BigNumber;
       readonly owner: string;
+      readonly signing_keys: SigningKeys;
       readonly paused: boolean;
       readonly deleted: boolean;
     }
