@@ -5,7 +5,9 @@ declare namespace TezosPayments {
     description?: string;
   }
 
-  type SigningKeys = ReadonlyArray<readonly [keyName: string | null, key: string]>;
+  type SigningKey = readonly [keyName: string | null, key: string]
+    | { 0: string | null, 1: string };
+  type SigningKeys = readonly SigningKey[];
 
   const enum OperationType {
     Payment = 1,
