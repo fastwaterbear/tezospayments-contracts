@@ -184,7 +184,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         [],
         TezosPayments.OperationType.Payment,
-        []
+        validSigningKeys
       );
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
@@ -277,7 +277,7 @@ contract('Services Factory | Actions', accounts => {
       });
     });
 
-    describe.only('should fail if the signing key is invalid', () => {
+    describe('should fail if the signing key is invalid', () => {
       invalidSigningKeyTestCases.forEach(([message, invalidSigningKey, errorMessage]) => {
         it(message, async () => {
           await expect(servicesFactoryContractInstance.create_service(
