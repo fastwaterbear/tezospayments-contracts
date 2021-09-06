@@ -8,3 +8,6 @@ Bitwise.or(
 );
 */
 [@inline] let constant_all_operation_type = 3n;
+
+[@inline] let constant_min_signing_key_name_length = 3n;
+[@inline] let constant_max_signing_key_name_length = 30n;

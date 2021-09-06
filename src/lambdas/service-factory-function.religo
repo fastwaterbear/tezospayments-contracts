@@ -34,6 +34,26 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     OR ;
     IF { PUSH string "Invalid operation type" ; FAILWITH } {} ;
     DUP ;
+    GET 6 ;
+    ITER { CAR ;
+           IF_NONE
+             { UNIT }
+             { PUSH nat 30 ;
+               SWAP ;
+               DUP ;
+               DUG 2 ;
+               SIZE ;
+               COMPARE ;
+               GT ;
+               PUSH nat 3 ;
+               DIG 2 ;
+               SIZE ;
+               COMPARE ;
+               LT ;
+               OR ;
+               IF { PUSH string "Invalid signing key" ; FAILWITH } { PUSH unit Unit } } ;
+           DROP } ;
+    DUP ;
     DUG 2 ;
     GET 6 ;
     PAIR ;

@@ -67,6 +67,49 @@ export const invalidSignatureLambda = [
       },
       { prim: 'FAILWITH' }], []]
   }, { prim: 'DUP' },
+  { prim: 'GET', args: [{ int: '6' }] },
+  {
+    prim: 'ITER',
+    args:
+      [[{ prim: 'CAR' },
+      {
+        prim: 'IF_NONE',
+        args:
+          [[{ prim: 'UNIT' }],
+          [{
+            prim: 'PUSH',
+            args: [{ prim: 'nat' }, { int: '30' }]
+          },
+          { prim: 'SWAP' }, { prim: 'DUP' },
+          { prim: 'DUG', args: [{ int: '2' }] },
+          { prim: 'SIZE' }, { prim: 'COMPARE' },
+          { prim: 'GT' },
+          {
+            prim: 'PUSH',
+            args: [{ prim: 'nat' }, { int: '3' }]
+          },
+          { prim: 'DIG', args: [{ int: '2' }] },
+          { prim: 'SIZE' }, { prim: 'COMPARE' },
+          { prim: 'LT' }, { prim: 'OR' },
+          {
+            prim: 'IF',
+            args:
+              [[{
+                prim: 'PUSH',
+                args:
+                  [{ prim: 'string' },
+                  { string: 'Invalid signing key' }]
+              },
+              { prim: 'FAILWITH' }],
+              [{
+                prim: 'PUSH',
+                args:
+                  [{ prim: 'unit' }, { prim: 'Unit' }]
+              }]]
+          }]]
+      },
+      { prim: 'DROP' }]]
+  }, { prim: 'DUP' },
   { prim: 'DUG', args: [{ int: '2' }] },
   { prim: 'GET', args: [{ int: '6' }] }, { prim: 'PAIR' },
   { prim: 'PUSH', args: [{ prim: 'bool' }, { prim: 'False' }] },
@@ -357,6 +400,49 @@ export const actualServicesFactoryFunctionLambda = [
           { string: 'Invalid operation type' }]
       },
       { prim: 'FAILWITH' }], []]
+  }, { prim: 'DUP' },
+  { prim: 'GET', args: [{ int: '6' }] },
+  {
+    prim: 'ITER',
+    args:
+      [[{ prim: 'CAR' },
+      {
+        prim: 'IF_NONE',
+        args:
+          [[{ prim: 'UNIT' }],
+          [{
+            prim: 'PUSH',
+            args: [{ prim: 'nat' }, { int: '30' }]
+          },
+          { prim: 'SWAP' }, { prim: 'DUP' },
+          { prim: 'DUG', args: [{ int: '2' }] },
+          { prim: 'SIZE' }, { prim: 'COMPARE' },
+          { prim: 'GT' },
+          {
+            prim: 'PUSH',
+            args: [{ prim: 'nat' }, { int: '3' }]
+          },
+          { prim: 'DIG', args: [{ int: '2' }] },
+          { prim: 'SIZE' }, { prim: 'COMPARE' },
+          { prim: 'LT' }, { prim: 'OR' },
+          {
+            prim: 'IF',
+            args:
+              [[{
+                prim: 'PUSH',
+                args:
+                  [{ prim: 'string' },
+                  { string: 'Invalid signing key' }]
+              },
+              { prim: 'FAILWITH' }],
+              [{
+                prim: 'PUSH',
+                args:
+                  [{ prim: 'unit' }, { prim: 'Unit' }]
+              }]]
+          }]]
+      },
+      { prim: 'DROP' }]]
   }, { prim: 'DUP' },
   { prim: 'DUG', args: [{ int: '2' }] },
   { prim: 'GET', args: [{ int: '6' }] }, { prim: 'PAIR' },

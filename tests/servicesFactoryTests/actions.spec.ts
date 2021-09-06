@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
 import { contractErrors, useLastTezosToolkit, deployServicesFactory, serviceMetadataToBytes, getAccountPublicKey } from '../helpers';
-import { admins, invalidOperationTypes } from '../testData';
+import { admins, invalidOperationTypes, invalidSigningKeyTestCases, validSigningKeys } from '../testData';
 
 const [servicesFactoryContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('services-factory'));
 
@@ -32,15 +32,6 @@ contract('Services Factory | Actions', accounts => {
     });
 
     it('should create a service as a separate contract and set the related record in its own contract storage', async () => {
-      const result = await servicesFactoryContractInstance.create_service(
-        commonServiceMetadataBytes,
-        true,
-        [],
-        TezosPayments.OperationType.Payment,
-        []
-      );
-      const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
-      const storageAfterAction = await servicesFactoryContractInstance.storage();
       const expectedServiceStorage: TezosPayments.ServiceContract.Storage = {
         version: new BigNumber(0),
         metadata: commonServiceMetadataBytes,
@@ -54,6 +45,16 @@ contract('Services Factory | Actions', accounts => {
         paused: false,
         deleted: false
       };
+
+      const result = await servicesFactoryContractInstance.create_service(
+        commonServiceMetadataBytes,
+        true,
+        [],
+        TezosPayments.OperationType.Payment,
+        []
+      );
+      const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
+      const storageAfterAction = await servicesFactoryContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
@@ -163,6 +164,46 @@ contract('Services Factory | Actions', accounts => {
       }
     });
 
+    it('should create a service with available types of signing keys', async () => {
+      const expectedServiceStorage: TezosPayments.ServiceContract.Storage = {
+        version: new BigNumber(0),
+        metadata: commonServiceMetadataBytes,
+        allowed_tokens: {
+          tez: true,
+          assets: []
+        },
+        allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
+        owner: currentAccountAddress,
+        signing_keys: validSigningKeys,
+        paused: false,
+        deleted: false
+      };
+
+      const result = await servicesFactoryContractInstance.create_service(
+        commonServiceMetadataBytes,
+        true,
+        [],
+        TezosPayments.OperationType.Payment,
+        []
+      );
+      const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
+      const storageAfterAction = await servicesFactoryContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(internalOperationResult).to.exist;
+      expect(internalOperationResult?.kind).to.equal(OpKind.ORIGINATION);
+
+      const internalOperationResultOrigination = (internalOperationResult?.result as OperationResultOrigination);
+      const serviceContractAddress = internalOperationResultOrigination.originated_contracts?.[0];
+      const servicesSet = await storageAfterAction.services.get<string[]>(currentAccountAddress);
+      const serviceContractStorage = await tezosToolkit.contract.at(serviceContractAddress!).then(instance => instance.storage());
+
+      expect(storageAfterAction).to.deep.equal(servicesFactoryContractStorage);
+      expect(servicesSet).to.deep.equal([serviceContractAddress]);
+      expect(serviceContractStorage).to.deep.equal(expectedServiceStorage);
+    });
+
     it('should fail if the contract is paused', async () => {
       await deployServicesFactoryAndAssign({ administrator: admins[0].pkh, paused: true });
 
@@ -228,6 +269,23 @@ contract('Services Factory | Actions', accounts => {
             [],
             invalidOperationType,
             []
+          )).to.be.rejectedWith(errorMessage!);
+
+          const storageAfterActions = await servicesFactoryContractInstance.storage();
+          expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
+        });
+      });
+    });
+
+    describe.only('should fail if the signing key is invalid', () => {
+      invalidSigningKeyTestCases.forEach(([message, invalidSigningKey, errorMessage]) => {
+        it(message, async () => {
+          await expect(servicesFactoryContractInstance.create_service(
+            commonServiceMetadataBytes,
+            true,
+            [],
+            TezosPayments.OperationType.All,
+            [invalidSigningKey]
           )).to.be.rejectedWith(errorMessage!);
 
           const storageAfterActions = await servicesFactoryContractInstance.storage();

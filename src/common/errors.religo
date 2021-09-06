@@ -4,3 +4,4 @@
 [@inline] let errors_invalid_amount = "Invalid amount";
 [@inline] let errors_invalid_address = "Invalid address";
 [@inline] let errors_invalid_operation_type = "Invalid operation type";
+[@inline] let errors_invalid_signing_key = "Invalid signing key";

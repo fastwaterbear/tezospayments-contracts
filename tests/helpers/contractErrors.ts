@@ -6,6 +6,7 @@ export const contractErrors = {
   invalidAmount: 'Invalid amount',
   invalidAddress: 'Invalid address',
   invalidOperationType: 'Invalid operation type',
+  invalidSigningKey: 'Invalid signing key',
   // Services Factory
   notAdministrator: 'Only administrator can do this',
   // Service Factory
