@@ -16,8 +16,8 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
-      LIGO_VERSION: 0.17.0
-      LIGO_COMMAND: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.17.0
+      LIGO_VERSION: 0.24.0
+      LIGO_COMMAND: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.24.0
       SANDBOX_NODE_DOCKER_IMAGE: tqtezos/flextesa:20210514
     steps:
       - name: Clone repository
