@@ -13,8 +13,8 @@
     "postinstall": "sed -i 's/ligo:next/ligo:0.24.0/' node_modules/truffle/build/cli.bundled.js"
   },
   "devDependencies": {
-    "@taquito/signer": "^9.0.1",
-    "@taquito/taquito": "^9.0.1",
+    "@taquito/signer": "^10.1.0",
+    "@taquito/taquito": "^10.1.0",
     "@types/chai": "^4.2.18",
     "@types/chai-as-promised": "^7.1.4",
     "@types/mocha": "^8.2.2",
@@ -28,6 +28,6 @@
     "mocha": "^8.4.0",
     "truffle": "^5.5.0-tezos.4",
     "ts-node": "^10.0.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.4.2"
   }
 }
