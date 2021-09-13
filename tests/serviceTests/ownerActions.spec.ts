@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployService, getAccountPublicKey } from '../helpers';
+import { contractErrors, useLastTezosToolkit, deployService, getAccountPublicKey, createSigningKeyMichelsonMap } from '../helpers';
 import { invalidServiceParametersUpdates, serviceParametersUpdates, simpleAccounts } from '../testData';
 
 const [serviceContract] = useLastTezosToolkit(artifacts.require('service'));
@@ -17,7 +17,7 @@ contract('Service | Owner Actions', accounts => {
 
   beforeEach('Deploy new instance', () => deployServiceAndAssign({
     owner: currentAccountAddress,
-    signing_keys: [[null, currentAccountPublicKey!]]
+    signing_keys: createSigningKeyMichelsonMap([[currentAccountPublicKey!, null]])
   }));
 
   it('should prevent calls from non-owners', async () => {

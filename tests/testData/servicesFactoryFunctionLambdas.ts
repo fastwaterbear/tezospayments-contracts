@@ -71,7 +71,7 @@ export const invalidSignatureLambda = [
   {
     prim: 'ITER',
     args:
-      [[{ prim: 'CAR' },
+      [[{ prim: 'CDR' },
       {
         prim: 'IF_NONE',
         args:
@@ -320,17 +320,12 @@ export const invalidSignatureLambda = [
                     prim: 'pair',
                     args:
                       [{
-                        prim: 'set',
+                        prim: 'map',
                         args:
-                          [{
-                            prim: 'pair',
-                            args:
-                              [{
-                                prim: 'option',
-                                args:
-                                  [{ prim: 'string' }]
-                              },
-                              { prim: 'key' }]
+                          [{ prim: 'key' },
+                          {
+                            prim: 'option',
+                            args: [{ prim: 'string' }]
                           }],
                         annots: ['%signing_keys']
                       },
@@ -405,7 +400,7 @@ export const actualServicesFactoryFunctionLambda = [
   {
     prim: 'ITER',
     args:
-      [[{ prim: 'CAR' },
+      [[{ prim: 'CDR' },
       {
         prim: 'IF_NONE',
         args:
@@ -654,17 +649,12 @@ export const actualServicesFactoryFunctionLambda = [
                     prim: 'pair',
                     args:
                       [{
-                        prim: 'set',
+                        prim: 'map',
                         args:
-                          [{
-                            prim: 'pair',
-                            args:
-                              [{
-                                prim: 'option',
-                                args:
-                                  [{ prim: 'string' }]
-                              },
-                              { prim: 'key' }]
+                          [{ prim: 'key' },
+                          {
+                            prim: 'option',
+                            args: [{ prim: 'string' }]
                           }],
                         annots: ['%signing_keys']
                       },

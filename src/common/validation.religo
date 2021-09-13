@@ -8,7 +8,7 @@
     };
 
 [@inline] let fail_if_signing_key_is_invalid = (signing_key: signing_key) =>
-    switch signing_key[0] {
+    switch signing_key[1] {
         | Some(signing_key_name) => 
             if (String.length(signing_key_name) < constant_min_signing_key_name_length || String.length(signing_key_name) > constant_max_signing_key_name_length) {
                 failwith(errors_invalid_signing_key);

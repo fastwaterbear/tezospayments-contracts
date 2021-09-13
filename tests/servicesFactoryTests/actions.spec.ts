@@ -1,9 +1,12 @@
 import { OperationResultOrigination } from '@taquito/rpc';
-import { OpKind } from '@taquito/taquito';
+import { MichelsonMap, OpKind } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployServicesFactory, serviceMetadataToBytes, getAccountPublicKey } from '../helpers';
+import {
+  contractErrors, useLastTezosToolkit, deployServicesFactory,
+  serviceMetadataToBytes, getAccountPublicKey, createSigningKeyMichelsonMap
+} from '../helpers';
 import { admins, invalidOperationTypes, invalidSigningKeyTestCases, validSigningKeys } from '../testData';
 
 const [servicesFactoryContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('services-factory'));
@@ -41,7 +44,7 @@ contract('Services Factory | Actions', accounts => {
         },
         allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
         owner: currentAccountAddress,
-        signing_keys: [],
+        signing_keys: createSigningKeyMichelsonMap([]),
         paused: false,
         deleted: false
       };
@@ -51,7 +54,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         [],
         TezosPayments.OperationType.Payment,
-        []
+        createSigningKeyMichelsonMap([])
       );
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
@@ -97,31 +100,31 @@ contract('Services Factory | Actions', accounts => {
           true,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
           TezosPayments.OperationType.Payment,
-          []
+          createSigningKeyMichelsonMap([])
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[1]!),
           true,
           [],
           TezosPayments.OperationType.Donation,
-          []
+          createSigningKeyMichelsonMap([])
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[2]!),
           false,
           ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
           TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
-          []
+          createSigningKeyMichelsonMap([])
         ],
         [
           serviceMetadataToBytes(serviceMetadataList[3]!),
           true,
           ['KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
           TezosPayments.OperationType.Payment,
-          [
-            [null, currentAccountPublicKey],
-            ['API0', 'edpkuE58W2PXAXGRHBZimjY3o4PdaTWJA9ACKQTbeK5rcYUT4dAcoH']
-          ]
+          createSigningKeyMichelsonMap([
+            [currentAccountPublicKey, null],
+            ['edpkuE58W2PXAXGRHBZimjY3o4PdaTWJA9ACKQTbeK5rcYUT4dAcoH', 'API0']
+          ])
         ]
       ];
       const serviceCreationParametersAndExpectedServiceStorages = serviceCreationParameters.map(creationParameters => [
@@ -135,7 +138,7 @@ contract('Services Factory | Actions', accounts => {
           },
           allowed_operation_type: new BigNumber(creationParameters[3]),
           owner: currentAccountAddress,
-          signing_keys: creationParameters[4].map(signingKey => ({ 0: signingKey[0], 1: signingKey[1] })),
+          signing_keys: creationParameters[4],
           paused: false,
           deleted: false
         } as TezosPayments.ServiceContract.Storage
@@ -174,7 +177,7 @@ contract('Services Factory | Actions', accounts => {
         },
         allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
         owner: currentAccountAddress,
-        signing_keys: validSigningKeys,
+        signing_keys: createSigningKeyMichelsonMap(validSigningKeys),
         paused: false,
         deleted: false
       };
@@ -184,7 +187,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         [],
         TezosPayments.OperationType.Payment,
-        validSigningKeys
+        createSigningKeyMichelsonMap(validSigningKeys)
       );
       const internalOperationResult = result.receipt.operationResults[0]?.metadata.internal_operation_results?.[0];
       const storageAfterAction = await servicesFactoryContractInstance.storage();
@@ -214,7 +217,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         [],
         TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
-        []
+        createSigningKeyMichelsonMap([])
       )).to.be.rejectedWith(contractErrors.contractIsPaused);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -227,7 +230,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
         TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
-        []
+        createSigningKeyMichelsonMap([])
       )).to.be.rejectedWith('Invalid bytes');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -240,7 +243,7 @@ contract('Services Factory | Actions', accounts => {
         false,
         [],
         TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
-        []
+        createSigningKeyMichelsonMap([])
       )).to.be.rejectedWith(contractErrors.noAllowedTokens);
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -253,7 +256,7 @@ contract('Services Factory | Actions', accounts => {
         true,
         ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
         TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
-        []
+        createSigningKeyMichelsonMap([])
       )).to.be.rejectedWith('duplicate_set_values_in_literal');
 
       const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -268,7 +271,7 @@ contract('Services Factory | Actions', accounts => {
             true,
             [],
             invalidOperationType,
-            []
+            createSigningKeyMichelsonMap([])
           )).to.be.rejectedWith(errorMessage!);
 
           const storageAfterActions = await servicesFactoryContractInstance.storage();
@@ -285,7 +288,7 @@ contract('Services Factory | Actions', accounts => {
             true,
             [],
             TezosPayments.OperationType.All,
-            [invalidSigningKey]
+            MichelsonMap.fromLiteral({ [invalidSigningKey[0]]: invalidSigningKey[1] }) as TezosPayments.SigningKeys
           )).to.be.rejectedWith(errorMessage!);
 
           const storageAfterActions = await servicesFactoryContractInstance.storage();

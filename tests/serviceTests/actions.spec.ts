@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployService, tezToMutez, stringToBytes } from '../helpers';
+import { contractErrors, useLastTezosToolkit, deployService, tezToMutez, stringToBytes, createSigningKeyMichelsonMap } from '../helpers';
 import { admins, invalidOperationTypes } from '../testData';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
@@ -24,7 +24,7 @@ contract('Service | Actions', accounts => {
   const beforeEachBody = async (initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>) => {
     await deployServiceAndAssign({
       owner: ownerAccountAddress,
-      signing_keys: [[null, ownerAccountPublicKey]],
+      signing_keys: createSigningKeyMichelsonMap([[ownerAccountPublicKey, null]]),
       allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
       ...initialStorageState
     });

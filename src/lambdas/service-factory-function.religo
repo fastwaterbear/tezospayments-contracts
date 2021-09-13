@@ -35,7 +35,7 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     IF { PUSH string "Invalid operation type" ; FAILWITH } {} ;
     DUP ;
     GET 6 ;
-    ITER { CAR ;
+    ITER { CDR ;
            IF_NONE
              { UNIT }
              { PUSH nat 30 ;

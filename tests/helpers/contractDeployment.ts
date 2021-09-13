@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { actualServicesFactoryFunctionLambda } from '../testData';
 import { serviceMetadataToBytes } from './converters';
+import { createSigningKeyMichelsonMap } from './signing';
 
 export const deployServicesFactory = async (
   contract: Truffle.Contract<TezosPayments.ServicesFactoryContract.Instance>,
@@ -41,7 +42,7 @@ export const deployService = async (
       assets: []
     },
     allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
-    signing_keys: [],
+    signing_keys: createSigningKeyMichelsonMap([]),
     paused: false,
     deleted: false,
     ...initialStorageState
