@@ -36,9 +36,9 @@ export class Flextesa {
   static readonly defaultOptions: DefaultFlextesaOptions = {
     host: '0.0.0.0',
     port: 8732,
-    protocol: protocols.edo,
+    protocol: protocols.granada,
     genesisBlockHash: 'random',
-    dockerImage: 'tqtezos/flextesa:20210514',
+    dockerImage: 'tqtezos/flextesa:20210602',
     dockerContainerEntrypoint: 'flextesa',
     dockerContainerEntrypointCommand: 'mini-net',
     dockerContainerName: 'tezospayments-flextesa'
@@ -110,6 +110,8 @@ export class Flextesa {
       this.options.dockerContainerEntrypointCommand,
       '--genesis-block-hash',
       this.options.genesisBlockHash,
+      '--minimal-block-delay',
+      '1',
       '--time-between-blocks',
       '1',
       '--timestamp-delay',
