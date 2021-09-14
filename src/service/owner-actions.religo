@@ -59,6 +59,19 @@ let update_service_parameters = ((service_parameters, storage): (service_paramet
     (([]: list(operation)), updated_storage_step4)
 };
 
+let update_signing_keys = ((signing_key_updates, storage): (signing_key_updates, storage)): main_result => {
+    let update_signing_keys = Map.fold(
+        (updated_map, signing_key_update: (signing_keys, (key, option(signing_key)))) => Map.update(signing_key_update[0], signing_key_update[1], updated_map),
+        signing_key_updates,
+        storage.signing_keys
+    );
+
+    (
+        ([]: list(operation)), 
+        { ...storage, signing_keys: update_signing_keys }
+    )
+};
+
 let owner_main = ((action, storage): (owner_action, storage)): main_result => {
     if (storage.owner != Tezos.sender) {
         failwith(errors_not_owner);
@@ -69,5 +82,6 @@ let owner_main = ((action, storage): (owner_action, storage)): main_result => {
         | Set_pause(paused) => set_pause(paused, storage);
         | Set_deleted(deleted) => set_deleted(deleted, storage);
         | Update_service_parameters(service_parameters) => update_service_parameters(service_parameters, storage);
+        | Update_signing_keys(signing_keys) => update_signing_keys(signing_keys, storage);
     }
 }

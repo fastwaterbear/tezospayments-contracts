@@ -5,9 +5,9 @@ export const validSigningKeys: readonly TezosPayments.SigningKey[] = [
   { public_key: 'sppk7c2z8sw34SPsStoy2FYKjQCUWocnTMsYi9HdEQBk7AfrknNL8aK', name: null },
   { public_key: 'p2pk66XW5w6ryejQmLTD1JA7bdyzQJQNyDf83gahM55LPiWfmWxkU1q', name: null },
   { public_key: 'edpkts56Rro7pvsnFWRt9oyB2eJC81sUEMqJphgFegr976NkFLkZMw', name: 'Key 1' },
-  { public_key: 'sppk7c2z8sw34SPsStoy2FYKjQCUWocnTMsYi9HdEQBk7AfrknNL8aK', name: 'Key 2' },
-  { public_key: 'edpkuRtZToTUQA5hM2CnNppsHBUv6xS8SxjRH7FqA5EoWhx1xNFrUC', name: 'API Key 1' },
-  { public_key: 'sppk7c2z8sw34SPsStoy2FYKjQCUWocnTMsYi9HdEQBk7AfrknNL8aK', name: 'API Key 2' },
+  { public_key: 'sppk7bNVp9H3oYwmQo91v9J5b8mV4vGi9iYqanHFNMJSjqhTE5i3Zpw', name: 'Key 2' },
+  { public_key: 'edpkvWmm7yDd6N5t4auQB7BWNqoxP33oHHtJBGzKw8TJPQKfMHZyok', name: 'API Key 1' },
+  { public_key: 'sppk7apXu6iPMCwaZxzDdWu8nEPkD49BtbwsjcJTTM9sx5zgcGSiGXF', name: 'API Key 2' },
 ];
 
 const invalidKeyMichelsonError = 'Key is not valid';

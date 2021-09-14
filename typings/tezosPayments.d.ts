@@ -13,6 +13,7 @@ declare global {
       readonly name: string | null;
     }
     type SigningKeys = MichelsonMap<SigningKey['public_key'], SigningKey>;
+    type SigningKeyUpdates = MichelsonMap<SigningKey['public_key'], SigningKey | null>;
 
     const enum OperationType {
       Payment = 1,
