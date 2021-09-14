@@ -24,7 +24,7 @@ contract('Service | Actions', accounts => {
   const beforeEachBody = async (initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>) => {
     await deployServiceAndAssign({
       owner: ownerAccountAddress,
-      signing_keys: createSigningKeyMichelsonMap([[ownerAccountPublicKey, null]]),
+      signing_keys: createSigningKeyMichelsonMap([{ public_key: ownerAccountPublicKey, name: null }]),
       allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
       ...initialStorageState
     });

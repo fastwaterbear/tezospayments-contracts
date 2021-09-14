@@ -8,8 +8,11 @@ declare global {
       description?: string;
     }
 
-    type SigningKey = readonly [key: string, keyName: string | null];
-    type SigningKeys = MichelsonMap<SigningKey['0'], SigningKey['1']>;
+    interface SigningKey {
+      readonly public_key: string;
+      readonly name: string | null;
+    }
+    type SigningKeys = MichelsonMap<SigningKey['public_key'], SigningKey>;
 
     const enum OperationType {
       Payment = 1,

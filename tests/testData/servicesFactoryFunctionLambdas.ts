@@ -71,7 +71,7 @@ export const invalidSignatureLambda = [
   {
     prim: 'ITER',
     args:
-      [[{ prim: 'CDR' },
+      [[{ prim: 'CDR' }, { prim: 'CDR' },
       {
         prim: 'IF_NONE',
         args:
@@ -324,8 +324,18 @@ export const invalidSignatureLambda = [
                         args:
                           [{ prim: 'key' },
                           {
-                            prim: 'option',
-                            args: [{ prim: 'string' }]
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'key',
+                                annots: ['%public_key']
+                              },
+                              {
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'string' }],
+                                annots: ['%name']
+                              }]
                           }],
                         annots: ['%signing_keys']
                       },
@@ -400,7 +410,7 @@ export const actualServicesFactoryFunctionLambda = [
   {
     prim: 'ITER',
     args:
-      [[{ prim: 'CDR' },
+      [[{ prim: 'CDR' }, { prim: 'CDR' },
       {
         prim: 'IF_NONE',
         args:
@@ -653,8 +663,18 @@ export const actualServicesFactoryFunctionLambda = [
                         args:
                           [{ prim: 'key' },
                           {
-                            prim: 'option',
-                            args: [{ prim: 'string' }]
+                            prim: 'pair',
+                            args:
+                              [{
+                                prim: 'key',
+                                annots: ['%public_key']
+                              },
+                              {
+                                prim: 'option',
+                                args:
+                                  [{ prim: 'string' }],
+                                annots: ['%name']
+                              }]
                           }],
                         annots: ['%signing_keys']
                       },

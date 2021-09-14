@@ -17,7 +17,7 @@ contract('Service | Owner Actions', accounts => {
 
   beforeEach('Deploy new instance', () => deployServiceAndAssign({
     owner: currentAccountAddress,
-    signing_keys: createSigningKeyMichelsonMap([[currentAccountPublicKey!, null]])
+    signing_keys: createSigningKeyMichelsonMap([{ public_key: currentAccountPublicKey!, name: null }])
   }));
 
   it('should prevent calls from non-owners', async () => {

@@ -36,6 +36,7 @@ let service_factory_function: service_factory_function = [%Michelson ({| {
     DUP ;
     GET 6 ;
     ITER { CDR ;
+           CDR ;
            IF_NONE
              { UNIT }
              { PUSH nat 30 ;

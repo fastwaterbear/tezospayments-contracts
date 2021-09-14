@@ -9,9 +9,12 @@ type allowed_tokens = [@layout:comb] {
 
 type operation_type = nat;
 
-type signing_key_name = string;
-type signing_key = (key, option(signing_key_name));
-type signing_keys = map(key, option(signing_key_name));
+type signing_key_name = option(string);
+type signing_key = [@layout:comb] {
+    public_key: key,
+    name: signing_key_name
+}
+type signing_keys = map(key, signing_key);
 
 type service_parameters = [@layout:comb] {
     metadata: service_metadata,
