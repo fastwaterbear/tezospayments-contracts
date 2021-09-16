@@ -23,6 +23,7 @@ declare global {
         allowedTokensTez: boolean,
         allowedTokensAssets: string[],
         allowedOperationType: OperationType,
+        signingKeys: SigningKeys,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;

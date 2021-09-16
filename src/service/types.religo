@@ -7,6 +7,7 @@ type storage = {
     allowed_tokens: allowed_tokens,
     allowed_operation_type: operation_type,
     owner: service_owner,
+    signing_keys: signing_keys,
     paused: bool,
     deleted: bool,
 }
@@ -21,6 +22,8 @@ type service_parameters_updates = [@layout:comb] {
     },
     allowed_operation_type: option(operation_type)
 }
+
+type signing_key_updates = map(key, option(signing_key));
 
 type asset_value = [@layout:comb] {
     token_address: address,
@@ -42,7 +45,8 @@ type owner_action =
     | Set_owner(service_owner)
     | Set_pause(bool)
     | Set_deleted(bool)
-    | Update_service_parameters(service_parameters_updates);
+    | Update_service_parameters(service_parameters_updates)
+    | Update_signing_keys(signing_key_updates);
 
 type action =
     | Send_payment(send_payment_parameters)

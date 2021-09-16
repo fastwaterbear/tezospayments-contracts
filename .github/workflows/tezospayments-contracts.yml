@@ -18,7 +18,7 @@ jobs:
     env:
       LIGO_VERSION: 0.24.0
       LIGO_COMMAND: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.24.0
-      SANDBOX_NODE_DOCKER_IMAGE: tqtezos/flextesa:20210514
+      SANDBOX_NODE_DOCKER_IMAGE: tqtezos/flextesa:20210602
     steps:
       - name: Clone repository
         uses: actions/checkout@master

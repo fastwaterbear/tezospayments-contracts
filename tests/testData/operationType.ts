@@ -1,6 +1,6 @@
 import { contractErrors } from '../helpers';
 
-type InvalidOperationType = readonly [value: number, errorMessage: string | undefined];
+type InvalidOperationType = readonly [value: number, errorMessage?: string];
 
 export const invalidOperationTypes: readonly InvalidOperationType[] = [
   [-1, undefined],

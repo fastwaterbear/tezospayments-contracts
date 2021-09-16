@@ -1,13 +1,24 @@
-declare namespace TezosPayments {
-  interface ServiceMetadata {
-    name: string;
-    links: string[];
-    description?: string;
-  }
+import { MichelsonMap } from '@taquito/taquito';
 
-  const enum OperationType {
-    Payment = 1,
-    Donation = 2,
-    All = Payment | Donation
+declare global {
+  namespace TezosPayments {
+    interface ServiceMetadata {
+      name: string;
+      links: string[];
+      description?: string;
+    }
+
+    interface SigningKey {
+      readonly public_key: string;
+      readonly name: string | null;
+    }
+    type SigningKeys = MichelsonMap<SigningKey['public_key'], SigningKey>;
+    type SigningKeyUpdates = MichelsonMap<SigningKey['public_key'], SigningKey | null>;
+
+    const enum OperationType {
+      Payment = 1,
+      Donation = 2,
+      All = Payment | Donation
+    }
   }
 }

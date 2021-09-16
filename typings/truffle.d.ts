@@ -25,7 +25,7 @@ declare namespace Truffle {
       initialStorageState: InitialStorageState<ContractStorage<TInstance>>,
       txParams?: TTxParams
     ): Promise<TInstance>;
-    at(address: string): TInstance;
+    at(address: string): Promise<TInstance>;
     deployed(): Promise<TInstance>;
   }
 

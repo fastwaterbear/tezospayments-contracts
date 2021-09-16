@@ -11,6 +11,7 @@ declare global {
       };
       readonly allowed_operation_type: BigNumber;
       readonly owner: string;
+      readonly signing_keys: SigningKeys;
       readonly paused: boolean;
       readonly deleted: boolean;
     }
@@ -26,6 +27,7 @@ declare global {
         allowedOperationType: OperationType | undefined,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
+      update_signing_keys(signingKeyUpdates: SigningKeyUpdates): Promise<Truffle.TransactionResult>;
     }
 
     interface Instance extends Truffle.ContractInstance<Storage>, OwnerActions {
