@@ -1,6 +1,10 @@
-#include "../common/validation.religo"
 #include "./types.religo"
 #include "./errors.religo"
+#include "./validation.religo"
+
+let initialize = ((_service_parameters, _storage): (service_parameters, storage)): main_result => {
+    failwith(errors_not_implemented);
+}
 
 let set_owner = ((new_owner, storage): (address, storage)): main_result => {
     (
@@ -72,12 +76,19 @@ let update_signing_keys = ((signing_key_updates, storage): (signing_key_updates,
     )
 };
 
+[@inline] let fail_if_caller_is_not_owner = (storage: storage) => if (storage.owner != Tezos.sender) { failwith(errors_not_owner); };
+
+[@inline] let fail_if_service_is_not_initialized_or_trying_initialize_twice = ((action, storage): (owner_action, storage)) => switch (action) {
+    | Initialize(_) => if (storage.initialized) { failwith(errors_service_is_already_initialized); };
+    | _ => fail_if_service_is_not_initialized(storage);
+}
+
 let owner_main = ((action, storage): (owner_action, storage)): main_result => {
-    if (storage.owner != Tezos.sender) {
-        failwith(errors_not_owner);
-    };
+    fail_if_caller_is_not_owner(storage);
+    fail_if_service_is_not_initialized_or_trying_initialize_twice(action, storage);
 
     switch (action) {
+        | Initialize(service_parameters) => initialize(service_parameters, storage);
         | Set_owner(new_owner) => set_owner(new_owner, storage);
         | Set_pause(paused) => set_pause(paused, storage);
         | Set_deleted(deleted) => set_deleted(deleted, storage);

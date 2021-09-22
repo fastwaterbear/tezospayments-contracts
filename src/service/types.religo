@@ -10,9 +10,17 @@ type storage = {
     signing_keys: signing_keys,
     paused: bool,
     deleted: bool,
+    initialized: bool
 }
 
 type main_result = (list(operation), storage);
+
+type service_parameters = [@layout:comb] {
+    metadata: service_metadata,
+    allowed_tokens: allowed_tokens,
+    allowed_operation_type: operation_type,
+    signing_keys: signing_keys
+}
 
 type service_parameters_updates = [@layout:comb] {
     metadata: option(service_metadata),
@@ -42,6 +50,7 @@ type send_payment_parameters = [@layout:comb] {
 }
 
 type owner_action =
+    | Initialize(service_parameters)
     | Set_owner(service_owner)
     | Set_pause(bool)
     | Set_deleted(bool)

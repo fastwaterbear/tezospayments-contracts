@@ -3,7 +3,7 @@
 type services = big_map(service_owner, set(service));
 
 type service_factory_function_version = nat;
-type service_factory_function = (service_parameters, service_factory_function_version) => (operation, service);
+type service_factory_function = service_factory_function_version => (operation, service);
 
 type storage = {
     services: big_map(service_owner, set(service)),
@@ -21,5 +21,5 @@ type administrator_action =
     | Set_service_factory_function(service_factory_function);
 
 type action =
-    | Create_service(service_parameters)
+    | Create_service
     | Administrator_action(administrator_action);
