@@ -33,6 +33,7 @@ jobs:
         run: docker pull ${{ env.sandbox-node-docker-image }}
 
       - name: Build
+        shell: bash
         run: |
           chmod +x ./scripts/build.sh
           ./scripts/build.sh

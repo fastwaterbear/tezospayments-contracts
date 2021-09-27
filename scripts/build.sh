@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 LIGO_VERSION=0.24.0
 BUILD_DIRECTORY=./build
