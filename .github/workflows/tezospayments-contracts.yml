@@ -1,52 +1,98 @@
 name: tezospayments-contracts
 on:
   push:
-    paths-ignore:
-      - '.vscode/**'
-      - '*.code-workspace'
-      - 'README.md'
+    branches:
+      - master
+      - dev
   pull_request:
     paths-ignore:
       - '.vscode/**'
       - '*.code-workspace'
       - 'README.md'
+env:
+  node-version: 16
+  ligo-version: 0.24.0
+  ligo-command: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.24.0
+  sandbox-node-docker-image: tqtezos/flextesa:20210602
 
 jobs:
   build:
-    name: Build and Test
+    name: Build
     runs-on: ubuntu-latest
-    env:
-      LIGO_VERSION: 0.24.0
-      LIGO_COMMAND: docker run --rm -v \"\$PWD\":\"\$PWD\" -w \"\$PWD\" ligolang/ligo:0.24.0
-      SANDBOX_NODE_DOCKER_IMAGE: tqtezos/flextesa:20210602
     steps:
       - name: Clone repository
         uses: actions/checkout@master
 
       - name: Set up LIGO
-        run: docker pull ligolang/ligo:${{ env.LIGO_VERSION }}
+        run: docker pull ligolang/ligo:${{ env.ligo-version }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
+      - name: Print environment info
+        run: eval "${{ env.ligo-command }} --version"
+
+      - name: Pull Sandbox Image
+        run: docker pull ${{ env.sandbox-node-docker-image }}
+
+      - name: Build
+        run: |
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh
+
+      - name: Upload the build as an artifact
+        uses: actions/upload-artifact@v2
         with:
-          node-version: "15"
+          name: contracts
+          path: build
+          retention-days: 10
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@master
+
+      - name: Set up LIGO
+        run: docker pull ligolang/ligo:${{ env.ligo-version }}
+
+      - name: Set up Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Print environment info
         run: |
-          eval "${{ env.LIGO_COMMAND }} --version"
+          eval "${{ env.ligo-command }} --version"
           node --version
           npm --version
 
       - name: Install npm packages
-        env:
-          CI: true
         run: npm ci
-
-      - name: Pull Sandbox Image
-        run: docker pull ${{ env.SANDBOX_NODE_DOCKER_IMAGE }}
 
       - name: Start Sandbox
         run: npm run start-sandbox &
 
       - name: Test
         run: npm test
+
+  dist:
+    name: Upload contracts to the `dist`
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    if: ${{ github.ref == 'refs/heads/master' }}
+    steps:
+      - name: Download the build from the artifacts storage
+        uses: actions/download-artifact@v2
+        with:
+          name: contracts
+
+      - name: Push to the ${{ env.publish-branch }} branch
+        env:
+          publish-branch: dist
+        uses: peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305 # v3.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: './'
+          publish_branch: ${{ env.publish-branch }}
