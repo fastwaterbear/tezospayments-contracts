@@ -29,9 +29,6 @@ jobs:
       - name: Print environment info
         run: eval "${{ env.ligo-command }} --version"
 
-      - name: Pull Sandbox Image
-        run: docker pull ${{ env.sandbox-node-docker-image }}
-
       - name: Build
         shell: bash
         run: |
@@ -71,6 +68,9 @@ jobs:
 
       - name: Install npm packages
         run: npm ci
+
+      - name: Pull Sandbox Image
+        run: docker pull ${{ env.sandbox-node-docker-image }}
 
       - name: Start Sandbox
         run: npm run start-sandbox &
