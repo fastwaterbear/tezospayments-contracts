@@ -22,7 +22,7 @@ type service_parameters = [@layout:comb] {
     signing_keys: signing_keys
 }
 
-type service_parameters_updates = [@layout:comb] {
+type service_parameter_updates = [@layout:comb] {
     metadata: option(service_metadata),
     allowed_tokens: [@layout:comb] {
         tez: option(bool),
@@ -54,7 +54,7 @@ type owner_action =
     | Set_owner(service_owner)
     | Set_pause(bool)
     | Set_deleted(bool)
-    | Update_service_parameters(service_parameters_updates)
+    | Update_service_parameters(service_parameter_updates)
     | Update_signing_keys(signing_key_updates);
 
 type action =

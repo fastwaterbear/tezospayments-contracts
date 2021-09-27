@@ -14,9 +14,18 @@ declare global {
       readonly signing_keys: SigningKeys;
       readonly paused: boolean;
       readonly deleted: boolean;
+      readonly initialized: boolean;
     }
 
     interface OwnerActions {
+      initialize(
+        metadata: string,
+        allowedTokensTez: boolean,
+        allowedTokensAssets: string[],
+        allowedOperationType: OperationType,
+        signingKeys: SigningKeys,
+        params?: Truffle.TransactionParameters
+      ): Promise<Truffle.TransactionResult>;
       set_owner(newOwner: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       set_pause(paused: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       set_deleted(deleted: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
@@ -67,6 +76,9 @@ declare global {
       ): Promise<Truffle.TransactionResult>;
       owner_action<T extends keyof OwnerActions>(actionName: T, ...params: Parameters<OwnerActions[T]>): Promise<Truffle.TransactionResult>;
     }
+
+    type ServiceParameters = ExcludeTruffleParameters<Parameters<ServiceContract.Instance['initialize']>>;
+    type ServiceParameterUpdates = ExcludeTruffleParameters<Parameters<ServiceContract.Instance['update_service_parameters']>>;
   }
 
   namespace Truffle {

@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
 import { contractErrors, useLastTezosToolkit, deployService, tezToMutez, stringToBytes, createSigningKeyMichelsonMap } from '../helpers';
-import { admins, invalidOperationTypes } from '../testData';
+import { admins, invalidOperationTypeTestCases } from '../testData';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
 
@@ -128,8 +128,8 @@ contract('Service | Actions', accounts => {
     });
 
     describe('should fail if an operation type is invalid', async () => {
-      invalidOperationTypes.forEach(([invalidOperationType, errorMessage]) => {
-        it(`the invalid operation type == ${invalidOperationType}`, async () => {
+      invalidOperationTypeTestCases.forEach(([caseName, invalidOperationType, errorMessage]) => {
+        it(`the invalid operation type == ${invalidOperationType} (${caseName})`, async () => {
           await expect(serviceContractInstance.send_payment(
             undefined,
             invalidOperationType,

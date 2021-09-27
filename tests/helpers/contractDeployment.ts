@@ -1,7 +1,7 @@
 import { MichelsonMap } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 
-import { actualServicesFactoryFunctionLambda } from '../testData';
+import { actualServicesFactoryFunctionLambda } from '../testData/servicesFactoryFunctionLambdas';
 import { serviceMetadataToBytes } from './converters';
 import { createSigningKeyMichelsonMap } from './signing';
 
@@ -45,9 +45,27 @@ export const deployService = async (
     signing_keys: createSigningKeyMichelsonMap([]),
     paused: false,
     deleted: false,
+    initialized: true,
     ...initialStorageState
   });
   const storage = await instance.storage();
 
   return [instance, storage];
 };
+
+export const getUninitializedServiceStorage = (
+  owner: Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage['owner']>
+): TezosPayments.ServiceContract.Storage => ({
+  version: new BigNumber(0),
+  metadata: '00',
+  allowed_tokens: {
+    tez: false,
+    assets: []
+  },
+  allowed_operation_type: new BigNumber(0),
+  owner,
+  signing_keys: createSigningKeyMichelsonMap([]),
+  paused: true,
+  deleted: false,
+  initialized: false
+});
