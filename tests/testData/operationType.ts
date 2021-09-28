@@ -1,11 +1,9 @@
-import { contractErrors } from '../helpers';
+import { contractErrors, NegativeTestCases } from '../helpers';
 
-type InvalidOperationType = readonly [value: number, errorMessage?: string];
-
-export const invalidOperationTypes: readonly InvalidOperationType[] = [
-  [-1, undefined],
-  [1.1, undefined],
-  [0, contractErrors.invalidOperationType],
-  [4, contractErrors.invalidOperationType],
-  [100, contractErrors.invalidOperationType],
+export const invalidOperationTypeTestCases: NegativeTestCases<number> = [
+  ['Negative number', -1],
+  ['Non-integer number', 1.1],
+  ['Zero', 0, contractErrors.invalidOperationType],
+  ['Unknown operation type', 4, contractErrors.invalidOperationType],
+  ['Unknown operation type', 100, contractErrors.invalidOperationType],
 ];

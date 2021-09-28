@@ -5,3 +5,5 @@
 [@inline] let errors_invalid_address = "Invalid address";
 [@inline] let errors_invalid_operation_type = "Invalid operation type";
 [@inline] let errors_invalid_signing_key = "Invalid signing key";
+[@inline] let errors_service_is_not_initialized = "Service is not initialized";
+[@inline] let errors_service_is_already_initialized = "Service is already initialized";
