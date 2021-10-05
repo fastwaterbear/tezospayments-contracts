@@ -66,6 +66,12 @@ jobs:
           node --version
           npm --version
 
+      - name: Build
+        shell: bash
+        run: |
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh
+
       - name: Install npm packages
         run: npm ci
 
