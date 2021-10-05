@@ -1,6 +1,6 @@
 #include "../common/validation.religo"
 
-[@inline] let fail_if_service_is_not_initialized = (storage: storage) => if (!storage.initialized) { failwith(errors_service_is_not_initialized); };
+[@inline] let fail_if_caller_is_not_owner = (storage: storage) => if (storage.owner != Tezos.sender) { failwith(errors_not_owner); };
 
 [@inline] let fail_if_service_is_paused = (storage: storage) => if (storage.paused) { failwith(errors_service_is_paused); };
 
@@ -24,15 +24,3 @@
         failwith(errors_invalid_operation_type);
     };
 }
-
-[@inline] let fail_if_no_allowed_tokens = (service_parameters: service_parameters) => {
-    if (!service_parameters.allowed_tokens.tez && Set.size(service_parameters.allowed_tokens.assets) == 0n) {
-        failwith(errors_no_allowed_tokens);
-    }
-};
-
-[@inline] let fail_if_service_parameters_are_invalid = (service_parameters: service_parameters) => {
-    fail_if_no_allowed_tokens(service_parameters);
-    fail_if_operation_type_is_invalid(service_parameters.allowed_operation_type);
-    Map.iter(((_, signing_key): (key, signing_key)) => fail_if_signing_key_is_invalid(signing_key), service_parameters.signing_keys);
-};

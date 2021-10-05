@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployService, getAccountPublicKey, createSigningKeyMichelsonMap } from '../../helpers';
+import { serviceErrors, useLastTezosToolkit, deployService, getAccountPublicKey, createSigningKeyMichelsonMap } from '../../helpers';
 import { simpleAccounts } from '../../testData';
 
 const [serviceContract] = useLastTezosToolkit(artifacts.require('service'));
@@ -29,6 +29,6 @@ contract('Service | Owner Actions | Set_owner', accounts => {
     expect(storageAfterAction).to.deep.equal({ ...serviceContractStorage, owner: simpleAccounts[1].pkh });
 
     await expect(serviceContractInstance.set_pause(true))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
   });
 });

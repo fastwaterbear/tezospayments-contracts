@@ -1,4 +1,4 @@
-import { contractErrors, NegativeTestCase, NegativeTestCases, PositiveTestCases, serviceMetadataToBytes } from '../helpers';
+import { NegativeTestCase, NegativeTestCases, PositiveTestCases, serviceErrors, serviceMetadataToBytes } from '../helpers';
 import { invalidOperationTypeTestCases } from './operationType';
 
 const validServiceMetadata: TezosPayments.ServiceMetadata = {
@@ -34,7 +34,7 @@ export const validServiceParameterUpdatesTestCases: PositiveTestCases<TezosPayme
 ];
 
 export const invalidServiceParameterUpdatesTestCases: NegativeTestCases<TezosPayments.ServiceContract.ServiceParameterUpdates> = [
-  ['Empty', [undefined, undefined, undefined, undefined], contractErrors.emptyUpdate],
+  ['Empty', [undefined, undefined, undefined, undefined], serviceErrors.emptyUpdate],
 
   ...invalidOperationTypeTestCases.map<NegativeTestCase<TezosPayments.ServiceContract.ServiceParameterUpdates>>(
     ([invalidOperationTypeDescription, invalidOperationType, errorMessage]) => [

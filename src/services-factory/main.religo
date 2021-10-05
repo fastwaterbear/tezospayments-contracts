@@ -4,6 +4,6 @@
 
 let main = ((action, storage): (action, storage)): main_result =>
     switch (action) {
-        | Create_service => create_service(storage);
+        | Add_service(service_info) => add_service(service_info, storage);
         | Administrator_action(administrator_action) => administrator_main(administrator_action, storage);
     };

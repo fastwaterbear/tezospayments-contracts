@@ -1,0 +1,92 @@
+[
+  {
+    "prim": "parameter",
+    "args": [
+      {
+        "prim": "or",
+        "args": [
+          {
+            "prim": "pair",
+            "args": [
+              {
+                "prim": "bool"
+              },
+              {
+                "prim": "option",
+                "args": [
+                  {
+                    "prim": "string"
+                  }
+                ]
+              }
+            ],
+            "annots": [
+              "%set_disabled"
+            ]
+          },
+          {
+            "prim": "unit",
+            "annots": [
+              "%some_action"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "prim": "storage",
+    "args": [
+      {
+        "prim": "unit"
+      }
+    ]
+  },
+  {
+    "prim": "code",
+    "args": [
+      [
+        {
+          "prim": "UNPAIR"
+        },
+        {
+          "prim": "IF_LEFT",
+          "args": [
+            [
+              {
+                "prim": "DROP"
+              },
+              {
+                "prim": "NIL",
+                "args": [
+                  {
+                    "prim": "operation"
+                  }
+                ]
+              },
+              {
+                "prim": "PAIR"
+              }
+            ],
+            [
+              {
+                "prim": "DROP"
+              },
+              {
+                "prim": "NIL",
+                "args": [
+                  {
+                    "prim": "operation"
+                  }
+                ]
+              },
+              {
+                "prim": "PAIR"
+              }
+            ]
+          ]
+        }
+      ]
+    ]
+  }
+]

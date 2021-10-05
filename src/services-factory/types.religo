@@ -2,15 +2,16 @@
 
 type services = big_map(service_owner, set(service));
 
-type service_factory_function_version = nat;
-type service_factory_function = service_factory_function_version => (operation, service);
+type factory_implementation = address;
+type factory_implementation_version = service_version;
+type factory_implementation_parameters = (bool, option(factory_implementation_version));
 
 type storage = {
     services: big_map(service_owner, set(service)),
     administrator: address,
     paused: bool,
-    service_factory_function: service_factory_function,
-    service_factory_function_version: service_factory_function_version,
+    factory_implementation: factory_implementation,
+    factory_implementation_version: factory_implementation_version,
 }
 
 type main_result = (list(operation), storage);
@@ -18,8 +19,8 @@ type main_result = (list(operation), storage);
 type administrator_action =
     | Set_administrator(address)
     | Set_pause(bool)
-    | Set_service_factory_function(service_factory_function);
+    | Set_factory_implementation(factory_implementation);
 
 type action =
-    | Create_service
+    | Add_service(add_service_factory_parameters)
     | Administrator_action(administrator_action);

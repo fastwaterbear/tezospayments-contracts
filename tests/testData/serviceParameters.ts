@@ -1,10 +1,10 @@
 import { MichelsonMap } from '@taquito/taquito';
 
-import { contractErrors, createSigningKeyMichelsonMap, NegativeTestCase, NegativeTestCases, serviceMetadataToBytes } from '../helpers';
+import { commonErrors, createSigningKeyMichelsonMap, NegativeTestCase, NegativeTestCases, serviceMetadataToBytes } from '../helpers';
 import { invalidOperationTypeTestCases } from './operationType';
 import { invalidSigningKeyTestCases, validSigningKeys } from './signingKeys';
 
-export const validServiceParameters: readonly TezosPayments.ServiceContract.ServiceParameters[] = [
+export const validServiceParameters: readonly TezosPayments.ServicesFactoryImplementationContract.ServiceParameters[] = [
   [
     serviceMetadataToBytes({
       name: 'Test Service 1',
@@ -60,7 +60,7 @@ export const validServiceParameters: readonly TezosPayments.ServiceContract.Serv
   ],
 ];
 
-export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.ServiceContract.ServiceParameters> = [
+export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.ServicesFactoryImplementationContract.ServiceParameters> = [
   [
     'Invalid metadata',
     [
@@ -81,7 +81,7 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
       TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
       createSigningKeyMichelsonMap([])
     ],
-    contractErrors.noAllowedTokens
+    commonErrors.noAllowedTokens
   ],
   [
     'Duplicate assets',
@@ -94,7 +94,7 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
     ],
     'duplicate_set_values_in_literal'
   ],
-  ...invalidOperationTypeTestCases.map<NegativeTestCase<TezosPayments.ServiceContract.ServiceParameters>>(
+  ...invalidOperationTypeTestCases.map<NegativeTestCase<TezosPayments.ServicesFactoryImplementationContract.ServiceParameters>>(
     ([invalidOperationTypeDescription, invalidOperationType, errorMessage]) => [
       `allowed operation type is invalid. The allowed operation type == ${invalidOperationType} (${invalidOperationTypeDescription})`,
       [
@@ -107,7 +107,7 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
       errorMessage
     ]
   ),
-  ...invalidSigningKeyTestCases.map<NegativeTestCase<TezosPayments.ServiceContract.ServiceParameters>>(
+  ...invalidSigningKeyTestCases.map<NegativeTestCase<TezosPayments.ServicesFactoryImplementationContract.ServiceParameters>>(
     ([invalidSigningKeyDescription, invalidSigningKey, errorMessage]) => [
       `signing key is invalid. ${invalidSigningKeyDescription}`,
       [

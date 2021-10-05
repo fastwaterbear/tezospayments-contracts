@@ -39,6 +39,4 @@ mkdir -p $BUILD_DIRECTORY
 # Contracts
 compile_contract services-factory $@
 compile_contract service $@
-
-# Lambdas
-compile_lambda service-factory-function service_factory_function $@
+compile_contract services-factory-implementation $@
