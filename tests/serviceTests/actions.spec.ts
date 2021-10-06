@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
-import { contractErrors, useLastTezosToolkit, deployService, tezToMutez, stringToBytes, createSigningKeyMichelsonMap } from '../helpers';
+import {
+  commonErrors, serviceErrors, useLastTezosToolkit, deployService,
+  tezToMutez, stringToBytes, createSigningKeyMichelsonMap
+} from '../helpers';
 import { admins, invalidOperationTypeTestCases } from '../testData';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
@@ -78,7 +81,7 @@ contract('Service | Actions', accounts => {
         'public', publicOperationPayloadBytes,
         undefined,
         { amount: 0 }
-      )).to.be.rejectedWith(contractErrors.invalidAmount);
+      )).to.be.rejectedWith(commonErrors.invalidAmount);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -97,7 +100,7 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
         { amount: 11 }
-      )).to.be.rejectedWith(contractErrors.invalidAmount);
+      )).to.be.rejectedWith(commonErrors.invalidAmount);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -115,7 +118,7 @@ contract('Service | Actions', accounts => {
         463,
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes
-      )).to.be.rejectedWith(contractErrors.notImplemented);
+      )).to.be.rejectedWith(commonErrors.notImplemented);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -159,7 +162,7 @@ contract('Service | Actions', accounts => {
             'public', publicOperationPayloadBytes,
             undefined,
             { amount: 10 }
-          )).to.be.rejectedWith(contractErrors.invalidOperationType);
+          )).to.be.rejectedWith(commonErrors.invalidOperationType);
 
           const storageAfterAction = await serviceContractInstance.storage();
           const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -187,7 +190,7 @@ contract('Service | Actions', accounts => {
             'public', publicOperationPayloadBytes,
             undefined,
             { amount: 10 }
-          )).to.be.rejectedWith(contractErrors.invalidOperationType);
+          )).to.be.rejectedWith(commonErrors.invalidOperationType);
 
           const storageAfterAction = await serviceContractInstance.storage();
           const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -210,7 +213,7 @@ contract('Service | Actions', accounts => {
         'public', publicOperationPayloadBytes,
         undefined,
         { amount: 10 }
-      )).to.be.rejectedWith(contractErrors.serviceIsPaused);
+      )).to.be.rejectedWith(serviceErrors.serviceIsPaused);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -231,7 +234,7 @@ contract('Service | Actions', accounts => {
         'public', publicOperationPayloadBytes,
         undefined,
         { amount: 10 }
-      )).to.be.rejectedWith(contractErrors.serviceIsDeleted);
+      )).to.be.rejectedWith(serviceErrors.serviceIsDeleted);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -250,27 +253,27 @@ contract('Service | Actions', accounts => {
         'private', privateOperationPayloadBytes,
         undefined,
         { amount: 10 }
-      )).to.be.rejectedWith(contractErrors.privatePayloadNotSupported);
+      )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
       await expect(serviceContractInstance.send_payment(
         undefined,
         TezosPayments.OperationType.Payment,
         'public_and_private', publicOperationPayloadBytes, privateOperationPayloadBytes,
         undefined,
         { amount: 10 }
-      )).to.be.rejectedWith(contractErrors.privatePayloadNotSupported);
+      )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
 
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
         2323,
         TezosPayments.OperationType.Payment,
         'private', privateOperationPayloadBytes,
-      )).to.be.rejectedWith(contractErrors.privatePayloadNotSupported);
+      )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
         2323,
         TezosPayments.OperationType.Payment,
         'public_and_private', publicOperationPayloadBytes, privateOperationPayloadBytes,
-      )).to.be.rejectedWith(contractErrors.privatePayloadNotSupported);
+      )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([

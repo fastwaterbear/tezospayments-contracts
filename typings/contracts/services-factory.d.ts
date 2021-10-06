@@ -7,18 +7,18 @@ declare global {
       readonly services: BigMapAbstraction;
       readonly administrator: string;
       readonly paused: boolean;
-      readonly service_factory_function?: readonly unknown[];
-      readonly service_factory_function_version: BigNumber;
+      readonly factory_implementation: string;
+      readonly factory_implementation_version: BigNumber;
     }
 
     interface AdministratorActions {
       set_administrator(newAdministrator: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       set_pause(paused: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
-      set_service_factory_function(lambda: readonly unknown[], params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
+      set_factory_implementation(factoryImplementationAddress: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
     }
 
     interface Instance extends Truffle.ContractInstance<Storage>, AdministratorActions {
-      create_service(unitArg: undefined, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
+      add_service(service: string, serviceOwner: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       administrator_action<T extends keyof AdministratorActions>(actionName: T, ...params: Parameters<AdministratorActions[T]>): Promise<Truffle.TransactionResult>;
     }
   }

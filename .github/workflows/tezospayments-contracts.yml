@@ -66,6 +66,12 @@ jobs:
           node --version
           npm --version
 
+      - name: Download the build from the artifacts storage
+        uses: actions/download-artifact@v2
+        with:
+          name: contracts
+          path: build
+
       - name: Install npm packages
         run: npm ci
 

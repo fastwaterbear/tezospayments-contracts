@@ -1,4 +1,4 @@
-import { contractErrors, NegativeTestCases } from '../helpers';
+import { commonErrors, NegativeTestCases } from '../helpers';
 
 export const validSigningKeys: readonly TezosPayments.SigningKey[] = [
   { public_key: 'edpkuRtZToTUQA5hM2CnNppsHBUv6xS8SxjRH7FqA5EoWhx1xNFrUC', name: null },
@@ -40,16 +40,16 @@ export const invalidSigningKeyTestCases: NegativeTestCases<TezosPayments.Signing
   [
     'Empty key name',
     { public_key: 'edpkvU6zLEwcsN2T8FQpfYjyYQZdsLATCU34Q8oodLhhk5ZNXWAgrW', name: '' },
-    contractErrors.invalidSigningKey
+    commonErrors.invalidSigningKey
   ],
   [
     'The length of the key name is less than normal (length < 3)',
     { public_key: 'edpkuyrcNJxAzWpd4LhqHDkYRMFVqGvGc2KdALRSqztMkMcc3kAEM8', name: 'AP' },
-    contractErrors.invalidSigningKey
+    commonErrors.invalidSigningKey
   ],
   [
     'The length of the key name is more than normal (length > 30)',
     { public_key: 'edpkuyrcNJxAzWpd4LhqHDkYRMFVqGvGc2KdALRSqztMkMcc3kAEM8', name: 'p2sk3kH4n9PpGQg4Xk7u2p13KUpnbvNH1hagAATcfmPvGZSJhjukxv' },
-    contractErrors.invalidSigningKey
+    commonErrors.invalidSigningKey
   ],
 ];

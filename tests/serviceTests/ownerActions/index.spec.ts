@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
 import {
-  contractErrors, useLastTezosToolkit, deployService, getAccountPublicKey,
-  createSigningKeyMichelsonMap, createSigningKeyUpdatesMichelsonMap, serviceMetadataToBytes
+  serviceErrors, useLastTezosToolkit, deployService, getAccountPublicKey,
+  createSigningKeyMichelsonMap, createSigningKeyUpdatesMichelsonMap
 } from '../../helpers';
 import { validServiceParameterUpdatesTestCases, simpleAccounts, validSigningKeys } from '../../testData';
 
@@ -26,47 +26,32 @@ contract('Service | Owner Actions', accounts => {
   it('should prevent calls from non-owners', async () => {
     await deployServiceAndAssign({ owner: simpleAccounts[1].pkh });
 
-    const serviceParameters: TezosPayments.ServiceContract.ServiceParameters = [
-      serviceMetadataToBytes({
-        name: 'Test Service',
-        links: ['https://test.com']
-      }),
-      true,
-      [],
-      TezosPayments.OperationType.Payment,
-      createSigningKeyMichelsonMap([])
-    ];
-    await expect(serviceContractInstance.initialize(...serviceParameters))
-      .to.be.rejectedWith(contractErrors.notOwner);
-    await expect(serviceContractInstance.owner_action('initialize', ...serviceParameters))
-      .to.be.rejectedWith(contractErrors.notOwner);
-
     await expect(serviceContractInstance.set_owner(currentAccountAddress))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
     await expect(serviceContractInstance.owner_action('set_owner', currentAccountAddress))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
 
     await expect(serviceContractInstance.set_pause(true))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
     await expect(serviceContractInstance.owner_action('set_pause', true))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
 
     await expect(serviceContractInstance.set_deleted(true))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
     await expect(serviceContractInstance.owner_action('set_deleted', true))
-      .to.be.rejectedWith(contractErrors.notOwner);
+      .to.be.rejectedWith(serviceErrors.notOwner);
 
     for (const [_, serviceParameterUpdates] of validServiceParameterUpdatesTestCases) {
       await expect(serviceContractInstance.update_service_parameters(...serviceParameterUpdates))
-        .to.be.rejectedWith(contractErrors.notOwner);
+        .to.be.rejectedWith(serviceErrors.notOwner);
       await expect(serviceContractInstance.owner_action('update_service_parameters', ...serviceParameterUpdates))
-        .to.be.rejectedWith(contractErrors.notOwner);
+        .to.be.rejectedWith(serviceErrors.notOwner);
     }
 
     await expect(serviceContractInstance.update_signing_keys(createSigningKeyUpdatesMichelsonMap({
       addOrUpdate: [validSigningKeys[0]!, validSigningKeys[3]!],
       delete: [currentAccountPublicKey!]
-    }))).to.be.rejectedWith(contractErrors.notOwner);
+    }))).to.be.rejectedWith(serviceErrors.notOwner);
 
     const storageAfterActions = await serviceContractInstance.storage();
     expect(storageAfterActions).to.deep.equal(serviceContractStorage);

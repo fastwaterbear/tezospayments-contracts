@@ -1,6 +1,9 @@
 import { expect } from 'chai';
 
-import { useLastTezosToolkit, deployService, getAccountPublicKey, createSigningKeyMichelsonMap, createSigningKeyUpdatesMichelsonMap } from '../../helpers';
+import {
+  useLastTezosToolkit, deployService, getAccountPublicKey,
+  createSigningKeyMichelsonMap, createSigningKeyUpdatesMichelsonMap
+} from '../../helpers';
 import { validSigningKeys } from '../../testData';
 
 const [serviceContract] = useLastTezosToolkit(artifacts.require('service'));
