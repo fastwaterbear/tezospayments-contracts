@@ -1,11 +1,6 @@
 export const tezToMutez = 1_000_000;
 
 export const protocols = {
-  edo: {
-    id: '008-PtEdoTez',
-    kind: 'Edo',
-    hash: 'PtEdo2ZkT9oKpimTah6x2embF25oss54njMuPzkJTEi5RqfdZFA',
-  },
   granada: {
     id: '010-PtGRANAD',
     kind: 'Granada',
