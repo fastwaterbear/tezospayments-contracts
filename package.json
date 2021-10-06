@@ -8,7 +8,7 @@
     "start-sandbox": "ts-node ./scripts/startSandbox",
     "build": "bash ./scripts/build.sh",
     "test": "truffle test",
-    "migrate-granadanet": "npm run clean && npm run build && truffle migrate --network granadanet",
+    "migrate": "npm run clean && npm run build && ts-node",
     "postinstall": "sed -i 's/ligo:next/ligo:0.24.0/' node_modules/truffle/build/cli.bundled.js"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "@typescript-eslint/parser": "^4.32.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
+    "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
     "mocha": "^9.1.2",
