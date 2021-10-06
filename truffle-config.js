@@ -22,13 +22,6 @@ module.exports = {
       secretKey: simpleAccounts[0].formattedSk,
       type: 'tezos',
     },
-    edo2net: {
-      host: 'https://edonet.smartpy.io',
-      port: 443,
-      network_id: '*',
-      secretKey: process.env.CONTRACT_OWNER_SECRET_KEY,
-      type: 'tezos',
-    },
     granadanet: {
       host: 'https://granadanet.smartpy.io',
       port: 443,
