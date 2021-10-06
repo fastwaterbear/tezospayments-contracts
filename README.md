@@ -2,8 +2,8 @@
 
 [Homepage](https://tezospayments.com) &nbsp;&nbsp;•&nbsp;&nbsp;
 [Applications Repository](https://github.com/fastwaterbear/tezospayments) &nbsp;&nbsp;•&nbsp;&nbsp;
-[Demo Service Contract [Edo2net]](https://payment.tezospayments.com/KT1BhWg791Mg4x2xVrh2Zb2yjf87U275JmGW/donation) &nbsp;&nbsp;•&nbsp;&nbsp; 
-[Service Factory Contract [Edo2net]](https://better-call.dev/edo2net/KT1PXyQ3wDpwm6J3r6iyLCWu5QKH5tef7ejU)  
+[Demo Service Contract [Granadanet]](https://payment.tezospayments.com/KT1EHWVV2tU4ecZKKmPTVVr99G66i4gD516M/donation?network=granadanet) &nbsp;&nbsp;•&nbsp;&nbsp; 
+[Service Factory Contract [Granadanet]](https://better-call.dev/granadanet/KT1Ja5k4rv85fiJPJ5jR1vpmCzoSzsyuW5kP)  
 
 > ⚠️ Tezos Payments is in active development so any component (application, contract, package, API) is subject to change ⚠️  
 
@@ -13,12 +13,15 @@ Prod
 Dev  
 [![tezospayments-contracts](https://github.com/fastwaterbear/tezospayments-contracts/actions/workflows/tezospayments-contracts.yml/badge.svg?branch=master)](https://github.com/fastwaterbear/tezospayments-contracts/actions/workflows/tezospayments-contracts.yml)
 
-Smart contracts are the core of the Tezos payments. There are two types of contracts: 
-1. **Service smart contract**. This contract represents information of a user's real service, and has methods to update this information, and also has a method of the ability to accept payments.  
+Smart contracts are the core of the Tezos payments. There are three types of contracts: 
+1. **Service contract**. This contract represents information of a user's real service, and has methods to update this information, and also has a method of the ability to accept payments.  
 [src/service/main.religo](https://github.com/fastwaterbear/tezospayments-contracts/blob/master/src/service/main.religo)
 
-2. **Services factory smart contract**. This contract helps produce contracts of the first type, service smart contract.  
+2. **Services factory contract**. This contract stores a collection of the created service contracts for each user, and a contract of the current implementation that helps to produce new service contracts.  
 [src/services-factory/main.religo](https://github.com/fastwaterbear/tezospayments-contracts/blob/master/src/services-factory/main.religo)
+
+3. **Services factory implementation contract**. Using this contract, users can create service contracts for themselves.   
+[src/services-factory-implementation/main.religo](https://github.com/fastwaterbear/tezospayments-contracts/blob/master/src/services-factory-implementation/main.religo)
 
 Smart contracts are written in [LIGO](https://ligolang.org/) using the ReasonLIGO syntax.
 
@@ -30,10 +33,10 @@ tezospayments-contracts/
 ├── scripts
 ├── src/
 │   ├── common
-│   ├── lambdas
 │   ├── main
 │   ├── service
-│   └── services-factory
+│   ├── services-factory
+│   └── services-factory-implementation
 ├── tests
 └── typings
 ```
@@ -76,8 +79,7 @@ bash ./scripts/build.sh
 * [Docker](https://docs.docker.com/get-docker) version 20.10.7 or later
 
 ### Run local Sandbox node
-The sandbox node is required for local deployments of smart contracts and for launching tests locally;
-We use the [flextesa](https://hub.docker.com/r/tqtezos/flextesa) image and the custom script written in TypeScript to launch the sandbox node.
+The sandbox node is required for local deployments of smart contracts and for launching tests locally. We use the [flextesa](https://hub.docker.com/r/tqtezos/flextesa) image and the custom script written in TypeScript to launch the sandbox node.
 
 1. Go to the root directory of the repository;
 2. Install npm packages using the command
