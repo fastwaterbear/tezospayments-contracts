@@ -34,8 +34,6 @@ compile_lambda() {
         $LAMBDAS_DIRECTORY/$1.religo main '$2'"
 }
 
-mkdir -p $BUILD_DIRECTORY
-
 # Contracts
 compile_contract services-factory $@
 compile_contract service $@
