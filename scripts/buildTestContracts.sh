@@ -25,7 +25,7 @@ compile_contract() {
 }
 
 # Contracts
-echo "Compling test contracts..."
+echo "Compiling test contracts..."
 
 compile_contract fa1.2.ligo $@
 compile_contract fa2.ligo $@
