@@ -104,5 +104,5 @@ We use the truffle package (tezos version) with small patches for testing smart 
 2. Go to the root directory of the repository;
 3. Run tests using the command
    ```
-   npm tests
+   npm test
    ```
