@@ -28,7 +28,7 @@ compile_contract() {
 # Contracts
 echo "Compiling test contracts..."
 
-compile_contract fa1.2 ligo $@
-compile_contract fa2 ligo $@
+compile_contract fa12 ligo $@
+compile_contract fa20 ligo $@
 
 echo "All test contracts are compiled!"
