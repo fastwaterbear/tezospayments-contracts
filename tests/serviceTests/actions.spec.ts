@@ -1,9 +1,10 @@
+import { MichelsonMap } from '@taquito/michelson-encoder';
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
 import {
   commonErrors, serviceErrors, useLastTezosToolkit, deployService,
-  tezToMutez, stringToBytes, createSigningKeyMichelsonMap
+  tezToMutez, stringToBytes, createSigningKeyMichelsonMap, deployFa12, deployLambda
 } from '../helpers';
 import { admins, invalidOperationTypeTestCases } from '../testData';
 
@@ -46,7 +47,7 @@ contract('Service | Actions', accounts => {
     [
       [TezosPayments.OperationType.Payment, 'as a payment'] as const,
       [TezosPayments.OperationType.Donation, 'as a donation'] as const
-    ].forEach(([paymentType, extraMessage]) =>
+    ].forEach(([paymentType, extraMessage]) => {
       it(`should allow to transfer tez tokens to a service owner (${extraMessage})`, async () => {
         const tezAmount = 10;
 
@@ -71,8 +72,59 @@ contract('Service | Actions', accounts => {
           .to.deep.equal(currentAccountBalanceBeforeAction.minus(tezToMutez(tezAmount) + result.receipt.fee));
         expect(ownerAccountBalanceAfterAction)
           .to.deep.equal(ownerAccountBalanceBeforeAction.plus(tezToMutez(tezAmount)));
-      })
-    );
+      });
+
+      it(`should allow to transfer fa1.2 tokens to a service owner (${extraMessage})`, async () => {
+        const currentAccountTokenAmount = new BigNumber(100);
+        const transferTokenAmount = 10;
+
+        const lambdaContract = await deployLambda(tezosToolkit);
+
+        const fa12Contract = await deployFa12(
+          tezosToolkit,
+          {
+            totalSupply: currentAccountTokenAmount,
+            ledger: MichelsonMap.fromLiteral({
+              [currentAccountAddress]: {
+                balance: currentAccountTokenAmount,
+                allowances: MichelsonMap.fromLiteral({
+                  [ownerAccountAddress]: transferTokenAmount
+                }),
+              }
+            }) as TezosPayments.Testing.Fa12Contract.Ledger
+          }
+        );
+
+        // const result = await serviceContractInstance.send_payment(
+        //   fa12Contract.address,
+        //   transferTokenAmount,
+        //   paymentType,
+        //   'public', publicOperationPayloadBytes,
+        // );
+
+        const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+          fa12Contract.views.getBalance?.(currentAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance?.(ownerAccountAddress).read(lambdaContract.address),
+        ]);
+
+        const op = await fa12Contract.methods.transfer!(currentAccountAddress, ownerAccountAddress, transferTokenAmount.toString()).send();
+        await op.confirmation();
+
+        const storageAfterAction = await serviceContractInstance.storage();
+        const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+          fa12Contract.views.getBalance?.(currentAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance?.(ownerAccountAddress).read(lambdaContract.address),
+        ]);
+
+        // expect(result).to.exist;
+        // expect(result.tx).to.exist;
+        expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+        expect(currentAccountTokenBalanceAfterAction)
+          .to.deep.equal(currentAccountTokenBalanceBeforeAction.minus(transferTokenAmount));
+        expect(ownerAccountTokenBalanceAfterAction)
+          .to.deep.equal(ownerAccountTokenBalanceBeforeAction.plus(transferTokenAmount));
+      });
+    });
 
     it('should fail if a user tries to transfer 0 tez tokens', async () => {
       await expect(serviceContractInstance.send_payment(
