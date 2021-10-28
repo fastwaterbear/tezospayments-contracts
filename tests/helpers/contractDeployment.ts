@@ -3,6 +3,7 @@ import { ContractAbstraction, ContractProvider, MichelsonMap, TezosToolkit } fro
 import { BigNumber } from 'bignumber.js';
 
 import * as fa12Implementation from '../testContracts/build/json/fa12.json';
+import * as fa20Implementation from '../testContracts/build/json/fa20.json';
 import { serviceMetadataToBytes } from './converters';
 import { createSigningKeyMichelsonMap } from './signing';
 import { burnAddress } from './utils';
@@ -104,13 +105,27 @@ export const deployLambda = async (
   return contract;
 };
 
-
 export const deployFa12 = async (
   tezosToolkit: TezosToolkit,
   storage: TezosPayments.Testing.Fa12Contract.Storage
 ): Promise<ContractAbstraction<ContractProvider>> => {
   const originationOperation = await tezosToolkit.contract.originate({
     code: fa12Implementation,
+    storage
+  });
+
+  await originationOperation.confirmation();
+  const contract = await originationOperation.contract();
+
+  return contract;
+};
+
+export const deployFa20 = async (
+  tezosToolkit: TezosToolkit,
+  storage: TezosPayments.Testing.Fa20Contract.Storage
+): Promise<ContractAbstraction<ContractProvider>> => {
+  const originationOperation = await tezosToolkit.contract.originate({
+    code: fa20Implementation,
     storage
   });
 

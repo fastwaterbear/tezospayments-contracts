@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 import {
   commonErrors, serviceErrors, useLastTezosToolkit, deployService,
-  tezToMutez, stringToBytes, createSigningKeyMichelsonMap, deployFa12, deployLambda
+  tezToMutez, stringToBytes, createSigningKeyMichelsonMap, deployFa12, deployLambda, deployFa20
 } from '../helpers';
 import { admins, invalidOperationTypeTestCases } from '../testData';
 
@@ -114,6 +114,72 @@ contract('Service | Actions', accounts => {
         const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
           fa12Contract.views.getBalance?.(currentAccountAddress).read(lambdaContract.address),
           fa12Contract.views.getBalance?.(ownerAccountAddress).read(lambdaContract.address),
+        ]);
+
+        // expect(result).to.exist;
+        // expect(result.tx).to.exist;
+        expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+        expect(currentAccountTokenBalanceAfterAction)
+          .to.deep.equal(currentAccountTokenBalanceBeforeAction.minus(transferTokenAmount));
+        expect(ownerAccountTokenBalanceAfterAction)
+          .to.deep.equal(ownerAccountTokenBalanceBeforeAction.plus(transferTokenAmount));
+      });
+
+      it(`should allow to transfer fa2.0 tokens to a service owner (${extraMessage})`, async () => {
+        const currentAccountTokenAmount = new BigNumber(100);
+        const transferTokenAmount = 10;
+
+        const lambdaContract = await deployLambda(tezosToolkit);
+
+        const ledger = new MichelsonMap();
+        ledger.set([currentAccountAddress, 0], currentAccountTokenAmount);
+
+        const fa20Contract = await deployFa20(
+          tezosToolkit,
+          {
+            admin: {
+              admin: currentAccountAddress,
+              pending_admin: null,
+              paused: false,
+            },
+            assets: {
+              token_total_supply: MichelsonMap.fromLiteral({
+                0: currentAccountTokenAmount
+              }),
+              ledger,
+              operators: MichelsonMap.fromLiteral({}),
+              token_metadata: MichelsonMap.fromLiteral({
+                0: {
+                  token_id: 0,
+                  token_info: MichelsonMap.fromLiteral({}),
+                }
+              }),
+            },
+            metadata: new MichelsonMap(),
+          } as TezosPayments.Testing.Fa20Contract.Storage
+        );
+
+        const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+          fa20Contract.views.balance_of?.([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of?.([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+        ]);
+
+        const transfer_params = [{
+          from_: currentAccountAddress,
+          txs: [{
+            to_: ownerAccountAddress,
+            token_id: 0,
+            amount: transferTokenAmount
+          }]
+        }];
+
+        const op = await fa20Contract.methods.transfer!(transfer_params).send();
+        await op.confirmation();
+
+        const storageAfterAction = await serviceContractInstance.storage();
+        const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+          fa20Contract.views.balance_of?.([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of?.([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
         ]);
 
         // expect(result).to.exist;
