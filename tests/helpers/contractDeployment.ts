@@ -122,11 +122,35 @@ export const deployFa12 = async (
 
 export const deployFa20 = async (
   tezosToolkit: TezosToolkit,
-  storage: TezosPayments.Testing.Fa20Contract.Storage
+  ownerAddress: string,
+  tokenAmount: BigNumber,
 ): Promise<ContractAbstraction<ContractProvider>> => {
+  const ledger = new MichelsonMap();
+  ledger.set([ownerAddress, 0], tokenAmount);
+
   const originationOperation = await tezosToolkit.contract.originate({
     code: fa20Implementation,
-    storage
+    storage: {
+      admin: {
+        admin: ownerAddress,
+        pending_admin: null,
+        paused: false,
+      },
+      assets: {
+        token_total_supply: MichelsonMap.fromLiteral({
+          0: tokenAmount
+        }),
+        ledger,
+        operators: MichelsonMap.fromLiteral({}),
+        token_metadata: MichelsonMap.fromLiteral({
+          0: {
+            token_id: 0,
+            token_info: MichelsonMap.fromLiteral({}),
+          }
+        }),
+      },
+      metadata: new MichelsonMap(),
+    } as TezosPayments.Testing.Fa20Contract.Storage
   });
 
   await originationOperation.confirmation();

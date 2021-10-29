@@ -137,32 +137,10 @@ contract('Service | Actions', accounts => {
 
         const lambdaContract = await getLambdaContract();
 
-        const ledger = new MichelsonMap();
-        ledger.set([currentAccountAddress, 0], currentAccountTokenAmount);
-
         const fa20Contract = await deployFa20(
           tezosToolkit,
-          {
-            admin: {
-              admin: currentAccountAddress,
-              pending_admin: null,
-              paused: false,
-            },
-            assets: {
-              token_total_supply: MichelsonMap.fromLiteral({
-                0: currentAccountTokenAmount
-              }),
-              ledger,
-              operators: MichelsonMap.fromLiteral({}),
-              token_metadata: MichelsonMap.fromLiteral({
-                0: {
-                  token_id: 0,
-                  token_info: MichelsonMap.fromLiteral({}),
-                }
-              }),
-            },
-            metadata: new MichelsonMap(),
-          } as TezosPayments.Testing.Fa20Contract.Storage
+          currentAccountAddress,
+          currentAccountTokenAmount
         );
 
         const updateOp = await fa20Contract.methods.update_operators!([{
