@@ -1,4 +1,5 @@
 import { MichelsonMap } from '@taquito/michelson-encoder';
+import { ContractAbstraction, ContractProvider } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
@@ -9,6 +10,11 @@ import {
 import { admins, invalidOperationTypeTestCases } from '../testData';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
+
+let _lambdaContract: ContractAbstraction<ContractProvider>;
+const getLambdaContract = async () => {
+  return _lambdaContract || (_lambdaContract = await deployLambda(tezosToolkit));
+};
 
 contract('Service | Actions', accounts => {
   const currentAccountAddress = accounts[0]!;
@@ -78,8 +84,7 @@ contract('Service | Actions', accounts => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
 
-        const lambdaContract = await deployLambda(tezosToolkit);
-
+        const lambdaContract = await getLambdaContract();
         const fa12Contract = await deployFa12(
           tezosToolkit,
           {
@@ -87,9 +92,7 @@ contract('Service | Actions', accounts => {
             ledger: MichelsonMap.fromLiteral({
               [currentAccountAddress]: {
                 balance: currentAccountTokenAmount,
-                allowances: MichelsonMap.fromLiteral({
-                  [ownerAccountAddress]: transferTokenAmount
-                }),
+                allowances: new MichelsonMap()
               }
             }) as TezosPayments.Testing.Fa12Contract.Ledger
           }
@@ -102,18 +105,21 @@ contract('Service | Actions', accounts => {
         //   'public', publicOperationPayloadBytes,
         // );
 
+        const approveOp = await fa12Contract.methods.approve!(serviceContractInstance.address, transferTokenAmount).send();
+        await approveOp.confirmation();
+
         const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
-          fa12Contract.views.getBalance?.(currentAccountAddress).read(lambdaContract.address),
-          fa12Contract.views.getBalance?.(ownerAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
         ]);
 
-        const op = await fa12Contract.methods.transfer!(currentAccountAddress, ownerAccountAddress, transferTokenAmount.toString()).send();
+        const op = await fa12Contract.methods.transfer!(currentAccountAddress, ownerAccountAddress, transferTokenAmount).send();
         await op.confirmation();
 
         const storageAfterAction = await serviceContractInstance.storage();
         const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
-          fa12Contract.views.getBalance?.(currentAccountAddress).read(lambdaContract.address),
-          fa12Contract.views.getBalance?.(ownerAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+          fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
         ]);
 
         // expect(result).to.exist;
@@ -129,7 +135,7 @@ contract('Service | Actions', accounts => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
 
-        const lambdaContract = await deployLambda(tezosToolkit);
+        const lambdaContract = await getLambdaContract();
 
         const ledger = new MichelsonMap();
         ledger.set([currentAccountAddress, 0], currentAccountTokenAmount);
@@ -159,27 +165,34 @@ contract('Service | Actions', accounts => {
           } as TezosPayments.Testing.Fa20Contract.Storage
         );
 
+        const updateOp = await fa20Contract.methods.update_operators!([{
+          add_operator: {
+            owner: currentAccountAddress,
+            operator: serviceContractInstance.address,
+            token_id: 0
+          }
+        }]).send();
+        await updateOp.confirmation();
+
         const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
-          fa20Contract.views.balance_of?.([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
-          fa20Contract.views.balance_of?.([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
         ]);
 
-        const transfer_params = [{
+        const op = await fa20Contract.methods.transfer!([{
           from_: currentAccountAddress,
           txs: [{
             to_: ownerAccountAddress,
             token_id: 0,
             amount: transferTokenAmount
           }]
-        }];
-
-        const op = await fa20Contract.methods.transfer!(transfer_params).send();
+        }]).send();
         await op.confirmation();
 
         const storageAfterAction = await serviceContractInstance.storage();
         const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
-          fa20Contract.views.balance_of?.([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
-          fa20Contract.views.balance_of?.([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
         ]);
 
         // expect(result).to.exist;
