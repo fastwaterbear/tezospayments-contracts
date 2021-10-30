@@ -266,7 +266,7 @@ contract('Service | Actions', accounts => {
       expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
     });
 
-    it.only('should fail if a user tries to transfer 0 FA 1.2 tokens', async () => {
+    it('should fail if a user tries to transfer 0 FA 1.2 tokens', async () => {
       const currentAccountTokenAmount = new BigNumber(100);
       const transferTokenAmount = 0;
 
@@ -301,7 +301,7 @@ contract('Service | Actions', accounts => {
       expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
     });
 
-    it.only('should fail if a user tries to transfer 0 FA 2.0 tokens', async () => {
+    it('should fail if a user tries to transfer 0 FA 2.0 tokens', async () => {
       const currentAccountTokenAmount = new BigNumber(100);
       const transferTokenAmount = 0;
       const tokenId = 3;
