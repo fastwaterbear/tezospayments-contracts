@@ -91,13 +91,6 @@ contract('Service | Actions', accounts => {
           currentAccountTokenAmount
         );
 
-        // const result = await serviceContractInstance.send_payment(
-        //   fa12Contract.address,
-        //   transferTokenAmount,
-        //   paymentType,
-        //   'public', publicOperationPayloadBytes,
-        // );
-
         const approveOp = await fa12Contract.methods.approve!(serviceContractInstance.address, transferTokenAmount).send();
         await approveOp.confirmation();
 
@@ -106,8 +99,12 @@ contract('Service | Actions', accounts => {
           fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
         ]);
 
-        const op = await fa12Contract.methods.transfer!(currentAccountAddress, ownerAccountAddress, transferTokenAmount).send();
-        await op.confirmation();
+        const result = await serviceContractInstance.send_payment(
+          fa12Contract.address,
+          transferTokenAmount,
+          paymentType,
+          'public', publicOperationPayloadBytes,
+        );
 
         const storageAfterAction = await serviceContractInstance.storage();
         const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
@@ -115,8 +112,8 @@ contract('Service | Actions', accounts => {
           fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
         ]);
 
-        // expect(result).to.exist;
-        // expect(result.tx).to.exist;
+        expect(result).to.exist;
+        expect(result.tx).to.exist;
         expect(storageAfterAction).to.deep.equal(serviceContractStorage);
         expect(currentAccountTokenBalanceAfterAction)
           .to.deep.equal(currentAccountTokenBalanceBeforeAction.minus(transferTokenAmount));

@@ -41,3 +41,9 @@ type owner_action =
 type action =
     | Send_payment(send_payment_parameters)
     | Owner_action(owner_action);
+
+type transfer_fa12_parameters = [@layout:comb] {
+    from: address,
+    to: address,
+    value: nat
+};

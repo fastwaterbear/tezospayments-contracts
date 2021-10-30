@@ -19,12 +19,22 @@ let transfer_tez = (storage: storage): main_result => {
     );
 };
 
-let transfer_asset = ((_asset_value, _storage): (asset_value, storage)): main_result => {
+let get_fa12_transfer_entrypoint = (contract: address): contract(transfer_fa12_parameters) => 
+    switch (Tezos.get_entrypoint_opt("%transfer", contract): option(contract(transfer_fa12_parameters))) {
+        | Some(contract) => contract;
+        | None => failwith(errors_not_fa12_contract)
+    };
+
+let transfer_asset = ((asset_value, storage): (asset_value, storage)): main_result => {
     if (Tezos.amount > 0tez) {
         failwith(errors_invalid_amount);
     };
 
-    (failwith(errors_not_implemented): main_result);
+    let entrypoint = get_fa12_transfer_entrypoint(asset_value.token_address);
+    (
+        [Tezos.transaction({ from: Tezos.sender, to: storage.owner, value: asset_value.value }, 0mutez, entrypoint)],
+        storage  
+    );
 };
 
 let send_payment = (
