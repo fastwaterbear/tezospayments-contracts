@@ -266,6 +266,78 @@ contract('Service | Actions', accounts => {
       expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
     });
 
+    it.only('should fail if a user tries to transfer 0 FA 1.2 tokens', async () => {
+      const currentAccountTokenAmount = new BigNumber(100);
+      const transferTokenAmount = 0;
+
+      const lambdaContract = await getLambdaContract();
+      const fa12Contract = await deployFa12(
+        tezosToolkit,
+        currentAccountAddress,
+        currentAccountTokenAmount
+      );
+
+      const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+        fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+        fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
+      ]);
+
+      await expect(serviceContractInstance.send_payment(
+        fa12Contract.address,
+        null,
+        transferTokenAmount,
+        TezosPayments.OperationType.Payment,
+        'public', publicOperationPayloadBytes,
+      )).to.be.rejectedWith(commonErrors.invalidAmount);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+        fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+        fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
+      ]);
+
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountTokenBalanceAfterAction).to.deep.equal(currentAccountTokenBalanceBeforeAction);
+      expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
+    });
+
+    it.only('should fail if a user tries to transfer 0 FA 2.0 tokens', async () => {
+      const currentAccountTokenAmount = new BigNumber(100);
+      const transferTokenAmount = 0;
+      const tokenId = 3;
+
+      const lambdaContract = await getLambdaContract();
+      const fa20Contract = await deployFa20(
+        tezosToolkit,
+        currentAccountAddress,
+        tokenId,
+        currentAccountTokenAmount
+      );
+
+      const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+        fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+        fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+      ]);
+
+      await expect(serviceContractInstance.send_payment(
+        fa20Contract.address,
+        tokenId,
+        transferTokenAmount,
+        TezosPayments.OperationType.Payment,
+        'public', publicOperationPayloadBytes,
+      )).to.be.rejectedWith(commonErrors.invalidAmount);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+        fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+        fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+      ]);
+
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountTokenBalanceAfterAction).to.deep.equal(currentAccountTokenBalanceBeforeAction);
+      expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
+    });
+
     it('should fail if a user tries to transfer assets and tez tokens at the same time', async () => {
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
