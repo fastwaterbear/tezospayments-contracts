@@ -132,10 +132,11 @@ export const deployFa12 = async (
 export const deployFa20 = async (
   tezosToolkit: TezosToolkit,
   ownerAddress: string,
+  tokenId: number,
   tokenAmount: BigNumber,
 ): Promise<ContractAbstraction<ContractProvider>> => {
   const ledger = new MichelsonMap();
-  ledger.set([ownerAddress, 0], tokenAmount);
+  ledger.set([ownerAddress, tokenId], tokenAmount);
 
   const originationOperation = await tezosToolkit.contract.originate({
     code: fa20Implementation,
@@ -147,13 +148,13 @@ export const deployFa20 = async (
       },
       assets: {
         token_total_supply: MichelsonMap.fromLiteral({
-          0: tokenAmount
+          [tokenId]: tokenAmount
         }),
         ledger,
         operators: MichelsonMap.fromLiteral({}),
         token_metadata: MichelsonMap.fromLiteral({
-          0: {
-            token_id: 0,
+          [tokenId]: {
+            token_id: tokenId,
             token_info: MichelsonMap.fromLiteral({}),
           }
         }),

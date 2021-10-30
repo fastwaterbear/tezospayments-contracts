@@ -62,6 +62,7 @@ contract('Service | Actions', accounts => {
           paymentType,
           'public', publicOperationPayloadBytes,
           undefined,
+          undefined,
           { amount: tezAmount }
         );
 
@@ -101,6 +102,7 @@ contract('Service | Actions', accounts => {
 
         const result = await serviceContractInstance.send_payment(
           fa12Contract.address,
+          null,
           transferTokenAmount,
           paymentType,
           'public', publicOperationPayloadBytes,
@@ -124,12 +126,14 @@ contract('Service | Actions', accounts => {
       it(`should allow to transfer fa2.0 tokens to a service owner (${extraMessage})`, async () => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
+        const tokenId = 3;
 
         const lambdaContract = await getLambdaContract();
 
         const fa20Contract = await deployFa20(
           tezosToolkit,
           currentAccountAddress,
+          tokenId,
           currentAccountTokenAmount
         );
 
@@ -137,34 +141,32 @@ contract('Service | Actions', accounts => {
           add_operator: {
             owner: currentAccountAddress,
             operator: serviceContractInstance.address,
-            token_id: 0
+            token_id: tokenId
           }
         }]).send();
         await updateOp.confirmation();
 
         const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
-          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
-          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
         ]);
 
-        const op = await fa20Contract.methods.transfer!([{
-          from_: currentAccountAddress,
-          txs: [{
-            to_: ownerAccountAddress,
-            token_id: 0,
-            amount: transferTokenAmount
-          }]
-        }]).send();
-        await op.confirmation();
+        const result = await serviceContractInstance.send_payment(
+          fa20Contract.address,
+          tokenId,
+          transferTokenAmount,
+          paymentType,
+          'public', publicOperationPayloadBytes,
+        );
 
         const storageAfterAction = await serviceContractInstance.storage();
         const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
-          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
-          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: 0 }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+          fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
         ]);
 
-        // expect(result).to.exist;
-        // expect(result.tx).to.exist;
+        expect(result).to.exist;
+        expect(result.tx).to.exist;
         expect(storageAfterAction).to.deep.equal(serviceContractStorage);
         expect(currentAccountTokenBalanceAfterAction)
           .to.deep.equal(currentAccountTokenBalanceBeforeAction.minus(transferTokenAmount));
@@ -178,6 +180,7 @@ contract('Service | Actions', accounts => {
         undefined,
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
+        undefined,
         undefined,
         { amount: 0 }
       )).to.be.rejectedWith(commonErrors.invalidAmount);
@@ -195,29 +198,12 @@ contract('Service | Actions', accounts => {
     it('should fail if a user tries to transfer assets and tez tokens at the same time', async () => {
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+        null,
         463,
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
         { amount: 11 }
       )).to.be.rejectedWith(commonErrors.invalidAmount);
-
-      const storageAfterAction = await serviceContractInstance.storage();
-      const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
-        tezosToolkit.tz.getBalance(currentAccountAddress),
-        tezosToolkit.tz.getBalance(ownerAccountAddress),
-      ]);
-      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
-      expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
-      expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
-    });
-
-    it('should fail if a user tries to transfer non-native tokens (tez tokens)', async () => {
-      await expect(serviceContractInstance.send_payment(
-        'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
-        463,
-        TezosPayments.OperationType.Payment,
-        'public', publicOperationPayloadBytes
-      )).to.be.rejectedWith(commonErrors.notImplemented);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
@@ -236,6 +222,7 @@ contract('Service | Actions', accounts => {
             undefined,
             invalidOperationType,
             'public', publicOperationPayloadBytes,
+            undefined,
             undefined,
             { amount: 10 }
           )).to.be.rejectedWith(errorMessage!);
@@ -259,6 +246,7 @@ contract('Service | Actions', accounts => {
             undefined,
             invalidOperationType,
             'public', publicOperationPayloadBytes,
+            undefined,
             undefined,
             { amount: 10 }
           )).to.be.rejectedWith(commonErrors.invalidOperationType);
@@ -288,6 +276,7 @@ contract('Service | Actions', accounts => {
             currentOperationType,
             'public', publicOperationPayloadBytes,
             undefined,
+            undefined,
             { amount: 10 }
           )).to.be.rejectedWith(commonErrors.invalidOperationType);
 
@@ -311,6 +300,7 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
         undefined,
+        undefined,
         { amount: 10 }
       )).to.be.rejectedWith(serviceErrors.serviceIsPaused);
 
@@ -332,6 +322,7 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
         undefined,
+        undefined,
         { amount: 10 }
       )).to.be.rejectedWith(serviceErrors.serviceIsDeleted);
 
@@ -351,6 +342,7 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'private', privateOperationPayloadBytes,
         undefined,
+        undefined,
         { amount: 10 }
       )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
       await expect(serviceContractInstance.send_payment(
@@ -358,17 +350,20 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'public_and_private', publicOperationPayloadBytes, privateOperationPayloadBytes,
         undefined,
+        undefined,
         { amount: 10 }
       )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
 
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+        null,
         2323,
         TezosPayments.OperationType.Payment,
         'private', privateOperationPayloadBytes,
       )).to.be.rejectedWith(serviceErrors.privatePayloadNotSupported);
       await expect(serviceContractInstance.send_payment(
         'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+        null,
         2323,
         TezosPayments.OperationType.Payment,
         'public_and_private', publicOperationPayloadBytes, privateOperationPayloadBytes,
