@@ -107,11 +107,20 @@ export const deployLambda = async (
 
 export const deployFa12 = async (
   tezosToolkit: TezosToolkit,
-  storage: TezosPayments.Testing.Fa12Contract.Storage
+  ownerAddress: string,
+  tokenAmount: BigNumber,
 ): Promise<ContractAbstraction<ContractProvider>> => {
   const originationOperation = await tezosToolkit.contract.originate({
     code: fa12Implementation,
-    storage
+    storage: {
+      totalSupply: tokenAmount,
+      ledger: MichelsonMap.fromLiteral({
+        [ownerAddress]: {
+          balance: tokenAmount,
+          allowances: new MichelsonMap()
+        }
+      }) as TezosPayments.Testing.Fa12Contract.Ledger
+    }
   });
 
   await originationOperation.confirmation();

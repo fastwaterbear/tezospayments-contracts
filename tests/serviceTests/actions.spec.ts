@@ -80,22 +80,15 @@ contract('Service | Actions', accounts => {
           .to.deep.equal(ownerAccountBalanceBeforeAction.plus(tezToMutez(tezAmount)));
       });
 
-      it(`should allow to transfer fa1.2 tokens to a service owner (${extraMessage})`, async () => {
+      it.only(`should allow to transfer fa1.2 tokens to a service owner (${extraMessage})`, async () => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
 
         const lambdaContract = await getLambdaContract();
         const fa12Contract = await deployFa12(
           tezosToolkit,
-          {
-            totalSupply: currentAccountTokenAmount,
-            ledger: MichelsonMap.fromLiteral({
-              [currentAccountAddress]: {
-                balance: currentAccountTokenAmount,
-                allowances: new MichelsonMap()
-              }
-            }) as TezosPayments.Testing.Fa12Contract.Ledger
-          }
+          currentAccountAddress,
+          currentAccountTokenAmount
         );
 
         // const result = await serviceContractInstance.send_payment(
