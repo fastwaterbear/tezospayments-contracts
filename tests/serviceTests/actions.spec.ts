@@ -80,7 +80,7 @@ contract('Service | Actions', accounts => {
           .to.deep.equal(ownerAccountBalanceBeforeAction.plus(tezToMutez(tezAmount)));
       });
 
-      it.only(`should allow to transfer fa1.2 tokens to a service owner (${extraMessage})`, async () => {
+      it(`should allow to transfer fa1.2 tokens to a service owner (${extraMessage})`, async () => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
 
