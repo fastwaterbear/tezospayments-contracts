@@ -91,6 +91,13 @@ contract('Service | Actions', accounts => {
           currentAccountTokenAmount
         );
 
+        await beforeEachBody({
+          allowed_tokens: {
+            tez: true,
+            assets: [fa12Contract.address]
+          }
+        });
+
         const approveOp = await fa12Contract.methods.approve!(serviceContractInstance.address, transferTokenAmount).send();
         await approveOp.confirmation();
 
@@ -135,6 +142,13 @@ contract('Service | Actions', accounts => {
           tokenId,
           currentAccountTokenAmount
         );
+
+        await beforeEachBody({
+          allowed_tokens: {
+            tez: true,
+            assets: [fa20Contract.address]
+          }
+        });
 
         const updateOp = await fa20Contract.methods.update_operators!([{
           add_operator: {
@@ -185,6 +199,13 @@ contract('Service | Actions', accounts => {
         currentAccountTokenAmount
       );
 
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [fa12Contract.address]
+        }
+      });
+
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
         fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
@@ -222,6 +243,13 @@ contract('Service | Actions', accounts => {
         currentAccountTokenAmount
       );
 
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [fa20Contract.address]
+        }
+      });
+
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
         fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
@@ -234,6 +262,98 @@ contract('Service | Actions', accounts => {
         TezosPayments.OperationType.Payment,
         'public', publicOperationPayloadBytes,
       )).to.be.rejectedWith(serviceErrors.notFa12Contract);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+        fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+        fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+      ]);
+
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountTokenBalanceAfterAction).to.deep.equal(currentAccountTokenBalanceBeforeAction);
+      expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
+    });
+
+    it('should fail if a user tries to send token but allowed assets list is empty', async () => {
+      const currentAccountTokenAmount = new BigNumber(100);
+      const transferTokenAmount = 10;
+
+      const lambdaContract = await getLambdaContract();
+      const fa12Contract = await deployFa12(
+        tezosToolkit,
+        currentAccountAddress,
+        currentAccountTokenAmount
+      );
+
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: []
+        }
+      });
+
+      const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+        fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+        fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
+      ]);
+
+      await expect(serviceContractInstance.send_payment(
+        fa12Contract.address,
+        null,
+        transferTokenAmount,
+        TezosPayments.OperationType.Payment,
+        'public', publicOperationPayloadBytes,
+      )).to.be.rejectedWith(serviceErrors.notAllowedToken);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
+        fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
+        fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
+      ]);
+
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountTokenBalanceAfterAction).to.deep.equal(currentAccountTokenBalanceBeforeAction);
+      expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
+    });
+
+    it('should fail if a user tries to send token but allowed assets list does not contain it', async () => {
+      const currentAccountTokenAmount = new BigNumber(100);
+      const transferTokenAmount = 10;
+      const tokenId = 3;
+
+      const lambdaContract = await getLambdaContract();
+      const fa12Contract = await deployFa12(
+        tezosToolkit,
+        currentAccountAddress,
+        currentAccountTokenAmount
+      );
+
+      const fa20Contract = await deployFa20(
+        tezosToolkit,
+        currentAccountAddress,
+        tokenId,
+        currentAccountTokenAmount
+      );
+
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [fa12Contract.address]
+        }
+      });
+
+      const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
+        fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+        fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
+      ]);
+
+      await expect(serviceContractInstance.send_payment(
+        fa20Contract.address,
+        tokenId,
+        transferTokenAmount,
+        TezosPayments.OperationType.Payment,
+        'public', publicOperationPayloadBytes,
+      )).to.be.rejectedWith(serviceErrors.notAllowedToken);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountTokenBalanceAfterAction, ownerAccountTokenBalanceAfterAction] = await Promise.all([
@@ -277,6 +397,13 @@ contract('Service | Actions', accounts => {
         currentAccountTokenAmount
       );
 
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [fa12Contract.address]
+        }
+      });
+
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
         fa12Contract.views.getBalance!(ownerAccountAddress).read(lambdaContract.address),
@@ -314,6 +441,13 @@ contract('Service | Actions', accounts => {
         currentAccountTokenAmount
       );
 
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [fa20Contract.address]
+        }
+      });
+
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
         fa20Contract.views.balance_of!([{ owner: ownerAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
@@ -339,8 +473,17 @@ contract('Service | Actions', accounts => {
     });
 
     it('should fail if a user tries to transfer assets and tez tokens at the same time', async () => {
+      const contractAddress = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
+
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: true,
+          assets: [contractAddress]
+        }
+      });
+
       await expect(serviceContractInstance.send_payment(
-        'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV',
+        contractAddress,
         null,
         463,
         TezosPayments.OperationType.Payment,

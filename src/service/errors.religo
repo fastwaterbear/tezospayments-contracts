@@ -8,3 +8,4 @@
 [@inline] let errors_not_fa12_contract = "Not FA 1.2 contract";
 [@inline] let errors_not_fa20_contract = "Not FA 2.0 contract";
 [@inline] let errors_invalid_token_id = "Invalid token id";
+[@inline] let errors_not_allowed_token = "Not allowed token";

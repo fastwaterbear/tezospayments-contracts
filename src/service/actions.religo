@@ -54,6 +54,10 @@ let transfer_fa20_asset = ((asset_value, storage): (asset_value, storage)): main
 };
 
 let transfer_asset = ((asset_value, storage): (asset_value, storage)): main_result => {
+    if(!Set.mem(asset_value.token_address, storage.allowed_tokens.assets)) {
+        failwith(errors_not_allowed_token);
+    };
+
     if (Tezos.amount > 0tez || asset_value.value <= 0n) {
         failwith(errors_invalid_amount);
     };
