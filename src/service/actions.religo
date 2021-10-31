@@ -7,6 +7,10 @@ let get_owner_account = (owner: address): contract(unit)
     };
 
 let transfer_tez = (storage: storage): main_result => {
+    if(!storage.allowed_tokens.tez) {
+        failwith(errors_not_allowed_token);
+    };
+
     if (Tezos.amount <= 0tez) {
         failwith(errors_invalid_amount);
     };

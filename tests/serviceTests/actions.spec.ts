@@ -472,6 +472,33 @@ contract('Service | Actions', accounts => {
       expect(ownerAccountTokenBalanceAfterAction).to.deep.equal(ownerAccountTokenBalanceBeforeAction);
     });
 
+    it('should fail if a user tries to transfer tez tokens but tez tokens are not allowed', async () => {
+      await beforeEachBody({
+        allowed_tokens: {
+          tez: false,
+          assets: []
+        }
+      });
+
+      await expect(serviceContractInstance.send_payment(
+        undefined,
+        TezosPayments.OperationType.Payment,
+        'public', publicOperationPayloadBytes,
+        undefined,
+        undefined,
+        { amount: 10 }
+      )).to.be.rejectedWith(serviceErrors.notAllowedToken);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
+        tezosToolkit.tz.getBalance(currentAccountAddress),
+        tezosToolkit.tz.getBalance(ownerAccountAddress),
+      ]);
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
+      expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
+    });
+
     it('should fail if a user tries to transfer assets and tez tokens at the same time', async () => {
       const contractAddress = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
 
