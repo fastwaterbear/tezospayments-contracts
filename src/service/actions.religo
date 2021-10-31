@@ -26,7 +26,7 @@ let transfer_tez = (storage: storage): main_result => {
 let get_fa12_transfer_entrypoint = (contract: address): contract(transfer_fa12_parameters) => 
     switch (Tezos.get_entrypoint_opt("%transfer", contract): option(contract(transfer_fa12_parameters))) {
         | Some(contract) => contract;
-        | None => failwith(errors_not_fa12_contract)
+        | None => failwith(errors_not_fa12_contract);
     };
 
 let transfer_fa12_asset = ((asset_value, storage): (asset_value, storage)): main_result => {
@@ -40,13 +40,13 @@ let transfer_fa12_asset = ((asset_value, storage): (asset_value, storage)): main
 let get_fa20_transfer_entrypoint = (contract: address): contract(transfer_fa20_parameters) => 
     switch (Tezos.get_entrypoint_opt("%transfer", contract): option(contract(transfer_fa20_parameters))) {
         | Some(contract) => contract;
-        | None => failwith(errors_not_fa20_contract)
+        | None => failwith(errors_not_fa20_contract);
     };
 
 let transfer_fa20_asset = ((asset_value, storage): (asset_value, storage)): main_result => {
     let token_id = switch (asset_value.token_id: option(nat)) {
         | Some (id) => id;
-        | None => (failwith (errors_invalid_token_id): nat)
+        | None => (failwith (errors_invalid_token_id): nat);
     };
 
     let entrypoint = get_fa20_transfer_entrypoint(asset_value.token_address);
@@ -81,7 +81,7 @@ let send_payment = (
     fail_if_payload_is_invalid(payload);
 
     switch asset_value {
-        | None => transfer_tez(storage)
-        | Some(asset_value) => transfer_asset(asset_value, storage)
+        | None => transfer_tez(storage);
+        | Some(asset_value) => transfer_asset(asset_value, storage);
     };
 };
