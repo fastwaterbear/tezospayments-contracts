@@ -33,30 +33,30 @@ let update_service_parameters = ((service_parameters, storage): (service_paramet
         | _ => unit
     });
 
-    let updated_storage_step1 = switch service_parameters.metadata {
+    let updated_storage = switch service_parameters.metadata {
         | Some(new_metadata) => { ...storage, metadata: new_metadata }
         | None => storage
     };
-    let updated_storage_step2 = switch service_parameters.allowed_tokens.tez {
+    let updated_storage = switch service_parameters.allowed_tokens.tez {
         | Some(new_tez)
-            => { ...updated_storage_step1, allowed_tokens: { ...updated_storage_step1.allowed_tokens, tez: new_tez } }
-        | None => updated_storage_step1
+            => { ...updated_storage, allowed_tokens.tez: new_tez }
+        | None => updated_storage
     };
-    let updated_storage_step3 = switch service_parameters.allowed_tokens.assets {
+    let updated_storage = switch service_parameters.allowed_tokens.assets {
         | Some(new_assets)
-            => { ...updated_storage_step2, allowed_tokens: { ...updated_storage_step2.allowed_tokens, assets: new_assets } }
-        | None => updated_storage_step2
+            => { ...updated_storage, allowed_tokens.assets: new_assets }
+        | None => updated_storage
     };
-    let updated_storage_step4 = switch service_parameters.allowed_operation_type {
+    let updated_storage = switch service_parameters.allowed_operation_type {
         | Some(new_allowed_operation_type) => {
             fail_if_operation_type_is_invalid(new_allowed_operation_type);
 
-            { ...updated_storage_step3, allowed_operation_type: new_allowed_operation_type }
+            { ...updated_storage, allowed_operation_type: new_allowed_operation_type }
           }
-        | None => updated_storage_step3
+        | None => updated_storage
     };
 
-    (([]: list(operation)), updated_storage_step4)
+    (([]: list(operation)), updated_storage)
 };
 
 let update_signing_keys = ((signing_key_updates, storage): (signing_key_updates, storage)): main_result => {

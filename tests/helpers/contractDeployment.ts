@@ -1,7 +1,9 @@
 import { InMemorySigner } from '@taquito/signer';
-import { MichelsonMap, TezosToolkit } from '@taquito/taquito';
+import { ContractAbstraction, ContractProvider, MichelsonMap, TezosToolkit } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 
+import * as fa12Implementation from '../testContracts/build/json/fa12.json';
+import * as fa20Implementation from '../testContracts/build/json/fa20.json';
 import { serviceMetadataToBytes } from './converters';
 import { createSigningKeyMichelsonMap } from './signing';
 import { burnAddress } from './utils';
@@ -87,4 +89,82 @@ export const setServicesFactoryImplementation = async (
   tezosToolkit.setSignerProvider(currentSignerProvider);
 
   return operation.confirmation();
+};
+
+export const deployLambda = async (
+  tezosToolkit: TezosToolkit,
+): Promise<ContractAbstraction<ContractProvider>> => {
+  const originationOperation = await tezosToolkit.contract.originate({
+    code: 'parameter (lambda unit (pair (list operation) unit)); storage unit; code { CAR ; UNIT ; EXEC }',
+    storage: null
+  });
+
+  await originationOperation.confirmation();
+  const contract = await originationOperation.contract();
+
+  return contract;
+};
+
+export const deployFa12 = async (
+  tezosToolkit: TezosToolkit,
+  ownerAddress: string,
+  tokenAmount: BigNumber,
+): Promise<ContractAbstraction<ContractProvider>> => {
+  const originationOperation = await tezosToolkit.contract.originate({
+    code: fa12Implementation,
+    storage: {
+      totalSupply: tokenAmount,
+      ledger: MichelsonMap.fromLiteral({
+        [ownerAddress]: {
+          balance: tokenAmount,
+          allowances: new MichelsonMap()
+        }
+      }) as TezosPayments.Testing.Fa12Contract.Ledger
+    }
+  });
+
+  await originationOperation.confirmation();
+  const contract = await originationOperation.contract();
+
+  return contract;
+};
+
+export const deployFa20 = async (
+  tezosToolkit: TezosToolkit,
+  ownerAddress: string,
+  tokenId: number,
+  tokenAmount: BigNumber,
+): Promise<ContractAbstraction<ContractProvider>> => {
+  const ledger = new MichelsonMap();
+  ledger.set([ownerAddress, tokenId], tokenAmount);
+
+  const originationOperation = await tezosToolkit.contract.originate({
+    code: fa20Implementation,
+    storage: {
+      admin: {
+        admin: ownerAddress,
+        pending_admin: null,
+        paused: false,
+      },
+      assets: {
+        token_total_supply: MichelsonMap.fromLiteral({
+          [tokenId]: tokenAmount
+        }),
+        ledger,
+        operators: MichelsonMap.fromLiteral({}),
+        token_metadata: MichelsonMap.fromLiteral({
+          [tokenId]: {
+            token_id: tokenId,
+            token_info: MichelsonMap.fromLiteral({}),
+          }
+        }),
+      },
+      metadata: new MichelsonMap(),
+    } as TezosPayments.Testing.Fa20Contract.Storage
+  });
+
+  await originationOperation.confirmation();
+  const contract = await originationOperation.contract();
+
+  return contract;
 };

@@ -28,4 +28,7 @@ export const serviceErrors = {
   notOwner: 'Only owner can do this',
   emptyUpdate: 'Empty update',
   privatePayloadNotSupported: 'Private payload is not supported at the moment',
+  notFa12Contract: 'Not FA 1.2 contract',
+  notFa20Contract: 'Not FA 2.0 contract',
+  notAllowedToken: 'Not allowed token',
 } as const;

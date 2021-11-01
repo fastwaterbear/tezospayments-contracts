@@ -36,6 +36,7 @@ declare global {
         operationType: OperationType,
         payloadType: 'public' | 'private',
         payload: string,
+        assetTokenId: void,
         assetValue: void,
         params: Truffle.TransactionParameters & { amount: number }
       ): Promise<Truffle.TransactionResult>;
@@ -45,11 +46,13 @@ declare global {
         payloadType: 'public_and_private',
         publicPayload: string,
         privatePayload: string,
+        assetTokenId: void,
         assetValue: void,
         params: Truffle.TransactionParameters & { amount: number }
       ): Promise<Truffle.TransactionResult>;
       send_payment(
         assetTokenAddress: string,
+        assetTokenId: number | null,
         assetValue: number,
         operationType: OperationType,
         payloadType: 'public' | 'private',
@@ -58,6 +61,7 @@ declare global {
       ): Promise<Truffle.TransactionResult>;
       send_payment(
         assetTokenAddress: string,
+        assetTokenId: number | null,
         assetValue: number,
         operationType: OperationType,
         payloadType: 'public_and_private',

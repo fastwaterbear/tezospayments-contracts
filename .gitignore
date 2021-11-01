@@ -1,3 +1,6 @@
+# contract results
+build/
+
 # dependencies
 /node_modules
 /.pnp
@@ -5,9 +8,6 @@
 
 # testing
 /coverage
-
-# production
-/build
 
 # misc
 /temp
