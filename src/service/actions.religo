@@ -44,7 +44,7 @@ let get_fa20_transfer_entrypoint = (contract: address): contract(transfer_fa20_p
     };
 
 let transfer_fa20_asset = ((asset_value, storage): (asset_value, storage)): main_result => {
-    let token_id = switch (asset_value.token_id: option(nat)) {
+    let token_id = switch (asset_value.token_id) {
         | Some (id) => id;
         | None => (failwith (errors_invalid_token_id): nat);
     };
