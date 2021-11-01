@@ -10,11 +10,6 @@ import { admins, invalidOperationTypeTestCases } from '../testData';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
 
-let _lambdaContract: ContractAbstraction<ContractProvider>;
-const getLambdaContract = async () => {
-  return _lambdaContract || (_lambdaContract = await deployLambda(tezosToolkit));
-};
-
 contract('Service | Actions', accounts => {
   const currentAccountAddress = accounts[0]!;
   const ownerAccountAddress = admins[0].pkh;
@@ -26,20 +21,48 @@ contract('Service | Actions', accounts => {
   let ownerAccountBalanceBeforeAction: BigNumber;
   let publicOperationPayloadBytes: string;
   let privateOperationPayloadBytes: string;
+  let lambdaContract: ContractAbstraction<ContractProvider>;
+  let fa12Contract: ContractAbstraction<ContractProvider>;
+  let fa20Contract: ContractAbstraction<ContractProvider>;
 
   const deployServiceAndAssign = async (initialStorageState: Parameters<typeof deployService>['1']) =>
     [serviceContractInstance, serviceContractStorage] = await deployService(serviceContract, initialStorageState);
 
-  const beforeEachBody = async (initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>) => {
+  const beforeEachBody = async (
+    initialStorageState?: Partial<Truffle.InitialStorageState<TezosPayments.ServiceContract.Storage>>,
+    tokensInfo?: { amount: BigNumber, tokenId: number }
+  ) => {
+    if (tokensInfo) {
+      fa12Contract = await deployFa12(
+        tezosToolkit,
+        currentAccountAddress,
+        tokensInfo.amount
+      );
+
+      fa20Contract = await deployFa20(
+        tezosToolkit,
+        currentAccountAddress,
+        tokensInfo.tokenId,
+        tokensInfo.amount
+      );
+    }
+
     await deployServiceAndAssign({
       owner: ownerAccountAddress,
       signing_keys: createSigningKeyMichelsonMap([{ public_key: ownerAccountPublicKey, name: null }]),
       allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
+      allowed_tokens: {
+        tez: true,
+        assets: tokensInfo ? [fa12Contract.address, fa20Contract.address] : []
+      },
       ...initialStorageState
     });
 
     publicOperationPayloadBytes = stringToBytes('public data');
     privateOperationPayloadBytes = stringToBytes('private data');
+
+    lambdaContract = lambdaContract || await deployLambda(tezosToolkit);
+
     [currentAccountBalanceBeforeAction, ownerAccountBalanceBeforeAction] = await Promise.all([
       tezosToolkit.tz.getBalance(currentAccountAddress),
       tezosToolkit.tz.getBalance(ownerAccountAddress),
@@ -83,19 +106,7 @@ contract('Service | Actions', accounts => {
         const currentAccountTokenAmount = new BigNumber(100);
         const transferTokenAmount = 10;
 
-        const lambdaContract = await getLambdaContract();
-        const fa12Contract = await deployFa12(
-          tezosToolkit,
-          currentAccountAddress,
-          currentAccountTokenAmount
-        );
-
-        await beforeEachBody({
-          allowed_tokens: {
-            tez: true,
-            assets: [fa12Contract.address]
-          }
-        });
+        await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId: 0 });
 
         const approveOp = await fa12Contract.methods.approve!(serviceContractInstance.address, transferTokenAmount).send();
         await approveOp.confirmation();
@@ -133,21 +144,7 @@ contract('Service | Actions', accounts => {
         const transferTokenAmount = 10;
         const tokenId = 3;
 
-        const lambdaContract = await getLambdaContract();
-
-        const fa20Contract = await deployFa20(
-          tezosToolkit,
-          currentAccountAddress,
-          tokenId,
-          currentAccountTokenAmount
-        );
-
-        await beforeEachBody({
-          allowed_tokens: {
-            tez: true,
-            assets: [fa20Contract.address]
-          }
-        });
+        await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId });
 
         const updateOp = await fa20Contract.methods.update_operators!([{
           add_operator: {
@@ -191,19 +188,7 @@ contract('Service | Actions', accounts => {
       const currentAccountTokenAmount = new BigNumber(100);
       const transferTokenAmount = 10;
 
-      const lambdaContract = await getLambdaContract();
-      const fa12Contract = await deployFa12(
-        tezosToolkit,
-        currentAccountAddress,
-        currentAccountTokenAmount
-      );
-
-      await beforeEachBody({
-        allowed_tokens: {
-          tez: true,
-          assets: [fa12Contract.address]
-        }
-      });
+      await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId: 0 });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
@@ -234,20 +219,7 @@ contract('Service | Actions', accounts => {
       const transferTokenAmount = 10;
       const tokenId = 3;
 
-      const lambdaContract = await getLambdaContract();
-      const fa20Contract = await deployFa20(
-        tezosToolkit,
-        currentAccountAddress,
-        tokenId,
-        currentAccountTokenAmount
-      );
-
-      await beforeEachBody({
-        allowed_tokens: {
-          tez: true,
-          assets: [fa20Contract.address]
-        }
-      });
+      await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
@@ -277,19 +249,12 @@ contract('Service | Actions', accounts => {
       const currentAccountTokenAmount = new BigNumber(100);
       const transferTokenAmount = 10;
 
-      const lambdaContract = await getLambdaContract();
-      const fa12Contract = await deployFa12(
-        tezosToolkit,
-        currentAccountAddress,
-        currentAccountTokenAmount
-      );
-
       await beforeEachBody({
         allowed_tokens: {
           tez: true,
           assets: []
         }
-      });
+      }, { amount: currentAccountTokenAmount, tokenId: 0 });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
@@ -320,26 +285,12 @@ contract('Service | Actions', accounts => {
       const transferTokenAmount = 10;
       const tokenId = 3;
 
-      const lambdaContract = await getLambdaContract();
-      const fa12Contract = await deployFa12(
-        tezosToolkit,
-        currentAccountAddress,
-        currentAccountTokenAmount
-      );
-
-      const fa20Contract = await deployFa20(
-        tezosToolkit,
-        currentAccountAddress,
-        tokenId,
-        currentAccountTokenAmount
-      );
-
       await beforeEachBody({
         allowed_tokens: {
           tez: true,
-          assets: [fa12Contract.address]
+          assets: ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV']
         }
-      });
+      }, { amount: currentAccountTokenAmount, tokenId });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
@@ -390,19 +341,7 @@ contract('Service | Actions', accounts => {
       const currentAccountTokenAmount = new BigNumber(100);
       const transferTokenAmount = 0;
 
-      const lambdaContract = await getLambdaContract();
-      const fa12Contract = await deployFa12(
-        tezosToolkit,
-        currentAccountAddress,
-        currentAccountTokenAmount
-      );
-
-      await beforeEachBody({
-        allowed_tokens: {
-          tez: true,
-          assets: [fa12Contract.address]
-        }
-      });
+      await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId: 0 });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa12Contract.views.getBalance!(currentAccountAddress).read(lambdaContract.address),
@@ -433,20 +372,7 @@ contract('Service | Actions', accounts => {
       const transferTokenAmount = 0;
       const tokenId = 3;
 
-      const lambdaContract = await getLambdaContract();
-      const fa20Contract = await deployFa20(
-        tezosToolkit,
-        currentAccountAddress,
-        tokenId,
-        currentAccountTokenAmount
-      );
-
-      await beforeEachBody({
-        allowed_tokens: {
-          tez: true,
-          assets: [fa20Contract.address]
-        }
-      });
+      await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId });
 
       const [currentAccountTokenBalanceBeforeAction, ownerAccountTokenBalanceBeforeAction] = await Promise.all([
         fa20Contract.views.balance_of!([{ owner: currentAccountAddress, token_id: tokenId }]).read(lambdaContract.address).then(r => r[0].balance),
