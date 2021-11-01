@@ -46,14 +46,13 @@ contract('Service | Actions', accounts => {
     ]);
   };
 
-  beforeEach('Deploy new instance', () => beforeEachBody());
-
   describe('Send_payment', () => {
     [
       [TezosPayments.OperationType.Payment, 'as a payment'] as const,
       [TezosPayments.OperationType.Donation, 'as a donation'] as const
     ].forEach(([paymentType, extraMessage]) => {
       it(`should allow to transfer tez tokens to a service owner (${extraMessage})`, async () => {
+        await beforeEachBody();
         const tezAmount = 10;
 
         const result = await serviceContractInstance.send_payment(
@@ -367,6 +366,7 @@ contract('Service | Actions', accounts => {
     });
 
     it('should fail if a user tries to transfer 0 tez tokens', async () => {
+      await beforeEachBody();
       await expect(serviceContractInstance.send_payment(
         undefined,
         TezosPayments.OperationType.Payment,
@@ -501,7 +501,6 @@ contract('Service | Actions', accounts => {
 
     it('should fail if a user tries to transfer assets and tez tokens at the same time', async () => {
       const contractAddress = 'KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV';
-
       await beforeEachBody({
         allowed_tokens: {
           tez: true,
@@ -531,6 +530,7 @@ contract('Service | Actions', accounts => {
     describe('should fail if an operation type is invalid', async () => {
       invalidOperationTypeTestCases.forEach(([caseName, invalidOperationType, errorMessage]) => {
         it(`the invalid operation type == ${invalidOperationType} (${caseName})`, async () => {
+          await beforeEachBody();
           await expect(serviceContractInstance.send_payment(
             undefined,
             invalidOperationType,
@@ -555,6 +555,7 @@ contract('Service | Actions', accounts => {
     describe('should fail if an operation type has multiple flags', async () => {
       [TezosPayments.OperationType.All].forEach(invalidOperationType => {
         it(`the invalid operation type == ${invalidOperationType}`, async () => {
+          await beforeEachBody();
           await expect(serviceContractInstance.send_payment(
             undefined,
             invalidOperationType,
@@ -650,6 +651,7 @@ contract('Service | Actions', accounts => {
     });
 
     it('should fail if an operation has a private payload', async () => {
+      await beforeEachBody();
       await expect(serviceContractInstance.send_payment(
         undefined,
         TezosPayments.OperationType.Payment,
