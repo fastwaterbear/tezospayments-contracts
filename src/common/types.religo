@@ -1,3 +1,5 @@
+#include "../common/token-types.religo"
+
 type service = address;
 type service_owner = address;
 type service_version = nat;
