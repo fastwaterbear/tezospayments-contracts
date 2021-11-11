@@ -72,15 +72,25 @@ let transfer_asset = ((asset_value, storage): (asset_value, storage)): main_resu
     };
 };
 
-let send_payment = (
-    (asset_value, operation_type, payload, storage): (option(asset_value), operation_type, payment_payload, storage)
-): main_result => {
+let send_payment = ((payment, storage): (payment, storage)): main_result => {
     fail_if_service_is_paused(storage);
     fail_if_service_is_deleted(storage);
-    fail_if_payment_operation_type_is_invalid(operation_type, storage.allowed_operation_type);
-    fail_if_payload_is_invalid(payload);
+    fail_if_payment_operation_type_is_invalid(constant_payment_operation_type, storage.allowed_operation_type);
+    fail_if_payment_signature_is_invalid(payment, storage.signing_keys);
 
-    switch asset_value {
+    switch payment.asset_value {
+        | None => transfer_tez(storage);
+        | Some(asset_value) => transfer_asset(asset_value, storage);
+    };
+};
+
+// TODO: move to the common donation contract
+let send_donation = ((donation, storage): (donation, storage)): main_result => {
+    fail_if_service_is_paused(storage);
+    fail_if_service_is_deleted(storage);
+    fail_if_payment_operation_type_is_invalid(constant_donation_operation_type, storage.allowed_operation_type);
+
+    switch donation.asset_value {
         | None => transfer_tez(storage);
         | Some(asset_value) => transfer_asset(asset_value, storage);
     };

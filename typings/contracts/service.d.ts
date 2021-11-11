@@ -32,41 +32,17 @@ declare global {
 
     interface Instance extends Truffle.ContractInstance<Storage>, OwnerActions {
       send_payment(
-        assetTokenAddress: void,
-        operationType: OperationType,
-        payloadType: 'public' | 'private',
-        payload: string,
-        assetTokenId: void,
-        assetValue: void,
-        params: Truffle.TransactionParameters & { amount: number }
+        paymentId: string,
+        asset: void,
+        signature: string,
+        params: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       send_payment(
-        assetTokenAddress: void,
-        operationType: OperationType,
-        payloadType: 'public_and_private',
-        publicPayload: string,
-        privatePayload: string,
-        assetTokenId: void,
-        assetValue: void,
-        params: Truffle.TransactionParameters & { amount: number }
-      ): Promise<Truffle.TransactionResult>;
-      send_payment(
+        paymentId: string,
         assetTokenAddress: string,
         assetTokenId: number | null,
         assetValue: number,
-        operationType: OperationType,
-        payloadType: 'public' | 'private',
-        payload: string,
-        params?: Truffle.TransactionParameters
-      ): Promise<Truffle.TransactionResult>;
-      send_payment(
-        assetTokenAddress: string,
-        assetTokenId: number | null,
-        assetValue: number,
-        operationType: OperationType,
-        payloadType: 'public_and_private',
-        publicPayload: string,
-        privatePayload: string,
+        signature: string,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       owner_action<T extends keyof OwnerActions>(actionName: T, ...params: Parameters<OwnerActions[T]>): Promise<Truffle.TransactionResult>;

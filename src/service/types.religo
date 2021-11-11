@@ -2,13 +2,8 @@
 
 type service_version = nat;
 type storage = service_storage;
+type payment_id = string;
 type main_result = (list(operation), storage);
-
-type asset_value = [@layout:comb] {
-    token_address: address,
-    token_id: option(nat),
-    value: nat
-}
 
 type service_parameter_updates = [@layout:comb] {
     metadata: option(service_metadata),
@@ -21,16 +16,26 @@ type service_parameter_updates = [@layout:comb] {
 
 type signing_key_updates = map(key, option(signing_key));
 
-type payment_payload = [@layout:comb]
-    | Public(bytes)
-    | Private(bytes)
-    | Public_and_private((bytes, bytes))
-
-type send_payment_parameters = [@layout:comb] {
-    asset_value: option(asset_value),
-    operation_type: operation_type, 
-    payload: payment_payload
+type asset_value = [@layout:comb] {
+    token_address: address,
+    token_id: option(nat),
+    value: nat
 }
+
+type payment = [@layout:comb] {
+    id: payment_id,
+    asset_value: option(asset_value),
+    signature: signature
+}
+
+type donation = [@layout:comb] {
+    asset_value: option(asset_value),
+    payload: option(bytes)
+}
+
+type payment_in_tez_sign_payload = (payment_id, service, tez);
+// TODO: sign the token id parameter
+type payment_in_asset_sign_payload = (payment_id, service, nat, address/*, option(nat)*/);
 
 type owner_action =
     | Set_owner(service_owner)
@@ -40,5 +45,6 @@ type owner_action =
     | Update_signing_keys(signing_key_updates);
 
 type action =
-    | Send_payment(send_payment_parameters)
+    | Send_payment(payment)
+    | Send_donation(donation)
     | Owner_action(owner_action);
