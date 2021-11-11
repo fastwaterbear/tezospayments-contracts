@@ -3,10 +3,7 @@ import { InMemorySigner } from '@taquito/signer';
 import { MichelsonMap } from '@taquito/taquito';
 import BigNumber from 'bignumber.js';
 
-import { tezToMutez } from './converters';
-
-import { tokensAmountToNat } from '.';
-
+import { tezToMutez, tokensAmountToNat } from './converters';
 
 export const createSigningKeyMichelsonMap = (signingKeys: readonly TezosPayments.SigningKey[]): TezosPayments.SigningKeys => {
   const result = new MichelsonMap<TezosPayments.SigningKey['public_key'], TezosPayments.SigningKey>({
@@ -51,8 +48,6 @@ export const createSigningKeyUpdatesMichelsonMap = (actions: {
 
   return result;
 };
-
-export const emptySignature = 'edsigtaNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNoneNog2Ndso';
 
 export interface SignPaymentData {
   readonly id: string;

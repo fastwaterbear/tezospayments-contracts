@@ -2,7 +2,6 @@
 
 type service_version = nat;
 type storage = service_storage;
-type payment_id = string;
 type main_result = (list(operation), storage);
 
 type service_parameter_updates = [@layout:comb] {

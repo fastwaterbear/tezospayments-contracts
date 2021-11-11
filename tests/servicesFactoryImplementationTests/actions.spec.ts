@@ -5,7 +5,7 @@ import { expect } from 'chai';
 
 import {
   useLastTezosToolkit, deployServicesFactory, deployServicesImplementationFactory,
-  setServicesFactoryImplementation, decapitalize, servicesFactoryImplementationErrors
+  setServicesFactoryImplementation, decapitalize, servicesFactoryImplementationErrors, emptyBigMap
 } from '../helpers';
 import { admins, invalidServiceParametersTestCases, validServiceParameters } from '../testData';
 
@@ -52,8 +52,9 @@ contract('Services Factory Implementation | Actions', accounts => {
             assets: serviceParameters[2]
           },
           allowed_operation_type: new BigNumber(serviceParameters[3]),
-          owner: currentAccountAddress,
           signing_keys: serviceParameters[4],
+          completed_payments: emptyBigMap,
+          owner: currentAccountAddress,
           paused: false,
           deleted: false,
         };
@@ -94,8 +95,9 @@ contract('Services Factory Implementation | Actions', accounts => {
             assets: creationParameters[2]
           },
           allowed_operation_type: new BigNumber(creationParameters[3]),
-          owner: currentAccountAddress,
           signing_keys: creationParameters[4],
+          completed_payments: emptyBigMap,
+          owner: currentAccountAddress,
           paused: false,
           deleted: false
         } as TezosPayments.ServiceContract.Storage

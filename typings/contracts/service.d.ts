@@ -1,3 +1,4 @@
+import { BigMapAbstraction } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 
 declare global {
@@ -10,8 +11,9 @@ declare global {
         readonly assets: readonly string[];
       };
       readonly allowed_operation_type: BigNumber;
-      readonly owner: string;
       readonly signing_keys: SigningKeys;
+      readonly completed_payments: BigMapAbstraction,
+      readonly owner: string;
       readonly paused: boolean;
       readonly deleted: boolean;
     }

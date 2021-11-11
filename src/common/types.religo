@@ -4,6 +4,8 @@ type service = address;
 type service_owner = address;
 type service_version = nat;
 type service_metadata = bytes;
+type payment_id = string;
+type completed_payments = big_map(payment_id, unit)
 
 type allowed_tokens = [@layout:comb] {
     tez: bool,
@@ -36,8 +38,9 @@ type service_storage = {
     metadata: service_metadata,
     allowed_tokens: allowed_tokens,
     allowed_operation_type: operation_type,
-    owner: service_owner,
     signing_keys: signing_keys,
+    completed_payments: completed_payments,
+    owner: service_owner,
     paused: bool,
     deleted: bool
 }

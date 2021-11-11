@@ -19,6 +19,12 @@
     };
 }
 
+[@inline] let fail_if_payment_is_completed = ((payment_id, storage): (payment_id, storage)) => {
+    if (Big_map.mem(payment_id, storage.completed_payments)) {
+        failwith(errors_payment_is_completed)
+    };
+};
+
 [@inline] let fail_if_payment_signature_is_invalid = ((payment, signing_keys): (payment, signing_keys)) => {
     let get_payment_in_tez_sign_payload = (payment: payment): payment_in_tez_sign_payload => {
         (payment.id, Tezos.self_address, Tezos.amount);
