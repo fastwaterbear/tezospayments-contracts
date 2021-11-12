@@ -81,10 +81,15 @@ let send_payment = ((payment, storage): (payment, storage)): main_result => {
     fail_if_payment_is_completed(payment.id, storage);
     fail_if_payment_signature_is_invalid(payment, storage.signing_keys);
 
-    switch payment.asset_value {
+    let (operations, storage) = switch payment.asset_value {
         | None => transfer_tez(storage);
         | Some(asset_value) => transfer_asset(asset_value, storage);
     };
+
+    (
+        operations,
+        { ...storage, completed_payments: Big_map.add(payment.id, unit, storage.completed_payments) }
+    );
 };
 
 // TODO: move to the common donation contract

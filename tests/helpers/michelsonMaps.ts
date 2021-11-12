@@ -46,14 +46,16 @@ export const createSigningKeyUpdatesMichelsonMap = (actions: {
   return result;
 };
 
-export const createCompletedPaymentsBigMap = (id: BigNumber | number | string, tezosToolkit: TezosToolkit) => new BigMapAbstraction(
-  new BigNumber(id),
-  new Schema({
-    prim: 'big_map',
-    args:
-      [{ prim: 'string' },
-      { prim: 'unit' }],
-    annots: ['%completed_payments']
-  }),
-  tezosToolkit.contract
-);
+export const completedPaymentsBigMapSchema = new Schema({
+  prim: 'big_map',
+  args: [
+    { prim: 'string' },
+    { prim: 'unit' }
+  ],
+  annots: ['%completed_payments']
+});
+
+export const createCompletedPaymentsBigMap = (
+  id: BigNumber | number | string,
+  tezosToolkit: TezosToolkit
+) => new BigMapAbstraction(new BigNumber(id), completedPaymentsBigMapSchema, tezosToolkit.contract);

@@ -6,3 +6,4 @@ export * from './contractDeployment';
 export * from './utils';
 export * from './signing';
 export * from './michelsonMaps';
+export * from './operations';
