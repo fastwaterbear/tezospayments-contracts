@@ -1,4 +1,4 @@
-import { ContractAbstraction, ContractProvider } from '@taquito/taquito';
+import { ContractAbstraction, ContractProvider, MichelsonMap } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
@@ -695,6 +695,38 @@ contract('Service | Actions', accounts => {
         paymentSignature,
         { amount: tezAmount }
       )).to.be.rejectedWith(serviceErrors.serviceIsDeleted);
+
+      const storageAfterAction = await serviceContractInstance.storage();
+      const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
+        tezosToolkit.tz.getBalance(currentAccountAddress),
+        tezosToolkit.tz.getBalance(owner.address),
+      ]);
+      expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+      expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
+      expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
+    });
+
+    it('should fail if the service already processed same payment id', async () => {
+      const paymentId = 'test-payment-9301';
+
+      await beforeEachBody({
+        completed_payments: MichelsonMap.fromLiteral({
+          [paymentId]: null
+        })
+      });
+
+      const tezAmount = new BigNumber(10);
+      const paymentSignature = await createPaymentSignature(
+        { id: paymentId, targetAddress: serviceContractInstance.address, amount: tezAmount },
+        owner.secretKey
+      );
+
+      await expect(serviceContractInstance.send_payment(
+        paymentId,
+        undefined,
+        paymentSignature,
+        { amount: tezAmount }
+      )).to.be.rejectedWith(serviceErrors.paymentIsAlreadyCompleted);
 
       const storageAfterAction = await serviceContractInstance.storage();
       const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
