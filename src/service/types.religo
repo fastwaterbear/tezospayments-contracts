@@ -33,8 +33,7 @@ type donation = [@layout:comb] {
 }
 
 type payment_in_tez_sign_payload = (payment_id, service, tez);
-// TODO: sign the token id parameter
-type payment_in_asset_sign_payload = (payment_id, service, nat, address/*, option(nat)*/);
+type payment_in_asset_sign_payload = (payment_id, service, nat, address, option(nat));
 
 type owner_action =
     | Set_owner(service_owner)

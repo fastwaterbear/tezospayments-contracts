@@ -35,17 +35,25 @@ const getPaymentSignPayload = (payment: SignPaymentData): string => {
           {
             prim: 'Pair',
             args: [
-              { string: payment.id },
-              { string: payment.targetAddress }
+              {
+                prim: 'Pair',
+                args: [
+                  { string: payment.id },
+                  { string: payment.targetAddress }
+                ]
+              },
+              {
+                prim: 'Pair',
+                args: [
+                  { int: tokensAmountToNat(payment.amount, payment.asset.decimals).toString(10) },
+                  { string: payment.asset.address }
+                ]
+              }
             ]
           },
-          {
-            prim: 'Pair',
-            args: [
-              { int: tokensAmountToNat(payment.amount, payment.asset.decimals).toString(10) },
-              { string: payment.asset.address }
-            ]
-          }
+          payment.asset.tokenId !== undefined && payment.asset.tokenId !== null
+            ? { prim: 'Some', args: [{ int: payment.asset.tokenId.toString(10) }] }
+            : { prim: 'None' }
         ]
       },
       paymentInAssetSignPayloadMichelsonType
@@ -97,16 +105,25 @@ export const paymentInAssetSignPayloadMichelsonType: MichelsonType = {
     {
       prim: 'pair',
       args: [
-        { prim: 'string' },
-        { prim: 'address' }
+        {
+          prim: 'pair',
+          args: [
+            { prim: 'string' },
+            { prim: 'address' }
+          ]
+        },
+        {
+          prim: 'pair',
+          args: [
+            { prim: 'nat' },
+            { prim: 'address' }
+          ]
+        }
       ]
     },
     {
-      prim: 'pair',
-      args: [
-        { prim: 'nat' },
-        { prim: 'address' }
-      ]
+      prim: 'option',
+      args: [{ prim: 'nat' }]
     }
   ]
 };

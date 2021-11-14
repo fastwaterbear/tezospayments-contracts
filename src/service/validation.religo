@@ -32,7 +32,7 @@
     let get_payment_in_asset_sign_payload = (
         (payment, asset_value): (payment, asset_value)
     ): payment_in_asset_sign_payload => {
-        (payment.id, Tezos.self_address, asset_value.value, asset_value.token_address/*, asset_value.token_id*/);
+        (payment.id, Tezos.self_address, asset_value.value, asset_value.token_address, asset_value.token_id);
     };
     
     let check_payment_signature = ((payment, key): (payment, key)): bool => {
