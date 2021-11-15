@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import * as fa12Implementation from '../testContracts/build/json/fa12.json';
 import * as fa20Implementation from '../testContracts/build/json/fa20.json';
 import { serviceMetadataToBytes } from './converters';
-import { createSigningKeyMichelsonMap } from './signing';
+import { createSigningKeyMichelsonMap } from './michelsonMaps';
 import { burnAddress } from './utils';
 
 export const deployServicesImplementationFactory = async (
@@ -62,6 +62,7 @@ export const deployService = async (
     },
     allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
     signing_keys: createSigningKeyMichelsonMap([]),
+    completed_payments: new MichelsonMap(),
     paused: false,
     deleted: false,
     ...initialStorageState

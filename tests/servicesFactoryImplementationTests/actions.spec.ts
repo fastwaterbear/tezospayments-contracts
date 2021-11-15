@@ -5,7 +5,7 @@ import { expect } from 'chai';
 
 import {
   useLastTezosToolkit, deployServicesFactory, deployServicesImplementationFactory,
-  setServicesFactoryImplementation, decapitalize, servicesFactoryImplementationErrors
+  setServicesFactoryImplementation, decapitalize, servicesFactoryImplementationErrors, createCompletedPaymentsBigMap
 } from '../helpers';
 import { admins, invalidServiceParametersTestCases, validServiceParameters } from '../testData';
 
@@ -44,7 +44,7 @@ contract('Services Factory Implementation | Actions', accounts => {
   describe('Create_service', () => {
     validServiceParameters.forEach(serviceParameters => {
       it('should create a service as a separate contract, and set the related record in the storage of the factory contract', async () => {
-        const expectedServiceStorage: TezosPayments.ServiceContract.Storage = {
+        const expectedServiceStorage: Omit<TezosPayments.ServiceContract.Storage, 'completed_payments'> = {
           version: new BigNumber(1),
           metadata: serviceParameters[0],
           allowed_tokens: {
@@ -52,8 +52,8 @@ contract('Services Factory Implementation | Actions', accounts => {
             assets: serviceParameters[2]
           },
           allowed_operation_type: new BigNumber(serviceParameters[3]),
-          owner: currentAccountAddress,
           signing_keys: serviceParameters[4],
+          owner: currentAccountAddress,
           paused: false,
           deleted: false,
         };
@@ -74,12 +74,16 @@ contract('Services Factory Implementation | Actions', accounts => {
         const internalOperationResultOrigination = (internalOperations?.[0]?.result as OperationResultOrigination);
         const serviceContractAddress = internalOperationResultOrigination.originated_contracts?.[0];
         const servicesSet = await factoryStorageAfterAction.services.get<string[]>(currentAccountAddress);
-        const serviceContractStorage = await tezosToolkit.contract.at(serviceContractAddress!).then(instance => instance.storage());
+        const serviceContractStorage = await tezosToolkit.contract.at(serviceContractAddress!)
+          .then(instance => instance.storage<TezosPayments.ServiceContract.Storage>());
 
         expect(factoryStorageAfterAction).to.deep.equal(servicesFactoryContractStorage);
         expect(factoryImplementationStorageAfterAction).to.deep.equal(servicesFactoryImplementationContractStorage);
         expect(servicesSet).to.deep.equal([serviceContractAddress]);
-        expect(serviceContractStorage).to.deep.equal(expectedServiceStorage);
+        expect(serviceContractStorage).to.deep.equal({
+          ...expectedServiceStorage,
+          completed_payments: createCompletedPaymentsBigMap(serviceContractStorage.completed_payments.toString(), tezosToolkit)
+        });
       });
     });
 
@@ -94,11 +98,11 @@ contract('Services Factory Implementation | Actions', accounts => {
             assets: creationParameters[2]
           },
           allowed_operation_type: new BigNumber(creationParameters[3]),
-          owner: currentAccountAddress,
           signing_keys: creationParameters[4],
+          owner: currentAccountAddress,
           paused: false,
           deleted: false
-        } as TezosPayments.ServiceContract.Storage
+        } as Omit<TezosPayments.ServiceContract.Storage, 'completed_payments'>
       ] as const);
 
       const expectedServicesSet: Array<string | undefined> = [];
@@ -120,12 +124,16 @@ contract('Services Factory Implementation | Actions', accounts => {
         const internalOperationResultOrigination = (internalOperations?.[0]?.result as OperationResultOrigination);
         const serviceContractAddress = internalOperationResultOrigination.originated_contracts?.[0];
         expectedServicesSet.push(serviceContractAddress);
-        const serviceContractStorage = await tezosToolkit.contract.at(serviceContractAddress!).then(instance => instance.storage());
+        const serviceContractStorage = await tezosToolkit.contract.at(serviceContractAddress!)
+          .then(instance => instance.storage<TezosPayments.ServiceContract.Storage>());
 
         expect(factoryStorageAfterAction).to.deep.equal(servicesFactoryContractStorage);
         expect(factoryImplementationStorageAfterAction).to.deep.equal(servicesFactoryImplementationContractStorage);
         expect(servicesSet?.sort()).to.deep.equal(expectedServicesSet.sort());
-        expect(serviceContractStorage).to.deep.equal(expectedServiceStorage);
+        expect(serviceContractStorage).to.deep.equal({
+          ...expectedServiceStorage,
+          completed_payments: createCompletedPaymentsBigMap(serviceContractStorage.completed_payments.toString(), tezosToolkit)
+        });
       }
     });
 

@@ -1,3 +1,4 @@
+import { BigMapAbstraction } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 
 declare global {
@@ -10,8 +11,9 @@ declare global {
         readonly assets: readonly string[];
       };
       readonly allowed_operation_type: BigNumber;
-      readonly owner: string;
       readonly signing_keys: SigningKeys;
+      readonly completed_payments: BigMapAbstraction,
+      readonly owner: string;
       readonly paused: boolean;
       readonly deleted: boolean;
     }
@@ -32,41 +34,17 @@ declare global {
 
     interface Instance extends Truffle.ContractInstance<Storage>, OwnerActions {
       send_payment(
-        assetTokenAddress: void,
-        operationType: OperationType,
-        payloadType: 'public' | 'private',
-        payload: string,
-        assetTokenId: void,
-        assetValue: void,
-        params: Truffle.TransactionParameters & { amount: number }
+        paymentId: string,
+        asset: void,
+        signature: string,
+        params: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       send_payment(
-        assetTokenAddress: void,
-        operationType: OperationType,
-        payloadType: 'public_and_private',
-        publicPayload: string,
-        privatePayload: string,
-        assetTokenId: void,
-        assetValue: void,
-        params: Truffle.TransactionParameters & { amount: number }
-      ): Promise<Truffle.TransactionResult>;
-      send_payment(
+        paymentId: string,
         assetTokenAddress: string,
         assetTokenId: number | null,
-        assetValue: number,
-        operationType: OperationType,
-        payloadType: 'public' | 'private',
-        payload: string,
-        params?: Truffle.TransactionParameters
-      ): Promise<Truffle.TransactionResult>;
-      send_payment(
-        assetTokenAddress: string,
-        assetTokenId: number | null,
-        assetValue: number,
-        operationType: OperationType,
-        payloadType: 'public_and_private',
-        publicPayload: string,
-        privatePayload: string,
+        assetValue: BigNumber,
+        signature: string,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       owner_action<T extends keyof OwnerActions>(actionName: T, ...params: Parameters<OwnerActions[T]>): Promise<Truffle.TransactionResult>;
