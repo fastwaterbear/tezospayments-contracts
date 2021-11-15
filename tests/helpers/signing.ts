@@ -2,7 +2,7 @@ import { MichelsonType, packDataBytes } from '@taquito/michel-codec';
 import { InMemorySigner } from '@taquito/signer';
 import BigNumber from 'bignumber.js';
 
-import { tezToMutez, tokensAmountToNat } from './converters';
+import { tezToMutez } from './converters';
 
 export interface SignPaymentData {
   readonly id: string;
@@ -10,7 +10,6 @@ export interface SignPaymentData {
   readonly amount: BigNumber;
   readonly asset?: {
     address: string;
-    decimals: number;
     tokenId?: number;
   };
 }
@@ -45,7 +44,7 @@ const getPaymentSignPayload = (payment: SignPaymentData): string => {
               {
                 prim: 'Pair',
                 args: [
-                  { int: tokensAmountToNat(payment.amount, payment.asset.decimals).toString(10) },
+                  { int: payment.amount.toString(10) },
                   { string: payment.asset.address }
                 ]
               }

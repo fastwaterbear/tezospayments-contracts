@@ -43,7 +43,7 @@ declare global {
         paymentId: string,
         assetTokenAddress: string,
         assetTokenId: number | null,
-        assetValue: number,
+        assetValue: BigNumber,
         signature: string,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;

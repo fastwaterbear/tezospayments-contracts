@@ -31,5 +31,6 @@ export const serviceErrors = {
   notFa12Contract: 'Not FA 1.2 contract',
   notFa20Contract: 'Not FA 2.0 contract',
   notAllowedToken: 'Not allowed token',
-  paymentIsAlreadyCompleted: 'Payment has already been made'
+  paymentIsAlreadyCompleted: 'Payment has already been made',
+  invalidPaymentSignature: 'Invalid payment signature',
 } as const;

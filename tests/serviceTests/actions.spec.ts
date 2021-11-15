@@ -4,9 +4,10 @@ import { expect } from 'chai';
 
 import {
   commonErrors, serviceErrors, useLastTezosToolkit, deployService,
-  tezToMutez, createSigningKeyMichelsonMap, deployFa12, deployLambda, deployFa20, createPaymentSignature, getBalanceUpdate
+  tezToMutez, createSigningKeyMichelsonMap, deployFa12, deployLambda, deployFa20, createPaymentSignature, getBalanceUpdate, decapitalize
 } from '../helpers';
 import { admins } from '../testData';
+import { signingPayloadsTestCases } from '../testData/signingPayloads';
 
 const [serviceContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('service'));
 
@@ -98,7 +99,7 @@ contract('Service | Actions', accounts => {
 
     it('should allow to transfer FA 1.2 tokens to a service owner', async () => {
       const currentAccountTokenAmount = new BigNumber(100);
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
 
       await beforeEachBody(undefined, { amount: currentAccountTokenAmount, tokenId: 0 });
 
@@ -115,10 +116,9 @@ contract('Service | Actions', accounts => {
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa12Contract.address,
-            decimals: 0
           }
         },
         owner.secretKey
@@ -178,15 +178,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-9232';
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa20Contract.address,
-            decimals: 0,
             tokenId
           }
         },
@@ -237,15 +236,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-7384';
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa12Contract.address,
-            decimals: 0,
             tokenId: 0
           }
         },
@@ -290,15 +288,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-3431';
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa20Contract.address,
-            decimals: 0
           }
         },
         owner.secretKey
@@ -346,15 +343,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-2324';
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa12Contract.address,
-            decimals: 0
           }
         },
         owner.secretKey
@@ -403,15 +399,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-1438';
-      const transferTokenAmount = 10;
+      const transferTokenAmount = new BigNumber(10);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa20Contract.address,
-            decimals: 0,
             tokenId
           }
         },
@@ -483,15 +478,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-8341';
-      const transferTokenAmount = 0;
+      const transferTokenAmount = new BigNumber(0);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa12Contract.address,
-            decimals: 0,
           }
         },
         owner.secretKey
@@ -535,15 +529,14 @@ contract('Service | Actions', accounts => {
       ]);
 
       const paymentId = 'test-payment-7231';
-      const transferTokenAmount = 0;
+      const transferTokenAmount = new BigNumber(0);
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(transferTokenAmount),
+          amount: transferTokenAmount,
           asset: {
             address: fa20Contract.address,
-            decimals: 0,
             tokenId
           }
         },
@@ -618,16 +611,15 @@ contract('Service | Actions', accounts => {
         }
       });
 
-      const tokenAmount = 463;
+      const tokenAmount = new BigNumber(463);
       const paymentId = 'test-payment-3421';
       const paymentSignature = await createPaymentSignature(
         {
           id: paymentId,
           targetAddress: serviceContractInstance.address,
-          amount: new BigNumber(tokenAmount),
+          amount: tokenAmount,
           asset: {
             address: contractAddress,
-            decimals: 0
           }
         },
         owner.secretKey
@@ -736,6 +728,43 @@ contract('Service | Actions', accounts => {
       expect(storageAfterAction).to.deep.equal(serviceContractStorage);
       expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
       expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
+    });
+
+    signingPayloadsTestCases.forEach(([caseName, getTestData, expectedError]) => {
+      it(`should fail if ${decapitalize(caseName)} in payment signature`, async () => {
+        await beforeEachBody();
+
+        const testData = await getTestData(serviceContractInstance.address, owner.secretKey);
+
+        const { id: paymentId, amount, asset } = testData[0];
+        const paymentSignature = testData[1];
+
+        if (asset) {
+          await expect(serviceContractInstance.send_payment(
+            paymentId,
+            asset.address,
+            asset.tokenId !== undefined ? asset.tokenId : null,
+            amount,
+            paymentSignature
+          )).to.be.rejectedWith(expectedError!);
+        } else {
+          await expect(serviceContractInstance.send_payment(
+            paymentId,
+            undefined,
+            paymentSignature,
+            { amount }
+          )).to.be.rejectedWith(expectedError!);
+        }
+
+        const storageAfterAction = await serviceContractInstance.storage();
+        const [currentAccountBalanceAfterAction, ownerAccountBalanceAfterAction] = await Promise.all([
+          tezosToolkit.tz.getBalance(currentAccountAddress),
+          tezosToolkit.tz.getBalance(owner.address),
+        ]);
+        expect(storageAfterAction).to.deep.equal(serviceContractStorage);
+        expect(currentAccountBalanceAfterAction).to.deep.equal(currentAccountBalanceBeforeAction);
+        expect(ownerAccountBalanceAfterAction).to.deep.equal(ownerAccountBalanceBeforeAction);
+      });
     });
   });
 });
