@@ -10,7 +10,7 @@ import { config } from 'dotenv';
 config({ path: 'migrations/env/services-factory.env' });
 
 const secretKey = process.env.SERVICES_FACTORY_ADMINISTRATOR_SECRET_KEY;
-const network = process.env.NETWORK_NAME || 'granadanet';
+const network = process.env.NETWORK_NAME || 'hangzhounet';
 const rpcUrl = process.env.RPC_URL || `https://${network}.smartpy.io`;
 const indexerUrl = process.env.INDEXER_URL || `https://api.${network}.tzkt.io`;
 const previousServicesFactoryContractAddress = process.env.PREVIOUS_SERVICES_FACTORY_CONTRACT_ADDRESS;
