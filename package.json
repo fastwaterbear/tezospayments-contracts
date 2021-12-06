@@ -10,6 +10,7 @@
     "build:test-contracts": "bash ./scripts/buildTestContracts.sh",
     "test": "npm run build:test-contracts && truffle test",
     "migrate": "npm run clean && npm run build && ts-node",
+    "migrate-test": "npm run build:test-contracts && ts-node",
     "postinstall": "sed -i 's/ligo:next/ligo:0.24.0/' node_modules/truffle/build/cli.bundled.js"
   },
   "devDependencies": {
