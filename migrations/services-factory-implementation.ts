@@ -7,7 +7,7 @@ import { config } from 'dotenv';
 config({ path: 'migrations/env/services-factory-implementation.env' });
 
 const secretKey = process.env.SERVICES_FACTORY_ADMINISTRATOR_SECRET_KEY;
-const network = process.env.NETWORK_NAME || 'granadanet';
+const network = process.env.NETWORK_NAME || 'hangzhounet';
 const rpcUrl = process.env.RPC_URL || `https://${network}.smartpy.io`;
 const servicesFactoryContractAddress = process.env.SERVICES_FACTORY_CONTRACT_ADDRESS;
 const serviceFactoryImplementationContractCodeJsonFilePath = 'build/json/services-factory-implementation.json';

@@ -2,8 +2,8 @@
 
 [Homepage](https://tezospayments.com) &nbsp;&nbsp;•&nbsp;&nbsp;
 [Applications Repository](https://github.com/fastwaterbear/tezospayments) &nbsp;&nbsp;•&nbsp;&nbsp;
-[Demo Service Contract [Granadanet]](https://payment.tezospayments.com/KT1EHWVV2tU4ecZKKmPTVVr99G66i4gD516M/donation?network=granadanet) &nbsp;&nbsp;•&nbsp;&nbsp; 
-[Service Factory Contract [Granadanet]](https://better-call.dev/granadanet/KT1NxBzCJtvHFLKfiSAX3PGxdiJMAC8CtSZV)  
+Demo Service Contract [[Granadanet](https://payment.tezospayments.com/KT1EHWVV2tU4ecZKKmPTVVr99G66i4gD516M/donation?network=granadanet)] &nbsp;&nbsp;•&nbsp;&nbsp; 
+Service Factory Contract [[Granadanet](https://better-call.dev/granadanet/KT1NxBzCJtvHFLKfiSAX3PGxdiJMAC8CtSZV) | [Hangzhounet](https://better-call.dev/hangzhou2net/KT1BLQ4tfy5iizuCSaR5D8sSDiQSemhvnAif)]  
 
 > ⚠️ Tezos Payments is in active development so any component (application, contract, package, API) is subject to change ⚠️  
 

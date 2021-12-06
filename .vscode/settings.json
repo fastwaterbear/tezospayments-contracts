@@ -35,7 +35,8 @@
     "entrypoint",
     "entrypoints",
     "taquito",
-    "granadanet"
+    "granadanet",
+    "hangzhounet"
   ],
   "cSpell.enabledLanguageIds": [
     "c",
