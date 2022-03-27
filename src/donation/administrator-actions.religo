@@ -4,14 +4,7 @@
 let set_administrator = ((new_administrator, storage): (address, storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, administrator: new_administrator }
-    )
-};
-
-let confirm_administrator = (storage: storage): main_result => {
-    (
-        ([]: list(operation)),
-        storage
+        {   ...storage, pending_administrator: Some(new_administrator) }
     )
 };
 
@@ -29,7 +22,6 @@ let administrator_main = ((action, storage): (administrator_action, storage)): m
 
     switch (action) {
         | Set_administrator(new_administrator) => set_administrator(new_administrator, storage);
-        | Confirm_administrator => confirm_administrator(storage);
         | Set_disabled(disabled) => set_disabled(disabled, storage);
     }
 }

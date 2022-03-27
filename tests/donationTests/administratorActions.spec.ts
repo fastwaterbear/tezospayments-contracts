@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { useLastTezosToolkit, servicesFactoryErrors, deployDonation } from '../helpers';
+import { useLastTezosToolkit, deployDonation, commonErrors } from '../helpers';
 import { admins } from '../testData';
 
 const [donationContract] = useLastTezosToolkit(artifacts.require('donation'));
@@ -22,16 +22,45 @@ contract('Donation | Administrator Actions', accounts => {
     await deployDonationAndAssign({ administrator: admins[0].pkh });
 
     await expect(donationContractInstance.set_administrator(currentAccountAddress))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
     await expect(donationContractInstance.administrator_action('set_administrator', currentAccountAddress))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
 
     await expect(donationContractInstance.set_disabled(true))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
     await expect(donationContractInstance.administrator_action('set_disabled', true))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
 
     const storageAfterActions = await donationContractInstance.storage();
     expect(storageAfterActions).to.deep.equal(donationContractStorage);
+  });
+
+  describe('Set_administrator', () => {
+    it('should set a pending administrator if a caller is a current administrator', async () => {
+      const result = await donationContractInstance.set_administrator(admins[0].pkh);
+      const storageAfterAction = await donationContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...donationContractStorage, pending_administrator: admins[0].pkh });
+    });
+  });
+
+  describe('Set_disabled', () => {
+    it('should change a contract state if a caller is a current administrator', async () => {
+      let result = await donationContractInstance.set_disabled(true);
+      let storageAfterAction = await donationContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...donationContractStorage, disabled: true });
+
+      result = await donationContractInstance.set_disabled(false);
+      storageAfterAction = await donationContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...donationContractStorage, disabled: false });
+    });
   });
 });

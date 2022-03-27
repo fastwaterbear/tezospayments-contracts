@@ -16,9 +16,9 @@ type donation = [@layout:comb] {
 
 type administrator_action =
     | Set_administrator(address)
-    | Confirm_administrator
     | Set_disabled(bool);
 
 type action =
+    | Confirm_administrator
     | Send_donation(donation)
     | Administrator_action(administrator_action);
