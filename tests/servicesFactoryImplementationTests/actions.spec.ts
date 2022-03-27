@@ -51,8 +51,7 @@ contract('Services Factory Implementation | Actions', accounts => {
             tez: serviceParameters[1],
             assets: serviceParameters[2]
           },
-          allowed_operation_type: new BigNumber(serviceParameters[3]),
-          signing_keys: serviceParameters[4],
+          signing_keys: serviceParameters[3],
           owner: currentAccountAddress,
           paused: false,
           deleted: false,
@@ -97,8 +96,7 @@ contract('Services Factory Implementation | Actions', accounts => {
             tez: creationParameters[1],
             assets: creationParameters[2]
           },
-          allowed_operation_type: new BigNumber(creationParameters[3]),
-          signing_keys: creationParameters[4],
+          signing_keys: creationParameters[3],
           owner: currentAccountAddress,
           paused: false,
           deleted: false

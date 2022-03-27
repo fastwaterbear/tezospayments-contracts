@@ -77,7 +77,6 @@ export const deployService = async (
       tez: true,
       assets: []
     },
-    allowed_operation_type: new BigNumber(TezosPayments.OperationType.Payment),
     signing_keys: createSigningKeyMichelsonMap([]),
     completed_payments: new MichelsonMap(),
     paused: false,

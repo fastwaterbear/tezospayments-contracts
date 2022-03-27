@@ -73,9 +73,6 @@ let transfer_asset = ((asset_value, storage): (asset_value, storage)): main_resu
 };
 
 let send_payment = ((payment, storage): (payment, storage)): main_result => {
-    // TODO: remove
-    fail_if_payment_operation_type_is_invalid(constant_payment_operation_type, storage.allowed_operation_type);
-    
     fail_if_service_is_paused(storage);
     fail_if_service_is_deleted(storage);
     fail_if_payment_is_completed(payment.id, storage);
@@ -96,7 +93,6 @@ let send_payment = ((payment, storage): (payment, storage)): main_result => {
 let send_donation = ((donation, storage): (donation, storage)): main_result => {
     fail_if_service_is_paused(storage);
     fail_if_service_is_deleted(storage);
-    fail_if_payment_operation_type_is_invalid(constant_donation_operation_type, storage.allowed_operation_type);
 
     switch donation.asset_value {
         | None => transfer_tez(storage);

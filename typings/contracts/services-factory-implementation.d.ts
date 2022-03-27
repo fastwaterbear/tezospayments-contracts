@@ -14,7 +14,6 @@ declare global {
         metadata: string,
         allowedTokensTez: boolean,
         allowedTokensAssets: string[],
-        allowedOperationType: OperationType,
         signingKeys: SigningKeys,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;

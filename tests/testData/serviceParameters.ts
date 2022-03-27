@@ -1,7 +1,6 @@
 import { MichelsonMap } from '@taquito/taquito';
 
 import { commonErrors, createSigningKeyMichelsonMap, NegativeTestCase, NegativeTestCases, serviceMetadataToBytes } from '../helpers';
-import { invalidOperationTypeTestCases } from './operationType';
 import { invalidSigningKeyTestCases, validSigningKeys } from './signingKeys';
 
 export const validServiceParameters: readonly TezosPayments.ServicesFactoryImplementationContract.ServiceParameters[] = [
@@ -12,7 +11,6 @@ export const validServiceParameters: readonly TezosPayments.ServicesFactoryImple
     }),
     true,
     ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
-    TezosPayments.OperationType.Payment,
     createSigningKeyMichelsonMap([])
   ],
   [
@@ -22,7 +20,6 @@ export const validServiceParameters: readonly TezosPayments.ServicesFactoryImple
     }),
     true,
     [],
-    TezosPayments.OperationType.Donation,
     createSigningKeyMichelsonMap([])
   ],
   [
@@ -33,7 +30,6 @@ export const validServiceParameters: readonly TezosPayments.ServicesFactoryImple
     }),
     false,
     ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
-    TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
     createSigningKeyMichelsonMap([])
   ],
   [
@@ -43,7 +39,6 @@ export const validServiceParameters: readonly TezosPayments.ServicesFactoryImple
     }),
     true,
     ['KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf'],
-    TezosPayments.OperationType.Payment,
     createSigningKeyMichelsonMap([
       { public_key: 'edpkuE58W2PXAXGRHBZimjY3o4PdaTWJA9ACKQTbeK5rcYUT4dAcoH', name: 'API0' }
     ])
@@ -55,7 +50,6 @@ export const validServiceParameters: readonly TezosPayments.ServicesFactoryImple
     }),
     true,
     ['KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV'],
-    TezosPayments.OperationType.All,
     createSigningKeyMichelsonMap(validSigningKeys)
   ],
 ];
@@ -67,7 +61,6 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
       'invalid metadata',
       true,
       ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-      TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
       createSigningKeyMichelsonMap([])
     ],
     'Invalid bytes'
@@ -78,7 +71,6 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
       validServiceParameters[0]![0],
       false,
       [],
-      TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
       createSigningKeyMichelsonMap([])
     ],
     commonErrors.noAllowedTokens
@@ -89,24 +81,10 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
       validServiceParameters[1]![0],
       true,
       ['KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt', 'KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf', 'KT1Crp4yHcH1CmnJEmixzsgwgYC5artX4YYt'],
-      TezosPayments.OperationType.Payment | TezosPayments.OperationType.Donation,
       createSigningKeyMichelsonMap([])
     ],
     'duplicate_set_values_in_literal'
   ],
-  ...invalidOperationTypeTestCases.map<NegativeTestCase<TezosPayments.ServicesFactoryImplementationContract.ServiceParameters>>(
-    ([invalidOperationTypeDescription, invalidOperationType, errorMessage]) => [
-      `allowed operation type is invalid. The allowed operation type == ${invalidOperationType} (${invalidOperationTypeDescription})`,
-      [
-        validServiceParameters[0]![0],
-        true,
-        [],
-        invalidOperationType,
-        createSigningKeyMichelsonMap([])
-      ],
-      errorMessage
-    ]
-  ),
   ...invalidSigningKeyTestCases.map<NegativeTestCase<TezosPayments.ServicesFactoryImplementationContract.ServiceParameters>>(
     ([invalidSigningKeyDescription, invalidSigningKey, errorMessage]) => [
       `signing key is invalid. ${invalidSigningKeyDescription}`,
@@ -114,7 +92,6 @@ export const invalidServiceParametersTestCases: NegativeTestCases<TezosPayments.
         validServiceParameters[0]![0],
         true,
         [],
-        TezosPayments.OperationType.All,
         MichelsonMap.fromLiteral({ [invalidSigningKey.public_key]: invalidSigningKey }) as TezosPayments.SigningKeys
       ],
       errorMessage

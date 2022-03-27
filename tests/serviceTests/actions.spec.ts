@@ -48,7 +48,6 @@ contract('Service | Actions', accounts => {
     await deployServiceAndAssign({
       owner: owner.address,
       signing_keys: createSigningKeyMichelsonMap([{ public_key: owner.publicKey, name: null }]),
-      allowed_operation_type: new BigNumber(TezosPayments.OperationType.All),
       allowed_tokens: {
         tez: true,
         assets: tokensInfo ? [fa12Contract.address, fa20Contract.address] : []

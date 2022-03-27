@@ -10,7 +10,6 @@ declare global {
         readonly tez: boolean;
         readonly assets: readonly string[];
       };
-      readonly allowed_operation_type: BigNumber;
       readonly signing_keys: SigningKeys;
       readonly completed_payments: BigMapAbstraction,
       readonly owner: string;
@@ -26,7 +25,6 @@ declare global {
         metadata: string | undefined,
         allowedTokensTez: boolean | undefined,
         allowedTokensAssets: string[] | undefined,
-        allowedOperationType: OperationType | undefined,
         params?: Truffle.TransactionParameters
       ): Promise<Truffle.TransactionResult>;
       update_signing_keys(signingKeyUpdates: SigningKeyUpdates): Promise<Truffle.TransactionResult>;

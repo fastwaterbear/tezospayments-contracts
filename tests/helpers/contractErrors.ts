@@ -4,7 +4,6 @@ export const commonErrors = {
   noAllowedTokens: 'No allowed tokens',
   invalidAmount: 'Invalid amount',
   invalidAddress: 'Invalid address',
-  invalidOperationType: 'Invalid operation type',
   invalidSigningKey: 'Invalid signing key',
   notAdministrator: 'Only administrator can do this',
   notPendingAdministrator: 'Only pending administrator can do this',

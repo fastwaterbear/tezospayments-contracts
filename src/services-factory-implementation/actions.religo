@@ -27,7 +27,6 @@ let create_service = ((service_parameters, storage): (service_parameters, storag
             version: storage.version,
             metadata: service_parameters.metadata,
             allowed_tokens: service_parameters.allowed_tokens,
-            allowed_operation_type: service_parameters.allowed_operation_type,
             signing_keys: service_parameters.signing_keys,
             completed_payments: (Big_map.empty: completed_payments),
             owner: Tezos.sender,
