@@ -44,3 +44,9 @@ type service_storage = {
     paused: bool,
     deleted: bool
 }
+
+type asset_value = [@layout:comb] {
+    token_address: address,
+    token_id: option(nat),
+    value: nat
+}

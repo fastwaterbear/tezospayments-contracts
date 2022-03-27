@@ -8,6 +8,23 @@ import { serviceMetadataToBytes } from './converters';
 import { createSigningKeyMichelsonMap } from './michelsonMaps';
 import { burnAddress } from './utils';
 
+export const deployDonation = async (
+  contract: Truffle.Contract<TezosPayments.DonationContract.Instance>,
+  initialStorageState: Pick<
+    Truffle.InitialStorageState<TezosPayments.DonationContract.Storage>, 'administrator'>
+    & Partial<Truffle.InitialStorageState<TezosPayments.DonationContract.Storage>>
+): Promise<readonly [TezosPayments.DonationContract.Instance, TezosPayments.DonationContract.Storage]> => {
+  const instance = await contract.new({
+    previous_contract: burnAddress,
+    pending_administrator: null,
+    disabled: false,
+    ...initialStorageState
+  });
+  const storage = await instance.storage();
+
+  return [instance, storage];
+};
+
 export const deployServicesImplementationFactory = async (
   contract: Truffle.Contract<TezosPayments.ServicesFactoryImplementationContract.Instance>,
   initialStorageState: Pick<
