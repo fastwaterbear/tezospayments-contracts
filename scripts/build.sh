@@ -38,3 +38,4 @@ compile_lambda() {
 compile_contract services-factory $@
 compile_contract service $@
 compile_contract services-factory-implementation $@
+compile_contract donation $@

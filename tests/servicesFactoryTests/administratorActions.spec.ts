@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { expect } from 'chai';
 
-import { useLastTezosToolkit, servicesFactoryErrors, deployServicesFactory, deployServicesImplementationFactory, burnAddress } from '../helpers';
+import { useLastTezosToolkit, servicesFactoryErrors, deployServicesFactory, deployServicesImplementationFactory, burnAddress, commonErrors } from '../helpers';
 import { admins, invalidFactoryImplementation } from '../testData';
 
 const [servicesFactoryContract, tezosToolkit] = useLastTezosToolkit(artifacts.require('services-factory'));
@@ -31,19 +31,19 @@ contract('Services Factory | Administrator Actions', accounts => {
     await deployServicesFactoryAndAssign({ administrator: admins[0].pkh });
 
     await expect(servicesFactoryContractInstance.set_administrator(currentAccountAddress))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
     await expect(servicesFactoryContractInstance.administrator_action('set_administrator', currentAccountAddress))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
 
     await expect(servicesFactoryContractInstance.set_pause(true))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
     await expect(servicesFactoryContractInstance.administrator_action('set_pause', true))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
 
     await expect(servicesFactoryContractInstance.set_factory_implementation(servicesFactoryImplementationContractInstance.address))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
     await expect(servicesFactoryContractInstance.administrator_action('set_factory_implementation', servicesFactoryImplementationContractInstance.address))
-      .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+      .to.be.rejectedWith(commonErrors.notAdministrator);
 
     const storageAfterActions = await servicesFactoryContractInstance.storage();
     expect(storageAfterActions).to.deep.equal(servicesFactoryContractStorage);
@@ -59,7 +59,7 @@ contract('Services Factory | Administrator Actions', accounts => {
       expect(storageAfterAction).to.deep.equal({ ...servicesFactoryContractStorage, administrator: admins[0].pkh });
 
       await expect(servicesFactoryContractInstance.set_pause(true))
-        .to.be.rejectedWith(servicesFactoryErrors.notAdministrator);
+        .to.be.rejectedWith(commonErrors.notAdministrator);
     });
   });
 

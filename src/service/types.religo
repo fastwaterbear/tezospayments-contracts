@@ -9,17 +9,10 @@ type service_parameter_updates = [@layout:comb] {
     allowed_tokens: [@layout:comb] {
         tez: option(bool),
         assets: option(set(address))
-    },
-    allowed_operation_type: option(operation_type)
+    }
 }
 
 type signing_key_updates = map(key, option(signing_key));
-
-type asset_value = [@layout:comb] {
-    token_address: address,
-    token_id: option(nat),
-    value: nat
-}
 
 type payment = [@layout:comb] {
     id: payment_id,

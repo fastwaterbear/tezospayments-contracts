@@ -28,7 +28,6 @@ let update_service_parameters = ((service_parameters, storage): (service_paramet
         | { 
             metadata: None,
             allowed_tokens: { tez: None, assets: None },
-            allowed_operation_type: None
           } => (failwith(errors_empty_update): unit)
         | _ => unit
     });
@@ -45,14 +44,6 @@ let update_service_parameters = ((service_parameters, storage): (service_paramet
     let updated_storage = switch service_parameters.allowed_tokens.assets {
         | Some(new_assets)
             => { ...updated_storage, allowed_tokens.assets: new_assets }
-        | None => updated_storage
-    };
-    let updated_storage = switch service_parameters.allowed_operation_type {
-        | Some(new_allowed_operation_type) => {
-            fail_if_operation_type_is_invalid(new_allowed_operation_type);
-
-            { ...updated_storage, allowed_operation_type: new_allowed_operation_type }
-          }
         | None => updated_storage
     };
 
