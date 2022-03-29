@@ -37,12 +37,19 @@ contract('Donation | Administrator Actions', accounts => {
 
   describe('Set_administrator', () => {
     it('should set a pending administrator if a caller is a current administrator', async () => {
-      const result = await donationContractInstance.set_administrator(admins[0].pkh);
-      const storageAfterAction = await donationContractInstance.storage();
+      let result = await donationContractInstance.set_administrator(admins[0].pkh);
+      let storageAfterAction = await donationContractInstance.storage();
 
       expect(result).to.exist;
       expect(result.tx).to.exist;
       expect(storageAfterAction).to.deep.equal({ ...donationContractStorage, pending_administrator: admins[0].pkh });
+
+      result = await donationContractInstance.set_administrator();
+      storageAfterAction = await donationContractInstance.storage();
+
+      expect(result).to.exist;
+      expect(result.tx).to.exist;
+      expect(storageAfterAction).to.deep.equal({ ...donationContractStorage, pending_administrator: null });
     });
   });
 

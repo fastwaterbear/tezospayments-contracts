@@ -1,10 +1,10 @@
 #include "../common/errors.religo"
 #include "./types.religo"
 
-let set_administrator = ((new_administrator, storage): (address, storage)): main_result => {
+let set_administrator = ((new_administrator, storage): (option(address), storage)): main_result => {
     (
         ([]: list(operation)),
-        {   ...storage, pending_administrator: Some(new_administrator) }
+        {   ...storage, pending_administrator: new_administrator }
     )
 };
 

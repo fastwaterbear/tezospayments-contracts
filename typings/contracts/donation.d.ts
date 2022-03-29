@@ -10,7 +10,7 @@ declare global {
     }
 
     interface AdministratorActions {
-      set_administrator(newAdministrator: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
+      set_administrator(newAdministrator?: string, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       confirm_administrator(params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
       set_disabled(disabled: boolean, params?: Truffle.TransactionParameters): Promise<Truffle.TransactionResult>;
     }
